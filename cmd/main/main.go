@@ -2,10 +2,13 @@ package main
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"image/color"
 	"maze-adventure/internal/config"
 	"maze-adventure/internal/ecs"
 	"maze-adventure/internal/ecs/components"
 	"maze-adventure/internal/ecs/systems"
+	"maze-adventure/internal/maze"
 	"maze-adventure/internal/utils"
 )
 
@@ -51,6 +54,44 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	g.World.Draw(screen)
+
+	const (
+		mazeWidth  = 10 // number of columns
+		mazeHeight = 10 // number of rows
+		cellSize   = 16 // size of each cell in pixels
+	)
+
+	// Set the wall color.
+	wallColor := color.White
+
+	// Iterate over each cell and draw its walls.
+	for x := 0; x < mazeWidth; x++ {
+		for y := 0; y < mazeHeight; y++ {
+			cell := maze.Grid[x][y]
+			// Calculate pixel coordinates.
+			x1 := float64(x*cellSize) + 1
+			y1 := float64(y*cellSize) + 1
+			x2 := float64((x+1)*cellSize) + 1
+			y2 := float64((y+1)*cellSize) + 1
+
+			// Draw top wall.
+			if cell.Walls[0] {
+				ebitenutil.DrawLine(screen, x1, y1, x2, y1, wallColor)
+			}
+			// Draw right wall.
+			if cell.Walls[1] {
+				ebitenutil.DrawLine(screen, x2, y1, x2, y2, wallColor)
+			}
+			// Draw bottom wall.
+			if cell.Walls[2] {
+				ebitenutil.DrawLine(screen, x2, y2, x1, y2, wallColor)
+			}
+			// Draw left wall.
+			if cell.Walls[3] {
+				ebitenutil.DrawLine(screen, x1, y2, x1, y1, wallColor)
+			}
+		}
+	}
 }
 
 func (g *Game) Layout(_outsideWidth, _outsideHeight int) (screenWidth, screenHeight int) {
