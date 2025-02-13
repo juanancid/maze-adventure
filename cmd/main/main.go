@@ -1,15 +1,23 @@
 package main
 
 import (
+	"image/color"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"image/color"
+
 	"maze-adventure/internal/config"
 	"maze-adventure/internal/ecs"
 	"maze-adventure/internal/ecs/components"
 	"maze-adventure/internal/ecs/systems"
 	"maze-adventure/internal/maze"
 	"maze-adventure/internal/utils"
+)
+
+const (
+	mazeWidth  = 10 // number of columns
+	mazeHeight = 10 // number of rows
+	cellSize   = 16 // size of each cell in pixels
 )
 
 type Game struct {
@@ -55,12 +63,6 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	g.World.Draw(screen)
 
-	const (
-		mazeWidth  = 10 // number of columns
-		mazeHeight = 10 // number of rows
-		cellSize   = 16 // size of each cell in pixels
-	)
-
 	// Set the wall color.
 	wallColor := color.White
 
@@ -103,6 +105,7 @@ func main() {
 	ebiten.SetWindowTitle("Maze Adventure")
 	ebiten.SetWindowResizable(true)
 
+	maze.GenerateMaze(mazeWidth, mazeHeight)
 	game := NewGame()
 
 	if err := ebiten.RunGame(game); err != nil {
