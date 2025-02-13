@@ -5,6 +5,16 @@ import (
 	"time"
 )
 
+// Maze represents a maze with a 2D grid of cells.
+type Maze struct {
+	Width  int
+	Height int
+	Grid   Grid
+}
+
+// Grid represents a 2D grid of cells.
+type Grid [][]*Cell
+
 // Cell represents a cell in the maze.
 type Cell struct {
 	x, y    int
@@ -93,9 +103,13 @@ func generateMazeDFS(startX, startY, mazeWidth, mazeHeight int, Grid [][]*Cell) 
 	}
 }
 
-func GenerateMaze(mazeWidth, mazeHeight int) [][]*Cell {
+func GenerateMaze(mazeWidth, mazeHeight int) Maze {
 	grid := initGrid(mazeWidth, mazeHeight)
 	generateMazeDFS(0, 0, mazeWidth, mazeHeight, grid)
 
-	return grid
+	return Maze{
+		Width:  mazeWidth,
+		Height: mazeHeight,
+		Grid:   grid,
+	}
 }

@@ -22,10 +22,10 @@ const (
 
 type Game struct {
 	World *ecs.World
-	Grid  [][]*maze.Cell
+	Maze  maze.Maze
 }
 
-func NewGame(grid [][]*maze.Cell) *Game {
+func NewGame(maze maze.Maze) *Game {
 	world := ecs.NewWorld()
 
 	player := world.NewEntity()
@@ -46,7 +46,7 @@ func NewGame(grid [][]*maze.Cell) *Game {
 
 	game := &Game{
 		World: world,
-		Grid:  grid,
+		Maze:  maze,
 	}
 
 	game.World.AddSystem(&systems.InputControl{})
@@ -69,9 +69,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	wallColor := color.White
 
 	// Iterate over each cell and draw its walls.
-	for x := 0; x < mazeWidth; x++ {
-		for y := 0; y < mazeHeight; y++ {
-			cell := g.Grid[x][y]
+	for x := 0; x < g.Maze.Width; x++ {
+		for y := 0; y < g.Maze.Height; y++ {
+			cell := g.Maze.Grid[x][y]
 			// Calculate pixel coordinates.
 			x1 := float64(x*cellSize) + 1
 			y1 := float64(y*cellSize) + 1
@@ -107,8 +107,8 @@ func main() {
 	ebiten.SetWindowTitle("Maze Adventure")
 	ebiten.SetWindowResizable(true)
 
-	grid := maze.GenerateMaze(mazeWidth, mazeHeight)
-	game := NewGame(grid)
+	maze := maze.GenerateMaze(mazeWidth, mazeHeight)
+	game := NewGame(maze)
 
 	if err := ebiten.RunGame(game); err != nil {
 		panic(err)
