@@ -107,7 +107,7 @@ func main() {
 	ebiten.SetWindowTitle("Maze Adventure")
 	ebiten.SetWindowResizable(true)
 
-	maze := maze.GenerateMaze(mazeWidth, mazeHeight)
+	maze := maze.New(mazeWidth, mazeHeight)
 	game := NewGame(maze)
 
 	if err := ebiten.RunGame(game); err != nil {
