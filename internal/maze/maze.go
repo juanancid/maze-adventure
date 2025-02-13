@@ -13,16 +13,13 @@ type Cell struct {
 	Walls [4]bool
 }
 
-// Grid is a global maze Grid.
-var Grid [][]*Cell
-
 // Direction vectors: 0 = top, 1 = right, 2 = bottom, 3 = left.
 var dx = [4]int{0, 1, 0, -1}
 var dy = [4]int{-1, 0, 1, 0}
 
 // initGrid initializes the Grid with cells with all Walls intact.
-func initGrid(mazeWidth, mazeHeight int) {
-	Grid = make([][]*Cell, mazeWidth)
+func initGrid(mazeWidth, mazeHeight int) [][]*Cell {
+	Grid := make([][]*Cell, mazeWidth)
 	for x := 0; x < mazeWidth; x++ {
 		Grid[x] = make([]*Cell, mazeHeight)
 		for y := 0; y < mazeHeight; y++ {
@@ -34,6 +31,8 @@ func initGrid(mazeWidth, mazeHeight int) {
 			}
 		}
 	}
+
+	return Grid
 }
 
 // inBounds checks if the given coordinates are within the Grid.
@@ -49,7 +48,7 @@ func removeWall(current, neighbor *Cell, dir int) {
 }
 
 // generateMazeDFS creates a maze using an iterative DFS algorithm.
-func generateMazeDFS(startX, startY, mazeWidth, mazeHeight int) {
+func generateMazeDFS(startX, startY, mazeWidth, mazeHeight int, Grid [][]*Cell) {
 	stack := []*Cell{}
 
 	start := Grid[startX][startY]
@@ -94,7 +93,9 @@ func generateMazeDFS(startX, startY, mazeWidth, mazeHeight int) {
 	}
 }
 
-func GenerateMaze(mazeWidth, mazeHeight int) {
-	initGrid(mazeWidth, mazeHeight)
-	generateMazeDFS(0, 0, mazeWidth, mazeHeight)
+func GenerateMaze(mazeWidth, mazeHeight int) [][]*Cell {
+	grid := initGrid(mazeWidth, mazeHeight)
+	generateMazeDFS(0, 0, mazeWidth, mazeHeight, grid)
+
+	return grid
 }
