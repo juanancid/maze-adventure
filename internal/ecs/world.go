@@ -11,7 +11,7 @@ type World struct {
 	nextEntityID Entity
 	components   map[reflect.Type]map[Entity]Component
 	systems      []System
-	renderables  []Renderable
+	renderers    []Renderable
 }
 
 type Entity int
@@ -90,21 +90,22 @@ func (w *World) GetSystem(target System) System {
 	return nil // Return nil if the system isn't found
 }
 
-func (w *World) AddRenderable(r Renderable) {
-	w.renderables = append(w.renderables, r)
+func (w *World) AddRenderer(r Renderable) {
+	w.renderers = append(w.renderers, r)
 }
 
-func (w *World) GetRenderable(target Renderable) Renderable {
-	for _, renderable := range w.renderables {
-		if reflect.TypeOf(renderable) == reflect.TypeOf(target) {
-			return renderable
+func (w *World) GetRenderer(target Renderable) Renderable {
+	for _, renderer := range w.renderers {
+		if reflect.TypeOf(renderer) == reflect.TypeOf(target) {
+			return renderer
 		}
 	}
-	return nil // Return nil if the renderable isn't found
+
+	return nil
 }
 
 func (w *World) Draw(screen *ebiten.Image) {
-	for _, r := range w.renderables {
+	for _, r := range w.renderers {
 		r.Draw(w, screen)
 	}
 }
