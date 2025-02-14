@@ -7,11 +7,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
-// LoadSprite loads an image file and returns an *ebiten.Image.
-func LoadSprite(path string) (*ebiten.Image, error) {
+// MustLoadSprite loads an image file and returns an *ebiten.Image.
+func MustLoadSprite(path string) *ebiten.Image {
 	img, _, err := ebitenutil.NewImageFromFile(path)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
-	return img, nil
+
+	return img
 }

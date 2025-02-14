@@ -2,58 +2,15 @@ package main
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/juanancid/maze-adventure/internal/ecs/systems"
 
 	"github.com/juanancid/maze-adventure/internal/config"
 	"github.com/juanancid/maze-adventure/internal/ecs"
-	"github.com/juanancid/maze-adventure/internal/ecs/components"
-	"github.com/juanancid/maze-adventure/internal/ecs/systems"
-	"github.com/juanancid/maze-adventure/internal/maze"
-	"github.com/juanancid/maze-adventure/internal/utils"
-)
-
-const (
-	mazeWidth  = 10 // number of columns
-	mazeHeight = 10 // number of rows
+	"github.com/juanancid/maze-adventure/internal/levels"
 )
 
 type Game struct {
 	World *ecs.World
-	Maze  maze.Maze
-}
-
-func NewGame() *Game {
-	world := ecs.NewWorld()
-
-	player := world.NewEntity()
-	world.AddComponent(player, &components.Position{X: 100, Y: 100})
-	world.AddComponent(player, &components.Velocity{})
-	world.AddComponent(player, &components.Size{Width: 12, Height: 12})
-	world.AddComponent(player, &components.InputControlled{
-		MoveLeftKey:  ebiten.KeyLeft,
-		MoveRightKey: ebiten.KeyRight,
-		MoveUpKey:    ebiten.KeyUp,
-		MoveDownKey:  ebiten.KeyDown,
-	})
-	playerSprite, err := utils.LoadSprite("internal/assets/images/player.png")
-	if err != nil {
-		panic(err)
-	}
-	world.AddComponent(player, &components.Sprite{Image: playerSprite})
-
-	m := world.NewEntity()
-	world.AddComponent(m, &components.Maze{Maze: maze.New(mazeWidth, mazeHeight)})
-
-	game := &Game{
-		World: world,
-	}
-
-	game.World.AddSystem(&systems.InputControl{})
-	game.World.AddSystem(&systems.Movement{})
-
-	game.World.AddRenderable(&systems.MazeRenderer{})
-	game.World.AddRenderable(&systems.Renderer{})
-
-	return game
 }
 
 func (g *Game) Update() error {
@@ -74,9 +31,26 @@ func main() {
 	ebiten.SetWindowTitle("Maze Adventure")
 	ebiten.SetWindowResizable(true)
 
-	game := NewGame()
+	game := newGame()
 
 	if err := ebiten.RunGame(game); err != nil {
 		panic(err)
 	}
+}
+
+func newGame() *Game {
+	world := ecs.NewWorld()
+
+	levels.CreateLevel(world)
+
+	world.AddSystem(&systems.InputControl{})
+	world.AddSystem(&systems.Movement{})
+
+	world.AddRenderable(&systems.MazeRenderer{})
+	world.AddRenderable(&systems.Renderer{})
+
+	game := &Game{
+		World: world,
+	}
+	return game
 }
