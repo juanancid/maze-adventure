@@ -1,6 +1,9 @@
 package components
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"github.com/hajimehoshi/ebiten/v2"
+	"maze-adventure/internal/maze"
+)
 
 type Position struct {
 	X, Y float64
@@ -23,4 +26,8 @@ type InputControlled struct {
 
 type Sprite struct {
 	Image *ebiten.Image
+}
+
+type Maze struct {
+	Maze maze.Maze
 }

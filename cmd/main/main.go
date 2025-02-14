@@ -1,11 +1,7 @@
 package main
 
 import (
-	"image/color"
-
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-
 	"maze-adventure/internal/config"
 	"maze-adventure/internal/ecs"
 	"maze-adventure/internal/ecs/components"
@@ -17,7 +13,6 @@ import (
 const (
 	mazeWidth  = 10 // number of columns
 	mazeHeight = 10 // number of rows
-	cellSize   = 16 // size of each cell in pixels
 )
 
 type Game struct {
@@ -25,7 +20,7 @@ type Game struct {
 	Maze  maze.Maze
 }
 
-func NewGame(maze maze.Maze) *Game {
+func NewGame() *Game {
 	world := ecs.NewWorld()
 
 	player := world.NewEntity()
@@ -44,14 +39,17 @@ func NewGame(maze maze.Maze) *Game {
 	}
 	world.AddComponent(player, &components.Sprite{Image: playerSprite})
 
+	m := world.NewEntity()
+	world.AddComponent(m, &components.Maze{Maze: maze.New(mazeWidth, mazeHeight)})
+
 	game := &Game{
 		World: world,
-		Maze:  maze,
 	}
 
 	game.World.AddSystem(&systems.InputControl{})
 	game.World.AddSystem(&systems.Movement{})
 
+	game.World.AddRenderable(&systems.MazeRenderer{})
 	game.World.AddRenderable(&systems.Renderer{})
 
 	return game
@@ -64,38 +62,6 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	g.World.Draw(screen)
-
-	// Set the wall color.
-	wallColor := color.White
-
-	// Iterate over each cell and draw its walls.
-	for x := 0; x < g.Maze.Width; x++ {
-		for y := 0; y < g.Maze.Height; y++ {
-			cell := g.Maze.Grid[x][y]
-			// Calculate pixel coordinates.
-			x1 := float64(x*cellSize) + 1
-			y1 := float64(y*cellSize) + 1
-			x2 := float64((x+1)*cellSize) + 1
-			y2 := float64((y+1)*cellSize) + 1
-
-			// Draw top wall.
-			if cell.Walls[0] {
-				ebitenutil.DrawLine(screen, x1, y1, x2, y1, wallColor)
-			}
-			// Draw right wall.
-			if cell.Walls[1] {
-				ebitenutil.DrawLine(screen, x2, y1, x2, y2, wallColor)
-			}
-			// Draw bottom wall.
-			if cell.Walls[2] {
-				ebitenutil.DrawLine(screen, x2, y2, x1, y2, wallColor)
-			}
-			// Draw left wall.
-			if cell.Walls[3] {
-				ebitenutil.DrawLine(screen, x1, y2, x1, y1, wallColor)
-			}
-		}
-	}
 }
 
 func (g *Game) Layout(_outsideWidth, _outsideHeight int) (screenWidth, screenHeight int) {
@@ -107,8 +73,7 @@ func main() {
 	ebiten.SetWindowTitle("Maze Adventure")
 	ebiten.SetWindowResizable(true)
 
-	maze := maze.New(mazeWidth, mazeHeight)
-	game := NewGame(maze)
+	game := NewGame()
 
 	if err := ebiten.RunGame(game); err != nil {
 		panic(err)
