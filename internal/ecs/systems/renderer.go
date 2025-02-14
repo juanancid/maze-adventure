@@ -1,10 +1,12 @@
 package systems
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
-	"maze-adventure/internal/ecs"
-	"maze-adventure/internal/ecs/components"
 	"reflect"
+
+	"github.com/hajimehoshi/ebiten/v2"
+
+	"github.com/juanancid/maze-adventure/internal/ecs"
+	"github.com/juanancid/maze-adventure/internal/ecs/components"
 )
 
 type Renderer struct{}

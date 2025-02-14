@@ -1,8 +1,9 @@
 package ecs
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
 	"reflect"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type World struct {

@@ -2,12 +2,13 @@ package main
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"maze-adventure/internal/config"
-	"maze-adventure/internal/ecs"
-	"maze-adventure/internal/ecs/components"
-	"maze-adventure/internal/ecs/systems"
-	"maze-adventure/internal/maze"
-	"maze-adventure/internal/utils"
+
+	"github.com/juanancid/maze-adventure/internal/config"
+	"github.com/juanancid/maze-adventure/internal/ecs"
+	"github.com/juanancid/maze-adventure/internal/ecs/components"
+	"github.com/juanancid/maze-adventure/internal/ecs/systems"
+	"github.com/juanancid/maze-adventure/internal/maze"
+	"github.com/juanancid/maze-adventure/internal/utils"
 )
 
 const (

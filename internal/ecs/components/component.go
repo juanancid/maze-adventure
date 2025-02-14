@@ -2,7 +2,8 @@ package components
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"maze-adventure/internal/maze"
+
+	"github.com/juanancid/maze-adventure/internal/maze"
 )
 
 type Position struct {

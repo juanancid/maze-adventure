@@ -1,4 +1,4 @@
-module maze-adventure
+module github.com/juanancid/maze-adventure
 
 go 1.23.4
 

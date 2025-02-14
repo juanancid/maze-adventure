@@ -1,12 +1,14 @@
 package systems
 
 import (
+	"image/color"
+	"reflect"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"image/color"
-	"maze-adventure/internal/ecs"
-	"maze-adventure/internal/ecs/components"
-	"reflect"
+
+	"github.com/juanancid/maze-adventure/internal/ecs"
+	"github.com/juanancid/maze-adventure/internal/ecs/components"
 )
 
 const (
