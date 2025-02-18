@@ -25,9 +25,9 @@ func (r *MazeRenderer) Draw(w *ecs.World, screen *ebiten.Image) {
 	for _, maze := range mazes {
 		m := maze.(*components.Maze).Maze
 		// Iterate over each cell and draw its walls.
-		for x := 0; x < m.Width; x++ {
-			for y := 0; y < m.Height; y++ {
-				cell := m.Grid[x][y]
+		for y := 0; y < m.Height; y++ {
+			for x := 0; x < m.Width; x++ {
+				cell := m.Grid[y][x]
 				// Calculate pixel coordinates.
 				x1 := float64(x*cellSize) + 1
 				y1 := float64(y*cellSize) + 1

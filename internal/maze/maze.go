@@ -12,10 +12,10 @@ type Maze struct {
 }
 
 // Grid represents a 2D grid of cells.
-type Grid []CellColumn
+type Grid []CellRow
 
-// CellColumn represents a column of cells in the maze.
-type CellColumn []*Cell
+// CellRow represents a column of cells in the maze.
+type CellRow []*Cell
 
 // Cell represents a cell in the maze.
 type Cell struct {
@@ -36,13 +36,13 @@ func New(width, height int) Maze {
 }
 
 func initMaze(width, height int) Maze {
-	grid := make(Grid, width)
+	grid := make(Grid, height)
 
-	for x := 0; x < width; x++ {
-		grid[x] = make(CellColumn, height)
+	for y := 0; y < height; y++ {
+		grid[y] = make(CellRow, width)
 
-		for y := 0; y < height; y++ {
-			grid[x][y] = &Cell{
+		for x := 0; x < width; x++ {
+			grid[y][x] = &Cell{
 				x:       x,
 				y:       y,
 				visited: false,
@@ -65,7 +65,7 @@ func generateMaze(startX, startY int, maze Maze) {
 		dy = [4]int{-1, 0, 1, 0}
 	)
 
-	stack := CellColumn{}
+	stack := CellRow{}
 
 	start := maze.Grid[startX][startY]
 	start.visited = true
@@ -76,13 +76,13 @@ func generateMaze(startX, startY int, maze Maze) {
 		current := stack[len(stack)-1]
 
 		// Collect all unvisited neighbors.
-		var neighbors CellColumn
+		var neighbors CellRow
 		var directions []int
 		for dir := 0; dir < 4; dir++ {
 			nx := current.x + dx[dir]
 			ny := current.y + dy[dir]
-			if inBounds(nx, ny, maze.Width, maze.Height) && !maze.Grid[nx][ny].visited {
-				neighbors = append(neighbors, maze.Grid[nx][ny])
+			if inBounds(nx, ny, maze.Width, maze.Height) && !maze.Grid[ny][nx].visited {
+				neighbors = append(neighbors, maze.Grid[ny][nx])
 				directions = append(directions, dir)
 			}
 		}
