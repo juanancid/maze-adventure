@@ -39,11 +39,11 @@ func (r *MazeRenderer) Draw(w *ecs.World, screen *ebiten.Image) {
 				}
 				// Draw right wall.
 				if cell.Walls[1] {
-					ebitenutil.DrawLine(screen, x2, y1, x2, y2, wallColor)
+					ebitenutil.DrawLine(screen, x2-1, y1, x2-1, y2, wallColor)
 				}
 				// Draw bottom wall.
 				if cell.Walls[2] {
-					ebitenutil.DrawLine(screen, x2, y2, x1, y2, wallColor)
+					ebitenutil.DrawLine(screen, x2, y2-1, x1, y2-1, wallColor)
 				}
 				// Draw left wall.
 				if cell.Walls[3] {

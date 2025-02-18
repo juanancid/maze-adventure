@@ -4,9 +4,9 @@ import "github.com/juanancid/maze-adventure/internal/ecs"
 
 func CreateLevel(world *ecs.World) {
 	const (
-		mazeWidth  = 10
+		mazeWidth  = 16
 		mazeHeight = 10
-		cellSize   = 16
+		cellSize   = 20
 	)
 
 	createPlayer(world)
