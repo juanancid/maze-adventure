@@ -12,10 +12,10 @@ type Maze struct {
 }
 
 // Grid represents a 2D grid of cells.
-type Grid []CellRow
+type Grid []Row
 
-// CellRow represents a column of cells in the maze.
-type CellRow []*Cell
+// Row represents a row of cells.
+type Row []*Cell
 
 // Cell represents a cell in the maze.
 type Cell struct {
@@ -42,19 +42,19 @@ func (m Maze) GetCell(x, y int) *Cell {
 
 // New creates a new maze with the given width and height.
 func New(cols, rows int) Maze {
-	startCol, startRow := 0, 0
-	maze := initMaze(cols, rows)
+	grid := initializeGrid(cols, rows)
 
-	generateMaze(startCol, startRow, maze)
+	startCol, startRow := 0, 0
+	maze := carveMaze(startCol, startRow, cols, rows, grid)
 
 	return maze
 }
 
-func initMaze(cols, rows int) Maze {
+func initializeGrid(cols, rows int) Grid {
 	grid := make(Grid, rows)
 
 	for row := 0; row < rows; row++ {
-		grid[row] = make(CellRow, cols)
+		grid[row] = make(Row, cols)
 
 		for col := 0; col < cols; col++ {
 			grid[row][col] = &Cell{
@@ -66,23 +66,18 @@ func initMaze(cols, rows int) Maze {
 		}
 	}
 
-	return Maze{
-		cols: cols,
-		rows: rows,
-		grid: grid,
-	}
+	return grid
 }
 
-// generateMaze creates a maze using an iterative DFS algorithm.
-func generateMaze(startCol, startRow int, maze Maze) {
+func carveMaze(startCol, startRow int, cols, rows int, grid Grid) Maze {
 	var (
 		dx = [4]int{0, 1, 0, -1}
 		dy = [4]int{-1, 0, 1, 0}
 	)
 
-	stack := CellRow{}
+	stack := Row{}
 
-	start := maze.grid[startCol][startRow]
+	start := grid[startRow][startCol]
 	start.visited = true
 	stack = append(stack, start)
 
@@ -91,13 +86,13 @@ func generateMaze(startCol, startRow int, maze Maze) {
 		current := stack[len(stack)-1]
 
 		// Collect all unvisited neighbors.
-		var neighbors CellRow
+		var neighbors Row
 		var directions []int
 		for dir := 0; dir < 4; dir++ {
 			nx := current.x + dx[dir]
 			ny := current.y + dy[dir]
-			if inBounds(nx, ny, maze.cols, maze.rows) && !maze.grid[ny][nx].visited {
-				neighbors = append(neighbors, maze.grid[ny][nx])
+			if inBounds(nx, ny, cols, rows) && !grid[ny][nx].visited {
+				neighbors = append(neighbors, grid[ny][nx])
 				directions = append(directions, dir)
 			}
 		}
@@ -119,14 +114,18 @@ func generateMaze(startCol, startRow int, maze Maze) {
 			stack = stack[:len(stack)-1]
 		}
 	}
+
+	return Maze{
+		cols: cols,
+		rows: rows,
+		grid: grid,
+	}
 }
 
 func inBounds(x, y, width, height int) bool {
 	return x >= 0 && x < width && y >= 0 && y < height
 }
 
-// removeWall removes the wall between two adjacent cells.
-// 'dir' is the direction from the current cell to the neighbor.
 func removeWall(current, neighbor *Cell, dir int) {
 	current.Walls[dir] = false
 	neighbor.Walls[(dir+2)%4] = false // Remove the opposite wall in neighbor.
