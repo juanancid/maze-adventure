@@ -8,7 +8,7 @@ import (
 type Maze struct {
 	cols int
 	rows int
-	Grid Grid
+	grid Grid
 }
 
 // Grid represents a 2D grid of cells.
@@ -33,6 +33,11 @@ func (m Maze) Cols() int {
 // Rows returns the number of rows in the maze.
 func (m Maze) Rows() int {
 	return m.rows
+}
+
+// GetCell returns the cell at the given coordinates.
+func (m Maze) GetCell(x, y int) *Cell {
+	return m.grid[y][x]
 }
 
 // New creates a new maze with the given width and height.
@@ -64,7 +69,7 @@ func initMaze(cols, rows int) Maze {
 	return Maze{
 		cols: cols,
 		rows: rows,
-		Grid: grid,
+		grid: grid,
 	}
 }
 
@@ -77,7 +82,7 @@ func generateMaze(startCol, startRow int, maze Maze) {
 
 	stack := CellRow{}
 
-	start := maze.Grid[startCol][startRow]
+	start := maze.grid[startCol][startRow]
 	start.visited = true
 	stack = append(stack, start)
 
@@ -91,8 +96,8 @@ func generateMaze(startCol, startRow int, maze Maze) {
 		for dir := 0; dir < 4; dir++ {
 			nx := current.x + dx[dir]
 			ny := current.y + dy[dir]
-			if inBounds(nx, ny, maze.Cols(), maze.Rows()) && !maze.Grid[ny][nx].visited {
-				neighbors = append(neighbors, maze.Grid[ny][nx])
+			if inBounds(nx, ny, maze.cols, maze.rows) && !maze.grid[ny][nx].visited {
+				neighbors = append(neighbors, maze.grid[ny][nx])
 				directions = append(directions, dir)
 			}
 		}
