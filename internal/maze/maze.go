@@ -6,9 +6,9 @@ import (
 
 // Maze represents a maze with a 2D grid of cells.
 type Maze struct {
-	Width  int
-	Height int
-	Grid   Grid
+	Cols int
+	Rows int
+	Grid Grid
 }
 
 // Grid represents a 2D grid of cells.
@@ -26,25 +26,25 @@ type Cell struct {
 }
 
 // New creates a new maze with the given width and height.
-func New(width, height int) Maze {
-	startX, startY := 0, 0
-	maze := initMaze(width, height)
+func New(cols, rows int) Maze {
+	startCol, startRow := 0, 0
+	maze := initMaze(cols, rows)
 
-	generateMaze(startX, startY, maze)
+	generateMaze(startCol, startRow, maze)
 
 	return maze
 }
 
-func initMaze(width, height int) Maze {
-	grid := make(Grid, height)
+func initMaze(cols, rows int) Maze {
+	grid := make(Grid, rows)
 
-	for y := 0; y < height; y++ {
-		grid[y] = make(CellRow, width)
+	for row := 0; row < rows; row++ {
+		grid[row] = make(CellRow, cols)
 
-		for x := 0; x < width; x++ {
-			grid[y][x] = &Cell{
-				x:       x,
-				y:       y,
+		for col := 0; col < cols; col++ {
+			grid[row][col] = &Cell{
+				x:       col,
+				y:       row,
 				visited: false,
 				Walls:   [4]bool{true, true, true, true},
 			}
@@ -52,14 +52,14 @@ func initMaze(width, height int) Maze {
 	}
 
 	return Maze{
-		Width:  width,
-		Height: height,
-		Grid:   grid,
+		Cols: cols,
+		Rows: rows,
+		Grid: grid,
 	}
 }
 
 // generateMaze creates a maze using an iterative DFS algorithm.
-func generateMaze(startX, startY int, maze Maze) {
+func generateMaze(startCol, startRow int, maze Maze) {
 	var (
 		dx = [4]int{0, 1, 0, -1}
 		dy = [4]int{-1, 0, 1, 0}
@@ -67,7 +67,7 @@ func generateMaze(startX, startY int, maze Maze) {
 
 	stack := CellRow{}
 
-	start := maze.Grid[startX][startY]
+	start := maze.Grid[startCol][startRow]
 	start.visited = true
 	stack = append(stack, start)
 
@@ -81,7 +81,7 @@ func generateMaze(startX, startY int, maze Maze) {
 		for dir := 0; dir < 4; dir++ {
 			nx := current.x + dx[dir]
 			ny := current.y + dy[dir]
-			if inBounds(nx, ny, maze.Width, maze.Height) && !maze.Grid[ny][nx].visited {
+			if inBounds(nx, ny, maze.Cols, maze.Rows) && !maze.Grid[ny][nx].visited {
 				neighbors = append(neighbors, maze.Grid[ny][nx])
 				directions = append(directions, dir)
 			}
