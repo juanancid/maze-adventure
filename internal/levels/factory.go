@@ -32,9 +32,12 @@ func createPlayer(world *ecs.World) ecs.Entity {
 	return player
 }
 
-func createMaze(world *ecs.World, mazeWidth, mazeHeight int) ecs.Entity {
+func createMaze(world *ecs.World, mazeWidth, mazeHeight int, cellSize int) ecs.Entity {
 	mazeEntity := world.NewEntity()
-	world.AddComponent(mazeEntity, &components.Maze{Maze: maze.New(mazeWidth, mazeHeight)})
+	world.AddComponent(mazeEntity, &components.Maze{
+		Maze:     maze.New(mazeWidth, mazeHeight),
+		CellSize: cellSize,
+	})
 
 	return mazeEntity
 }

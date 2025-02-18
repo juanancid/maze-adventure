@@ -11,10 +11,6 @@ import (
 	"github.com/juanancid/maze-adventure/internal/ecs/components"
 )
 
-const (
-	cellSize = 16 // size of each cell in pixels
-)
-
 type MazeRenderer struct{}
 
 func (r *MazeRenderer) Draw(w *ecs.World, screen *ebiten.Image) {
@@ -24,6 +20,8 @@ func (r *MazeRenderer) Draw(w *ecs.World, screen *ebiten.Image) {
 
 	for _, maze := range mazes {
 		m := maze.(*components.Maze).Maze
+		cellSize := maze.(*components.Maze).CellSize
+
 		// Iterate over each cell and draw its walls.
 		for row := 0; row < m.Rows(); row++ {
 			for col := 0; col < m.Cols(); col++ {

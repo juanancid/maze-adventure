@@ -30,5 +30,6 @@ type Sprite struct {
 }
 
 type Maze struct {
-	Maze maze.Maze
+	Maze     maze.Maze
+	CellSize int
 }
