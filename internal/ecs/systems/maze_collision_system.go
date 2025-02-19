@@ -43,19 +43,19 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 			}
 
 			// Check collisions with walls based on velocity direction
-			if vel.DY < 0 && collidesMovingUp(mazeComp, pos, col, row) { // Moving UP
+			if vel.DY < 0 && collidesMovingUp(mazeComp, pos, size, col, row) { // Moving UP
 				vel.DY = 0
 				pos.Y = float64(row*cellSize) + 1
 			}
-			if vel.DX > 0 && collidesMovingRight(mazeComp, pos, col, row) { // Moving RIGHT
+			if vel.DX > 0 && collidesMovingRight(mazeComp, pos, size, col, row) { // Moving RIGHT
 				vel.DX = 0
 				pos.X = float64((col+1)*cellSize) - size.Width - 1
 			}
-			if vel.DY > 0 && collidesMovingDown(mazeComp, pos, col, row) { // Moving DOWN
+			if vel.DY > 0 && collidesMovingDown(mazeComp, pos, size, col, row) { // Moving DOWN
 				vel.DY = 0
 				pos.Y = float64((row+1)*cellSize) - size.Height - 1
 			}
-			if vel.DX < 0 && collidesMovingLeft(mazeComp, pos, col, row) { // Moving LEFT
+			if vel.DX < 0 && collidesMovingLeft(mazeComp, pos, size, col, row) { // Moving LEFT
 				vel.DX = 0
 				pos.X = float64(col*cellSize) + 1
 			}
@@ -63,7 +63,7 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 	}
 }
 
-func collidesMovingUp(mazeComp *components.Maze, pos *components.Position, col, row int) bool {
+func collidesMovingUp(mazeComp *components.Maze, pos *components.Position, size *components.Size, col, row int) bool {
 	maze := mazeComp.Maze
 	cellSize := mazeComp.CellSize
 
@@ -72,25 +72,25 @@ func collidesMovingUp(mazeComp *components.Maze, pos *components.Position, col, 
 	return cell.Walls[0] && pos.Y < float64(row*cellSize)
 }
 
-func collidesMovingRight(mazeComp *components.Maze, pos *components.Position, col, row int) bool {
+func collidesMovingRight(mazeComp *components.Maze, pos *components.Position, size *components.Size, col, row int) bool {
 	maze := mazeComp.Maze
 	cellSize := mazeComp.CellSize
 
 	cell := maze.GetCell(col, row)
 
-	return cell.Walls[1] && pos.X > float64((col+1)*cellSize)
+	return cell.Walls[1] && pos.X+size.Width > float64((col+1)*cellSize)
 }
 
-func collidesMovingDown(mazeComp *components.Maze, pos *components.Position, col, row int) bool {
+func collidesMovingDown(mazeComp *components.Maze, pos *components.Position, size *components.Size, col, row int) bool {
 	maze := mazeComp.Maze
 	cellSize := mazeComp.CellSize
 
 	cell := maze.GetCell(col, row)
 
-	return cell.Walls[2] && pos.Y > float64((row+1)*cellSize)
+	return cell.Walls[2] && pos.Y+size.Height > float64((row+1)*cellSize)
 }
 
-func collidesMovingLeft(mazeComp *components.Maze, pos *components.Position, col, row int) bool {
+func collidesMovingLeft(mazeComp *components.Maze, pos *components.Position, size *components.Size, col, row int) bool {
 	maze := mazeComp.Maze
 	cellSize := mazeComp.CellSize
 
