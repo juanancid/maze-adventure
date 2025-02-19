@@ -53,6 +53,7 @@ func newGame() *Game {
 func addSystems(world *ecs.World) {
 	world.AddSystem(&systems.InputControl{})
 	world.AddSystem(&systems.Movement{})
+	world.AddSystem(&systems.MazeCollisionSystem{})
 }
 
 func AddRenderers(world *ecs.World) {
