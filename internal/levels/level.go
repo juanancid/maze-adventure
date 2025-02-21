@@ -9,6 +9,6 @@ func CreateLevel(world *ecs.World) {
 		cellSize   = 20
 	)
 
-	createPlayer(world)
+	createPlayer(world, cellSize)
 	createMaze(world, mazeWidth, mazeHeight, cellSize)
 }
