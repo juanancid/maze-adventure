@@ -11,11 +11,11 @@ import (
 type MazeCollisionSystem struct{}
 
 func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
+	mazes := w.GetComponents(reflect.TypeOf(&components.Maze{}))
 	players := w.GetComponents(reflect.TypeOf(&components.InputControlled{}))
 	positions := w.GetComponents(reflect.TypeOf(&components.Position{}))
 	sizes := w.GetComponents(reflect.TypeOf(&components.Size{}))
 	velocities := w.GetComponents(reflect.TypeOf(&components.Velocity{}))
-	mazes := w.GetComponents(reflect.TypeOf(&components.Maze{}))
 
 	for mazeEntity := range mazes {
 		mazeComp := mazes[mazeEntity].(*components.Maze)
@@ -46,8 +46,8 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 			// Check collisions with walls based on velocity direction
 			if vel.DY < 0 && crossedTopBoundary(pos, row, cellSize) { // Moving UP
 				if cell.HasTopWall() ||
-					col > 0 && crossedLeftBoundary(pos, col, cellSize) && maze.GetCell(col-1, row).HasTopWall() ||
-					col < maze.Cols()-1 && crossedRightBoundary(pos, size, col, cellSize) && maze.GetCell(col+1, row).HasTopWall() {
+					col > 0 && crossedLeftBoundary(pos, col, cellSize) && maze.GetCellLeft(col, row).HasTopWall() ||
+					col < maze.Cols()-1 && crossedRightBoundary(pos, size, col, cellSize) && maze.GetCellRight(col, row).HasTopWall() {
 					vel.DY = 0
 					pos.Y = float64(row*cellSize) + 1
 				}
@@ -55,8 +55,8 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 
 			if vel.DX > 0 && crossedRightBoundary(pos, size, col, cellSize) { // Moving RIGHT
 				if cell.HasRightWall() ||
-					row > 0 && crossedTopBoundary(pos, row, cellSize) && maze.GetCell(col, row-1).HasRightWall() ||
-					row < maze.Rows()-1 && crossedBottomBoundary(pos, size, row, cellSize) && maze.GetCell(col, row+1).HasRightWall() {
+					row > 0 && crossedTopBoundary(pos, row, cellSize) && maze.GetCellAbove(col, row).HasRightWall() ||
+					row < maze.Rows()-1 && crossedBottomBoundary(pos, size, row, cellSize) && maze.GetCellBelow(col, row).HasRightWall() {
 					vel.DX = 0
 					pos.X = float64((col+1)*cellSize) - size.Width - 1
 				}
@@ -64,8 +64,8 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 
 			if vel.DY > 0 && crossedBottomBoundary(pos, size, row, cellSize) { // Moving DOWN
 				if cell.HasBottomWall() ||
-					col > 0 && crossedLeftBoundary(pos, col, cellSize) && maze.GetCell(col-1, row).HasBottomWall() ||
-					col < maze.Cols()-1 && crossedRightBoundary(pos, size, col, cellSize) && maze.GetCell(col+1, row).HasBottomWall() {
+					col > 0 && crossedLeftBoundary(pos, col, cellSize) && maze.GetCellLeft(col, row).HasBottomWall() ||
+					col < maze.Cols()-1 && crossedRightBoundary(pos, size, col, cellSize) && maze.GetCellRight(col, row).HasBottomWall() {
 					vel.DY = 0
 					pos.Y = float64((row+1)*cellSize) - size.Height - 1
 				}
@@ -73,8 +73,8 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 
 			if vel.DX < 0 && crossedLeftBoundary(pos, col, cellSize) { // Moving LEFT
 				if cell.HasLeftWall() ||
-					row > 0 && crossedTopBoundary(pos, row, cellSize) && maze.GetCell(col, row-1).HasLeftWall() ||
-					row < maze.Rows()-1 && crossedBottomBoundary(pos, size, row, cellSize) && maze.GetCell(col, row-1).HasLeftWall() {
+					row > 0 && crossedTopBoundary(pos, row, cellSize) && maze.GetCellAbove(col, row).HasLeftWall() ||
+					row < maze.Rows()-1 && crossedBottomBoundary(pos, size, row, cellSize) && maze.GetCellBelow(col, row).HasLeftWall() {
 					vel.DX = 0
 					pos.X = float64(col*cellSize) + 1
 				}

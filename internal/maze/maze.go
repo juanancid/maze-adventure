@@ -60,6 +60,26 @@ func (m Maze) GetCell(x, y int) *Cell {
 	return m.grid[y][x]
 }
 
+// GetCellAbove returns the cell above the given coordinates.
+func (m Maze) GetCellAbove(x, y int) *Cell {
+	return m.GetCell(x, y-1)
+}
+
+// GetCellRight returns the cell to the right of the given coordinates.
+func (m Maze) GetCellRight(x, y int) *Cell {
+	return m.GetCell(x+1, y)
+}
+
+// GetCellBelow returns the cell below the given coordinates.
+func (m Maze) GetCellBelow(x, y int) *Cell {
+	return m.GetCell(x, y+1)
+}
+
+// GetCellLeft returns the cell to the left of the given coordinates.
+func (m Maze) GetCellLeft(x, y int) *Cell {
+	return m.GetCell(x-1, y)
+}
+
 // New creates a new maze with the given width and height.
 func New(cols, rows int) Maze {
 	grid := initializeGrid(cols, rows)
