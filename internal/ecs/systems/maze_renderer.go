@@ -5,7 +5,7 @@ import (
 	"reflect"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 
 	"github.com/juanancid/maze-adventure/internal/ecs"
 	"github.com/juanancid/maze-adventure/internal/ecs/components"
@@ -35,19 +35,19 @@ func (r *MazeRenderer) Draw(w *ecs.World, screen *ebiten.Image) {
 
 				// Draw top wall.
 				if cell.Walls[0] {
-					ebitenutil.DrawLine(screen, x1, y1, x2, y1, wallColor)
+					vector.StrokeLine(screen, float32(x1), float32(y1), float32(x2), float32(y1), 1, wallColor, false)
 				}
 				// Draw right wall.
 				if cell.Walls[1] {
-					ebitenutil.DrawLine(screen, x2-1, y1, x2-1, y2, wallColor)
+					vector.StrokeLine(screen, float32(x2-1), float32(y1), float32(x2-1), float32(y2), 1, wallColor, false)
 				}
 				// Draw bottom wall.
 				if cell.Walls[2] {
-					ebitenutil.DrawLine(screen, x2, y2-1, x1, y2-1, wallColor)
+					vector.StrokeLine(screen, float32(x2), float32(y2-1), float32(x1), float32(y2-1), 1, wallColor, false)
 				}
 				// Draw left wall.
 				if cell.Walls[3] {
-					ebitenutil.DrawLine(screen, x1, y2, x1, y1, wallColor)
+					vector.StrokeLine(screen, float32(x1), float32(y2), float32(x1), float32(y1), 1, wallColor, false)
 				}
 			}
 		}

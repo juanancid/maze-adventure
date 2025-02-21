@@ -16,7 +16,7 @@ test:
 validate: lint test
 
 .PHONY: run
-run: $(TARGET)
+run: validate $(TARGET)
 	./$(TARGET)
 
 $(TARGET): $(SOURCES)
