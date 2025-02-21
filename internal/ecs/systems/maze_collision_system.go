@@ -49,7 +49,7 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 					col > 0 && crossedLeftBoundary(pos, col, cellSize) && maze.GetCellLeft(col, row).HasTopWall() ||
 					col < maze.Cols()-1 && crossedRightBoundary(pos, size, col, cellSize) && maze.GetCellRight(col, row).HasTopWall() {
 					vel.DY = 0
-					pos.Y = float64(row*cellSize) + 1
+					pos.Y = float64(row * cellSize)
 				}
 			}
 
@@ -58,7 +58,7 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 					row > 0 && crossedTopBoundary(pos, row, cellSize) && maze.GetCellAbove(col, row).HasRightWall() ||
 					row < maze.Rows()-1 && crossedBottomBoundary(pos, size, row, cellSize) && maze.GetCellBelow(col, row).HasRightWall() {
 					vel.DX = 0
-					pos.X = float64((col+1)*cellSize) - size.Width - 1
+					pos.X = float64((col+1)*cellSize) - size.Width
 				}
 			}
 
@@ -67,7 +67,7 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 					col > 0 && crossedLeftBoundary(pos, col, cellSize) && maze.GetCellLeft(col, row).HasBottomWall() ||
 					col < maze.Cols()-1 && crossedRightBoundary(pos, size, col, cellSize) && maze.GetCellRight(col, row).HasBottomWall() {
 					vel.DY = 0
-					pos.Y = float64((row+1)*cellSize) - size.Height - 1
+					pos.Y = float64((row+1)*cellSize) - size.Height
 				}
 			}
 
@@ -76,7 +76,7 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 					row > 0 && crossedTopBoundary(pos, row, cellSize) && maze.GetCellAbove(col, row).HasLeftWall() ||
 					row < maze.Rows()-1 && crossedBottomBoundary(pos, size, row, cellSize) && maze.GetCellBelow(col, row).HasLeftWall() {
 					vel.DX = 0
-					pos.X = float64(col*cellSize) + 1
+					pos.X = float64(col * cellSize)
 				}
 			}
 
@@ -85,7 +85,7 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 				if crossedLeftBoundary(pos, col, cellSize) && maze.GetCellAbove(col, row).HasLeftWall() ||
 					crossedRightBoundary(pos, size, col, cellSize) && maze.GetCellAbove(col, row).HasRightWall() {
 					vel.DY = 0
-					pos.Y = float64(row*cellSize) + 1
+					pos.Y = float64(row * cellSize)
 				}
 			}
 
@@ -93,7 +93,7 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 				if crossedTopBoundary(pos, row, cellSize) && maze.GetCellRight(col, row).HasTopWall() ||
 					crossedBottomBoundary(pos, size, row, cellSize) && maze.GetCellRight(col, row).HasBottomWall() {
 					vel.DX = 0
-					pos.X = float64((col+1)*cellSize) - size.Width - 1
+					pos.X = float64((col+1)*cellSize) - size.Width
 				}
 			}
 
@@ -101,7 +101,7 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 				if crossedLeftBoundary(pos, col, cellSize) && maze.GetCellBelow(col, row).HasLeftWall() ||
 					crossedRightBoundary(pos, size, col, cellSize) && maze.GetCellBelow(col, row).HasRightWall() {
 					vel.DY = 0
-					pos.Y = float64((row+1)*cellSize) - size.Height - 1
+					pos.Y = float64((row+1)*cellSize) - size.Height
 				}
 			}
 
@@ -109,7 +109,7 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 				if crossedTopBoundary(pos, row, cellSize) && maze.GetCellLeft(col, row).HasTopWall() ||
 					crossedBottomBoundary(pos, size, row, cellSize) && maze.GetCellLeft(col, row).HasBottomWall() {
 					vel.DX = 0
-					pos.X = float64(col*cellSize) + 1
+					pos.X = float64(col * cellSize)
 				}
 			}
 		}
