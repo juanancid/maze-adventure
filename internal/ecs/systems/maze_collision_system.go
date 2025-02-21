@@ -79,6 +79,39 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 					pos.X = float64(col*cellSize) + 1
 				}
 			}
+
+			// Check collisions with edges based on velocity direction
+			if vel.DY < 0 && crossedTopBoundary(pos, row, cellSize) && row > 0 { // Moving UP
+				if crossedLeftBoundary(pos, col, cellSize) && maze.GetCellAbove(col, row).HasLeftWall() ||
+					crossedRightBoundary(pos, size, col, cellSize) && maze.GetCellAbove(col, row).HasRightWall() {
+					vel.DY = 0
+					pos.Y = float64(row*cellSize) + 1
+				}
+			}
+
+			if vel.DX > 0 && crossedRightBoundary(pos, size, col, cellSize) && col < maze.Cols()-1 { // Moving RIGHT
+				if crossedTopBoundary(pos, row, cellSize) && maze.GetCellRight(col, row).HasTopWall() ||
+					crossedBottomBoundary(pos, size, row, cellSize) && maze.GetCellRight(col, row).HasBottomWall() {
+					vel.DX = 0
+					pos.X = float64((col+1)*cellSize) - size.Width - 1
+				}
+			}
+
+			if vel.DY > 0 && crossedBottomBoundary(pos, size, row, cellSize) && row < maze.Rows()-1 { // Moving DOWN
+				if crossedLeftBoundary(pos, col, cellSize) && maze.GetCellBelow(col, row).HasLeftWall() ||
+					crossedRightBoundary(pos, size, col, cellSize) && maze.GetCellBelow(col, row).HasRightWall() {
+					vel.DY = 0
+					pos.Y = float64((row+1)*cellSize) - size.Height - 1
+				}
+			}
+
+			if vel.DX < 0 && crossedLeftBoundary(pos, col, cellSize) && col > 0 { // Moving LEFT
+				if crossedTopBoundary(pos, row, cellSize) && maze.GetCellLeft(col, row).HasTopWall() ||
+					crossedBottomBoundary(pos, size, row, cellSize) && maze.GetCellLeft(col, row).HasBottomWall() {
+					vel.DX = 0
+					pos.X = float64(col*cellSize) + 1
+				}
+			}
 		}
 	}
 }
