@@ -1,2 +1,3 @@
-# maze-adventure
-Retro Maze is a retro-inspired maze game.
+# Maze Adventure
+
+Maze Adventure is a retro-inspired maze game.
