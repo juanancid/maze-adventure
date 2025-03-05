@@ -2,11 +2,14 @@ package ecs
 
 import (
 	"reflect"
+
+	"github.com/juanancid/maze-adventure/internal/ecs/events"
 )
 
 type World struct {
 	nextEntityID Entity
 	components   map[reflect.Type]map[Entity]Component
+	events       []events.Event
 }
 
 type Entity int
@@ -40,4 +43,14 @@ func (w *World) GetComponent(entity Entity, componentType reflect.Type) Componen
 
 func (w *World) GetComponents(componentType reflect.Type) map[Entity]Component {
 	return w.components[componentType]
+}
+
+func (w *World) EmitEvent(e events.Event) {
+	w.events = append(w.events, e)
+}
+
+func (w *World) DrainEvents() []events.Event {
+	ee := w.events
+	w.events = nil
+	return ee
 }

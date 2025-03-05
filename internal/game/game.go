@@ -2,6 +2,7 @@ package game
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/juanancid/maze-adventure/internal/ecs/events"
 
 	"github.com/juanancid/maze-adventure/internal/config"
 	"github.com/juanancid/maze-adventure/internal/ecs"
@@ -12,9 +13,8 @@ import (
 type Game struct {
 	world *ecs.World
 
-	updaters    []Updater
-	renderers   []Renderer
-	scoreSystem *systems.ScoreSystem
+	updaters  []Updater
+	renderers []Renderer
 }
 
 type Updater interface {
@@ -49,10 +49,7 @@ func (g *Game) setUpdaters() {
 	g.addUpdater(&systems.InputControl{})
 	g.addUpdater(&systems.Movement{})
 	g.addUpdater(&systems.MazeCollisionSystem{})
-
-	scoreSystem := &systems.ScoreSystem{LevelCompleted: false}
-	g.scoreSystem = scoreSystem
-	g.addUpdater(scoreSystem)
+	g.addUpdater(&systems.ScoreSystem{})
 }
 
 func (g *Game) addUpdater(s Updater) {
@@ -75,9 +72,11 @@ func (g *Game) Update() error {
 		return err
 	}
 
-	if g.scoreSystem.LevelCompleted {
-		g.scoreSystem.LevelCompleted = false
-		g.setWorld(levels.CreateLevelWorld())
+	for _, event := range g.world.DrainEvents() {
+		switch event.(type) {
+		case events.LevelCompletedEvent:
+			g.setWorld(levels.CreateLevelWorld())
+		}
 	}
 
 	return nil

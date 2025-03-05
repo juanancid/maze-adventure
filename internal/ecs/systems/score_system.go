@@ -1,15 +1,14 @@
 package systems
 
 import (
+	"github.com/juanancid/maze-adventure/internal/ecs/events"
 	"reflect"
 
 	"github.com/juanancid/maze-adventure/internal/ecs"
 	"github.com/juanancid/maze-adventure/internal/ecs/components"
 )
 
-type ScoreSystem struct {
-	LevelCompleted bool
-}
+type ScoreSystem struct{}
 
 func (ss *ScoreSystem) Update(w *ecs.World) {
 	mazes := w.GetComponents(reflect.TypeOf(&components.Maze{}))
@@ -36,7 +35,7 @@ func (ss *ScoreSystem) Update(w *ecs.World) {
 			row := int(centerY / float64(cellSize))
 
 			if col == maze.Cols()-1 && row == maze.Rows()-1 {
-				ss.LevelCompleted = true
+				w.EmitEvent(events.LevelCompletedEvent{})
 				return
 			}
 		}
