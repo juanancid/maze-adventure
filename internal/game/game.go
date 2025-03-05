@@ -12,12 +12,12 @@ import (
 type Game struct {
 	world *ecs.World
 
-	systems     []System
+	updaters    []Updater
 	renderers   []Renderer
 	scoreSystem *systems.ScoreSystem
 }
 
-type System interface {
+type Updater interface {
 	Update(w *ecs.World)
 }
 
@@ -30,7 +30,7 @@ func NewGame() *Game {
 
 	game := &Game{
 		world:     world,
-		systems:   make([]System, 0),
+		updaters:  make([]Updater, 0),
 		renderers: make([]Renderer, 0),
 	}
 
@@ -42,8 +42,8 @@ func NewGame() *Game {
 }
 
 func (g *Game) Update() error {
-	for _, s := range g.systems {
-		s.Update(g.world)
+	if err := g.update(); err != nil {
+		return err
 	}
 
 	if g.scoreSystem.LevelCompleted {
@@ -51,8 +51,14 @@ func (g *Game) Update() error {
 
 		g.world = ecs.NewWorld()
 		levels.CreateLevel(g.world)
-		g.addSystems()
-		g.addRenderers()
+	}
+
+	return nil
+}
+
+func (g *Game) update() error {
+	for _, s := range g.updaters {
+		s.Update(g.world)
 	}
 
 	return nil
@@ -77,8 +83,8 @@ func (g *Game) addSystems() {
 	g.scoreSystem = scoreSystem
 	g.addSystem(scoreSystem)
 }
-func (g *Game) addSystem(s System) {
-	g.systems = append(g.systems, s)
+func (g *Game) addSystem(s Updater) {
+	g.updaters = append(g.updaters, s)
 }
 
 func (g *Game) addRenderers() {
