@@ -12,19 +12,14 @@ const (
 	playerSpriteFile = "internal/assets/images/player.png"
 )
 
-func createPlayer(world *ecs.World, cellSize int) ecs.Entity {
-	const (
-		playerWidth  = 12
-		playerHeight = 12
-	)
-
+func createPlayer(world *ecs.World, playerSize, cellSize int) ecs.Entity {
 	player := world.NewEntity()
 
-	world.AddComponent(player, &components.Size{Width: playerWidth, Height: playerHeight})
+	world.AddComponent(player, &components.Size{Width: float64(playerSize), Height: float64(playerSize)})
 	world.AddComponent(player, &components.Velocity{DX: 0, DY: 0})
 
-	posX := float64(cellSize-playerWidth) / 2
-	posY := float64(cellSize-playerHeight) / 2
+	posX := float64(cellSize-playerSize) / 2
+	posY := float64(cellSize-playerSize) / 2
 	world.AddComponent(player, &components.Position{X: posX, Y: posY})
 
 	world.AddComponent(player, &components.InputControlled{

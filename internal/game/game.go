@@ -2,16 +2,17 @@ package game
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/juanancid/maze-adventure/internal/ecs/events"
 
 	"github.com/juanancid/maze-adventure/internal/config"
 	"github.com/juanancid/maze-adventure/internal/ecs"
+	"github.com/juanancid/maze-adventure/internal/ecs/events"
 	"github.com/juanancid/maze-adventure/internal/ecs/systems"
 	"github.com/juanancid/maze-adventure/internal/levels"
 )
 
 type Game struct {
-	world *ecs.World
+	world        *ecs.World
+	currentLevel int
 
 	updaters  []Updater
 	renderers []Renderer
@@ -28,7 +29,7 @@ type Renderer interface {
 func NewGame() *Game {
 	game := newEmptyGame()
 
-	game.setWorld(levels.CreateLevelWorld())
+	game.setWorld(levels.CreateLevelWorld(game.currentLevel))
 	game.setUpdaters()
 	game.setRenderers()
 
@@ -36,7 +37,9 @@ func NewGame() *Game {
 }
 
 func newEmptyGame() *Game {
-	return &Game{}
+	return &Game{
+		currentLevel: 0,
+	}
 }
 
 func (g *Game) setWorld(world *ecs.World) {
@@ -72,12 +75,7 @@ func (g *Game) Update() error {
 		return err
 	}
 
-	for _, event := range g.world.DrainEvents() {
-		switch event.(type) {
-		case events.LevelCompletedEvent:
-			g.setWorld(levels.CreateLevelWorld())
-		}
-	}
+	g.processEvents()
 
 	return nil
 }
@@ -88,6 +86,16 @@ func (g *Game) update() error {
 	}
 
 	return nil
+}
+
+func (g *Game) processEvents() {
+	for _, event := range g.world.DrainEvents() {
+		switch event.(type) {
+		case events.LevelCompletedEvent:
+			g.currentLevel++
+			g.setWorld(levels.CreateLevelWorld(g.currentLevel))
+		}
+	}
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
