@@ -26,19 +26,23 @@ type Renderer interface {
 }
 
 func NewGame() *Game {
-	world := ecs.NewWorld()
+	game := newEmptyGame()
 
-	game := &Game{
-		world:     world,
-		updaters:  make([]Updater, 0),
-		renderers: make([]Renderer, 0),
-	}
+	world := levels.CreateLevelWorld()
+	game.setWorld(world)
 
-	levels.CreateLevel(world)
 	game.addSystems()
 	game.addRenderers()
 
 	return game
+}
+
+func newEmptyGame() *Game {
+	return &Game{}
+}
+
+func (g *Game) setWorld(world *ecs.World) {
+	g.world = world
 }
 
 func (g *Game) Update() error {
@@ -48,9 +52,7 @@ func (g *Game) Update() error {
 
 	if g.scoreSystem.LevelCompleted {
 		g.scoreSystem.LevelCompleted = false
-
-		g.world = ecs.NewWorld()
-		levels.CreateLevel(g.world)
+		g.setWorld(levels.CreateLevelWorld())
 	}
 
 	return nil
@@ -75,6 +77,8 @@ func (g *Game) Layout(_outsideWidth, _outsideHeight int) (screenWidth, screenHei
 }
 
 func (g *Game) addSystems() {
+	g.updaters = make([]Updater, 0)
+
 	g.addSystem(&systems.InputControl{})
 	g.addSystem(&systems.Movement{})
 	g.addSystem(&systems.MazeCollisionSystem{})
@@ -88,6 +92,8 @@ func (g *Game) addSystem(s Updater) {
 }
 
 func (g *Game) addRenderers() {
+	g.renderers = make([]Renderer, 0)
+
 	g.addRenderer(&systems.MazeRenderer{})
 	g.addRenderer(&systems.Renderer{})
 }

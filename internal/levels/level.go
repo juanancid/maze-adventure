@@ -2,7 +2,9 @@ package levels
 
 import "github.com/juanancid/maze-adventure/internal/ecs"
 
-func CreateLevel(world *ecs.World) {
+func CreateLevelWorld() *ecs.World {
+	world := ecs.NewWorld()
+
 	const (
 		mazeWidth  = 16
 		mazeHeight = 10
@@ -11,4 +13,6 @@ func CreateLevel(world *ecs.World) {
 
 	createPlayer(world, cellSize)
 	createMaze(world, mazeWidth, mazeHeight, cellSize)
+
+	return world
 }
