@@ -10,7 +10,6 @@ type World struct {
 	currentLevel int
 	nextEntityID Entity
 	components   map[reflect.Type]map[Entity]Component
-	systems      []System
 	renderers    []Renderable
 }
 
@@ -30,7 +29,6 @@ func NewWorld() *World {
 	return &World{
 		nextEntityID: 0,
 		components:   make(map[reflect.Type]map[Entity]Component),
-		systems:      make([]System, 0),
 	}
 }
 
@@ -65,29 +63,6 @@ func (w *World) GetComponent(entity Entity, componentType reflect.Type) Componen
 
 func (w *World) GetComponents(componentType reflect.Type) map[Entity]Component {
 	return w.components[componentType]
-}
-
-func (w *World) AddSystem(s System) {
-	w.systems = append(w.systems, s)
-}
-
-func (w *World) Update() {
-	for _, s := range w.systems {
-		s.Update(w)
-	}
-}
-
-func (w *World) GetSystems() []System {
-	return w.systems
-}
-
-func (w *World) GetSystem(target System) System {
-	for _, system := range w.systems {
-		if reflect.TypeOf(system) == reflect.TypeOf(target) {
-			return system
-		}
-	}
-	return nil // Return nil if the system isn't found
 }
 
 func (w *World) AddRenderer(r Renderable) {

@@ -12,14 +12,20 @@ import (
 type Game struct {
 	world *ecs.World
 
+	systems     []System
 	scoreSystem *systems.ScoreSystem
+}
+
+type System interface {
+	Update(w *ecs.World)
 }
 
 func NewGame() *Game {
 	world := ecs.NewWorld()
 
 	game := &Game{
-		world: world,
+		world:   world,
+		systems: make([]System, 0),
 	}
 
 	levels.CreateLevel(world)
@@ -30,7 +36,9 @@ func NewGame() *Game {
 }
 
 func (g *Game) Update() error {
-	g.world.Update()
+	for _, s := range g.systems {
+		s.Update(g.world)
+	}
 
 	if g.scoreSystem.LevelCompleted {
 		g.scoreSystem.LevelCompleted = false
@@ -53,13 +61,16 @@ func (g *Game) Layout(_outsideWidth, _outsideHeight int) (screenWidth, screenHei
 }
 
 func (g *Game) addSystems(world *ecs.World) {
-	world.AddSystem(&systems.InputControl{})
-	world.AddSystem(&systems.Movement{})
-	world.AddSystem(&systems.MazeCollisionSystem{})
+	g.addSystem(&systems.InputControl{})
+	g.addSystem(&systems.Movement{})
+	g.addSystem(&systems.MazeCollisionSystem{})
 
 	scoreSystem := &systems.ScoreSystem{LevelCompleted: false}
 	g.scoreSystem = scoreSystem
-	world.AddSystem(scoreSystem)
+	g.addSystem(scoreSystem)
+}
+func (g *Game) addSystem(s System) {
+	g.systems = append(g.systems, s)
 }
 
 func AddRenderers(world *ecs.World) {
