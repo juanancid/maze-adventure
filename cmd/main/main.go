@@ -11,10 +11,22 @@ import (
 
 type Game struct {
 	world *ecs.World
+
+	scoreSystem *systems.ScoreSystem
 }
 
 func (g *Game) Update() error {
 	g.world.Update()
+
+	if g.scoreSystem.LevelCompleted {
+		g.scoreSystem.LevelCompleted = false
+
+		g.world = ecs.NewWorld()
+		levels.CreateLevel(g.world)
+		g.addSystems(g.world)
+		AddRenderers(g.world)
+	}
+
 	return nil
 }
 
@@ -40,20 +52,25 @@ func main() {
 func newGame() *Game {
 	world := ecs.NewWorld()
 
-	levels.CreateLevel(world)
-	addSystems(world)
-	AddRenderers(world)
-
 	game := &Game{
 		world: world,
 	}
+
+	levels.CreateLevel(world)
+	game.addSystems(world)
+	AddRenderers(world)
+
 	return game
 }
 
-func addSystems(world *ecs.World) {
+func (g *Game) addSystems(world *ecs.World) {
 	world.AddSystem(&systems.InputControl{})
 	world.AddSystem(&systems.Movement{})
 	world.AddSystem(&systems.MazeCollisionSystem{})
+
+	scoreSystem := &systems.ScoreSystem{LevelCompleted: false}
+	g.scoreSystem = scoreSystem
+	world.AddSystem(scoreSystem)
 }
 
 func AddRenderers(world *ecs.World) {
