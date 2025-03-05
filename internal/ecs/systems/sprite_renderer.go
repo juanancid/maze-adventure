@@ -9,19 +9,21 @@ import (
 	"github.com/juanancid/maze-adventure/internal/ecs/components"
 )
 
-type Renderer struct{}
+type SpriteRenderer struct{}
 
-func (r *Renderer) Draw(w *ecs.World, screen *ebiten.Image) {
+func (r *SpriteRenderer) Draw(w *ecs.World, screen *ebiten.Image) {
 	positions := w.GetComponents(reflect.TypeOf(&components.Position{}))
 	sprites := w.GetComponents(reflect.TypeOf(&components.Sprite{}))
 
 	for entity, pos := range positions {
 		position := pos.(*components.Position)
-		sprite := sprites[entity]
+		spriteComp, ok := sprites[entity].(*components.Sprite)
+		if !ok {
+			continue
+		}
 
 		options := &ebiten.DrawImageOptions{}
 		options.GeoM.Translate(position.X, position.Y)
-		screen.DrawImage(sprite.(*components.Sprite).Image, options)
-		continue
+		screen.DrawImage(spriteComp.Image, options)
 	}
 }

@@ -28,11 +28,9 @@ type Renderer interface {
 func NewGame() *Game {
 	game := newEmptyGame()
 
-	world := levels.CreateLevelWorld()
-	game.setWorld(world)
-
-	game.addSystems()
-	game.addRenderers()
+	game.setWorld(levels.CreateLevelWorld())
+	game.setUpdaters()
+	game.setRenderers()
 
 	return game
 }
@@ -43,6 +41,33 @@ func newEmptyGame() *Game {
 
 func (g *Game) setWorld(world *ecs.World) {
 	g.world = world
+}
+
+func (g *Game) setUpdaters() {
+	g.updaters = make([]Updater, 0)
+
+	g.addUpdater(&systems.InputControl{})
+	g.addUpdater(&systems.Movement{})
+	g.addUpdater(&systems.MazeCollisionSystem{})
+
+	scoreSystem := &systems.ScoreSystem{LevelCompleted: false}
+	g.scoreSystem = scoreSystem
+	g.addUpdater(scoreSystem)
+}
+
+func (g *Game) addUpdater(s Updater) {
+	g.updaters = append(g.updaters, s)
+}
+
+func (g *Game) setRenderers() {
+	g.renderers = make([]Renderer, 0)
+
+	g.addRenderer(&systems.MazeRenderer{})
+	g.addRenderer(&systems.SpriteRenderer{})
+}
+
+func (g *Game) addRenderer(r Renderer) {
+	g.renderers = append(g.renderers, r)
 }
 
 func (g *Game) Update() error {
@@ -74,30 +99,4 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 func (g *Game) Layout(_outsideWidth, _outsideHeight int) (screenWidth, screenHeight int) {
 	return config.ScreenWidth, config.ScreenHeight
-}
-
-func (g *Game) addSystems() {
-	g.updaters = make([]Updater, 0)
-
-	g.addSystem(&systems.InputControl{})
-	g.addSystem(&systems.Movement{})
-	g.addSystem(&systems.MazeCollisionSystem{})
-
-	scoreSystem := &systems.ScoreSystem{LevelCompleted: false}
-	g.scoreSystem = scoreSystem
-	g.addSystem(scoreSystem)
-}
-func (g *Game) addSystem(s Updater) {
-	g.updaters = append(g.updaters, s)
-}
-
-func (g *Game) addRenderers() {
-	g.renderers = make([]Renderer, 0)
-
-	g.addRenderer(&systems.MazeRenderer{})
-	g.addRenderer(&systems.Renderer{})
-}
-
-func (g *Game) addRenderer(r Renderer) {
-	g.renderers = append(g.renderers, r)
 }
