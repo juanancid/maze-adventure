@@ -19,7 +19,7 @@ func (r *MazeRenderer) Draw(w *ecs.World, screen *ebiten.Image) {
 	mazes := w.GetComponents(reflect.TypeOf(&components.Maze{}))
 
 	for _, maze := range mazes {
-		m := maze.(*components.Maze).Maze
+		m := maze.(*components.Maze).Layout
 		cellSize := maze.(*components.Maze).CellSize
 
 		// Iterate over each cell and draw its walls.

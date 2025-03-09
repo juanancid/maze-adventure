@@ -2,9 +2,10 @@ package levels
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+
 	"github.com/juanancid/maze-adventure/internal/ecs"
 	"github.com/juanancid/maze-adventure/internal/ecs/components"
-	"github.com/juanancid/maze-adventure/internal/maze"
+	"github.com/juanancid/maze-adventure/internal/layout"
 	"github.com/juanancid/maze-adventure/internal/utils"
 )
 
@@ -38,7 +39,7 @@ func createPlayer(world *ecs.World, playerSize, cellSize int) ecs.Entity {
 func createMaze(world *ecs.World, mazeWidth, mazeHeight int, cellSize int) ecs.Entity {
 	mazeEntity := world.NewEntity()
 	world.AddComponent(mazeEntity, &components.Maze{
-		Maze:     maze.New(mazeWidth, mazeHeight),
+		Layout:   layout.New(mazeWidth, mazeHeight),
 		CellSize: cellSize,
 	})
 

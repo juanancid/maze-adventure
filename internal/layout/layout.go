@@ -1,11 +1,11 @@
-package maze
+package layout
 
 import (
 	"math/rand"
 )
 
-// Maze represents a maze with a 2D grid of cells.
-type Maze struct {
+// Layout represents a maze with a 2D grid of cells.
+type Layout struct {
 	cols int
 	rows int
 	grid Grid
@@ -46,42 +46,42 @@ func (c *Cell) HasLeftWall() bool {
 }
 
 // Cols returns the number of columns in the maze.
-func (m Maze) Cols() int {
+func (m Layout) Cols() int {
 	return m.cols
 }
 
 // Rows returns the number of rows in the maze.
-func (m Maze) Rows() int {
+func (m Layout) Rows() int {
 	return m.rows
 }
 
 // GetCell returns the cell at the given coordinates.
-func (m Maze) GetCell(x, y int) *Cell {
+func (m Layout) GetCell(x, y int) *Cell {
 	return m.grid[y][x]
 }
 
 // GetCellAbove returns the cell above the given coordinates.
-func (m Maze) GetCellAbove(x, y int) *Cell {
+func (m Layout) GetCellAbove(x, y int) *Cell {
 	return m.GetCell(x, y-1)
 }
 
 // GetCellRight returns the cell to the right of the given coordinates.
-func (m Maze) GetCellRight(x, y int) *Cell {
+func (m Layout) GetCellRight(x, y int) *Cell {
 	return m.GetCell(x+1, y)
 }
 
 // GetCellBelow returns the cell below the given coordinates.
-func (m Maze) GetCellBelow(x, y int) *Cell {
+func (m Layout) GetCellBelow(x, y int) *Cell {
 	return m.GetCell(x, y+1)
 }
 
 // GetCellLeft returns the cell to the left of the given coordinates.
-func (m Maze) GetCellLeft(x, y int) *Cell {
+func (m Layout) GetCellLeft(x, y int) *Cell {
 	return m.GetCell(x-1, y)
 }
 
 // New creates a new maze with the given width and height.
-func New(cols, rows int) Maze {
+func New(cols, rows int) Layout {
 	grid := initializeGrid(cols, rows)
 
 	startCol, startRow := 0, 0
@@ -109,7 +109,7 @@ func initializeGrid(cols, rows int) Grid {
 	return grid
 }
 
-func carveMaze(startCol, startRow int, cols, rows int, grid Grid) Maze {
+func carveMaze(startCol, startRow int, cols, rows int, grid Grid) Layout {
 	var (
 		dx = [4]int{0, 1, 0, -1}
 		dy = [4]int{-1, 0, 1, 0}
@@ -155,7 +155,7 @@ func carveMaze(startCol, startRow int, cols, rows int, grid Grid) Maze {
 		}
 	}
 
-	return Maze{
+	return Layout{
 		cols: cols,
 		rows: rows,
 		grid: grid,

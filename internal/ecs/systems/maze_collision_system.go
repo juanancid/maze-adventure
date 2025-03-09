@@ -19,7 +19,7 @@ func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
 
 	for mazeEntity := range mazes {
 		mazeComp := mazes[mazeEntity].(*components.Maze)
-		maze := mazeComp.Maze
+		maze := mazeComp.Layout
 		cellSize := mazeComp.CellSize
 
 		for player := range players {
