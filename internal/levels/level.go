@@ -26,6 +26,7 @@ func createLevelWorld0(world *ecs.World) {
 
 	createPlayer(world, playerSize, cellSize)
 	createMaze(world, mazeWidth, mazeHeight, cellSize)
+	createExit(world, mazeWidth-1, mazeHeight-1, cellSize)
 }
 
 func createLevelWorld1(world *ecs.World) {
@@ -38,6 +39,7 @@ func createLevelWorld1(world *ecs.World) {
 
 	createPlayer(world, playerSize, cellSize)
 	createMaze(world, mazeWidth, mazeHeight, cellSize)
+	createExit(world, mazeWidth-1, mazeHeight-1, cellSize)
 }
 
 func createLevelWorldDefault(world *ecs.World) {
@@ -50,4 +52,5 @@ func createLevelWorldDefault(world *ecs.World) {
 
 	createPlayer(world, playerSize, cellSize)
 	createMaze(world, mazeWidth, mazeHeight, cellSize)
+	createExit(world, mazeWidth-1, mazeHeight-1, cellSize)
 }

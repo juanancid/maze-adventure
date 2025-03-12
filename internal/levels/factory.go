@@ -11,6 +11,7 @@ import (
 
 const (
 	playerSpriteFile = "internal/assets/images/player.png"
+	exitSpriteFile   = "internal/assets/images/exit.png"
 )
 
 func createPlayer(world *ecs.World, playerSize, cellSize int) ecs.Entity {
@@ -44,4 +45,20 @@ func createMaze(world *ecs.World, mazeWidth, mazeHeight int, cellSize int) ecs.E
 	})
 
 	return mazeEntity
+}
+
+func createExit(world *ecs.World, mazeCol, mazeRow, cellSize int) ecs.Entity {
+	exit := world.NewEntity()
+	world.AddComponent(exit, &components.Size{Width: float64(cellSize), Height: float64(cellSize)})
+
+	posX := float64(mazeCol * cellSize)
+	posY := float64(mazeRow * cellSize)
+	world.AddComponent(exit, &components.Position{X: posX, Y: posY})
+
+	world.AddComponent(exit, &components.Exit{})
+
+	exitSprite := utils.MustLoadSprite(exitSpriteFile)
+	world.AddComponent(exit, &components.Sprite{Image: exitSprite})
+
+	return exit
 }

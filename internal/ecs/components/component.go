@@ -33,3 +33,6 @@ type Maze struct {
 	Layout   layout.Layout
 	CellSize int
 }
+
+type Exit struct {
+}
