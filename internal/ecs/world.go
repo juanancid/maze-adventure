@@ -3,6 +3,7 @@ package ecs
 import (
 	"reflect"
 
+	"github.com/juanancid/maze-adventure/internal/ecs/components"
 	"github.com/juanancid/maze-adventure/internal/ecs/events"
 )
 
@@ -10,6 +11,8 @@ type World struct {
 	nextEntityID Entity
 	components   map[reflect.Type]map[Entity]Component
 	events       []events.Event
+
+	maze *components.Maze
 }
 
 type Entity int
@@ -35,6 +38,14 @@ func (w *World) AddComponent(entity Entity, component Component) {
 		w.components[componentType] = make(map[Entity]Component)
 	}
 	w.components[componentType][entity] = component
+
+	w.addResource(component)
+}
+
+func (w *World) addResource(component Component) {
+	if maze, ok := component.(*components.Maze); ok {
+		w.maze = maze
+	}
 }
 
 func (w *World) GetComponent(entity Entity, componentType reflect.Type) Component {
@@ -43,6 +54,10 @@ func (w *World) GetComponent(entity Entity, componentType reflect.Type) Componen
 
 func (w *World) GetComponents(componentType reflect.Type) map[Entity]Component {
 	return w.components[componentType]
+}
+
+func (w *World) Maze() *components.Maze {
+	return w.maze
 }
 
 func (w *World) EmitEvent(e events.Event) {
