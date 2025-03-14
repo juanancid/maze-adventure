@@ -3,7 +3,7 @@ package components
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"github.com/juanancid/maze-adventure/internal/maze"
+	"github.com/juanancid/maze-adventure/internal/layout"
 )
 
 type Position struct {
@@ -30,6 +30,9 @@ type Sprite struct {
 }
 
 type Maze struct {
-	Maze     maze.Maze
+	Layout   layout.Layout
 	CellSize int
+}
+
+type Exit struct {
 }
