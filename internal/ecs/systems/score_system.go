@@ -8,7 +8,15 @@ import (
 	"github.com/juanancid/maze-adventure/internal/events"
 )
 
-type ScoreSystem struct{}
+type ScoreSystem struct {
+	eventBus *events.Bus
+}
+
+func NewScoreSystem(eventBus *events.Bus) *ScoreSystem {
+	return &ScoreSystem{
+		eventBus: eventBus,
+	}
+}
 
 func (ss *ScoreSystem) Update(w *ecs.World) {
 	mazeLayout := w.Maze().Layout
@@ -31,8 +39,7 @@ func (ss *ScoreSystem) Update(w *ecs.World) {
 		row := int(centerY / float64(cellSize))
 
 		if col == mazeLayout.Cols()-1 && row == mazeLayout.Rows()-1 {
-			w.EmitEvent(events.LevelCompletedEvent{})
-			return
+			ss.eventBus.Publish(events.LevelCompletedEvent{})
 		}
 	}
 }

@@ -4,13 +4,11 @@ import (
 	"reflect"
 
 	"github.com/juanancid/maze-adventure/internal/ecs/components"
-	"github.com/juanancid/maze-adventure/internal/events"
 )
 
 type World struct {
 	nextEntityID Entity
 	components   map[reflect.Type]map[Entity]Component
-	events       []events.Event
 
 	maze *components.Maze
 }
@@ -58,14 +56,4 @@ func (w *World) GetComponents(componentType reflect.Type) map[Entity]Component {
 
 func (w *World) Maze() *components.Maze {
 	return w.maze
-}
-
-func (w *World) EmitEvent(e events.Event) {
-	w.events = append(w.events, e)
-}
-
-func (w *World) DrainEvents() []events.Event {
-	ee := w.events
-	w.events = nil
-	return ee
 }

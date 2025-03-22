@@ -1,6 +1,8 @@
 package game
 
 import (
+	"reflect"
+
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"github.com/juanancid/maze-adventure/internal/config"
@@ -16,6 +18,8 @@ type Game struct {
 
 	updaters  []Updater
 	renderers []Renderer
+
+	eventBus *events.Bus
 }
 
 type Updater interface {
@@ -32,6 +36,7 @@ func NewGame() *Game {
 	game.setWorld(levels.CreateLevelWorld(game.currentLevel))
 	game.setUpdaters()
 	game.setRenderers()
+	game.setupEventSubscriptions()
 
 	return game
 }
@@ -39,6 +44,7 @@ func NewGame() *Game {
 func newEmptyGame() *Game {
 	return &Game{
 		currentLevel: 0,
+		eventBus:     events.NewBus(),
 	}
 }
 
@@ -52,7 +58,7 @@ func (g *Game) setUpdaters() {
 	g.addUpdater(&systems.InputControl{})
 	g.addUpdater(&systems.Movement{})
 	g.addUpdater(&systems.MazeCollisionSystem{})
-	g.addUpdater(&systems.ScoreSystem{})
+	g.addUpdater(systems.NewScoreSystem(g.eventBus))
 }
 
 func (g *Game) addUpdater(s Updater) {
@@ -68,6 +74,20 @@ func (g *Game) setRenderers() {
 
 func (g *Game) addRenderer(r Renderer) {
 	g.renderers = append(g.renderers, r)
+}
+
+func (g *Game) setupEventSubscriptions() {
+	g.eventBus.Subscribe(reflect.TypeOf(events.LevelCompletedEvent{}), g.onLevelCompleted)
+}
+
+func (g *Game) onLevelCompleted(e events.Event) {
+	_, ok := e.(events.LevelCompletedEvent)
+	if !ok {
+		return
+	}
+
+	g.currentLevel++
+	g.world = levels.CreateLevelWorld(g.currentLevel)
 }
 
 func (g *Game) Update() error {
@@ -89,13 +109,7 @@ func (g *Game) update() error {
 }
 
 func (g *Game) processEvents() {
-	for _, event := range g.world.DrainEvents() {
-		switch event.(type) {
-		case events.LevelCompletedEvent:
-			g.currentLevel++
-			g.setWorld(levels.CreateLevelWorld(g.currentLevel))
-		}
-	}
+	g.eventBus.Process()
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {

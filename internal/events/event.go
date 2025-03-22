@@ -1,7 +1,12 @@
 package events
 
-// Event is a marker interface for events.
-type Event interface{}
+// Event is the interface that all events must implement.
+type Event interface {
+	isEvent()
+}
 
-// LevelCompletedEvent is emitted when the player reaches the maze exit.
+// LevelCompletedEvent indicates that a level has been successfully completed.
 type LevelCompletedEvent struct{}
+
+// isEvent implements the Event interface explicitly.
+func (LevelCompletedEvent) isEvent() {}
