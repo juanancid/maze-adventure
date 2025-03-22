@@ -3,8 +3,8 @@ package systems
 import (
 	"reflect"
 
+	"github.com/juanancid/maze-adventure/internal/components"
 	"github.com/juanancid/maze-adventure/internal/ecs"
-	"github.com/juanancid/maze-adventure/internal/ecs/components"
 )
 
 // MazeCollisionSystem ensures entities do not pass through maze walls.

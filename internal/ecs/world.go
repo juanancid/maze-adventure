@@ -3,7 +3,7 @@ package ecs
 import (
 	"reflect"
 
-	"github.com/juanancid/maze-adventure/internal/ecs/components"
+	"github.com/juanancid/maze-adventure/internal/components"
 )
 
 type World struct {

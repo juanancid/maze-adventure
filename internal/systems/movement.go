@@ -3,8 +3,8 @@ package systems
 import (
 	"reflect"
 
+	"github.com/juanancid/maze-adventure/internal/components"
 	"github.com/juanancid/maze-adventure/internal/ecs"
-	"github.com/juanancid/maze-adventure/internal/ecs/components"
 )
 
 type Movement struct{}
