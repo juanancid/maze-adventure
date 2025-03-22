@@ -5,8 +5,8 @@ import (
 
 	"github.com/juanancid/maze-adventure/internal/config"
 	"github.com/juanancid/maze-adventure/internal/ecs"
-	"github.com/juanancid/maze-adventure/internal/ecs/events"
 	"github.com/juanancid/maze-adventure/internal/ecs/systems"
+	"github.com/juanancid/maze-adventure/internal/events"
 	"github.com/juanancid/maze-adventure/internal/levels"
 )
 
