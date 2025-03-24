@@ -11,8 +11,12 @@ import (
 type MazeCollisionSystem struct{}
 
 func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
-	mazeLayout := w.Maze().Layout
-	cellSize := w.Maze().CellSize
+	maze, ok := w.GetMaze()
+	if !ok {
+		return
+	}
+	mazeLayout := maze.Layout
+	cellSize := maze.CellSize
 
 	players := w.GetComponents(reflect.TypeOf(&components.InputControlled{}))
 	positions := w.GetComponents(reflect.TypeOf(&components.Position{}))

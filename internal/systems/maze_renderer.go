@@ -12,8 +12,13 @@ import (
 type MazeRenderer struct{}
 
 func (r *MazeRenderer) Draw(w *ecs.World, screen *ebiten.Image) {
-	mazeLayout := w.Maze().Layout
-	cellSize := w.Maze().CellSize
+	maze, ok := w.GetMaze()
+	if !ok {
+		return
+	}
+
+	mazeLayout := maze.Layout
+	cellSize := maze.CellSize
 
 	wallColor := color.RGBA{R: 0, G: 255, B: 0, A: 255}
 

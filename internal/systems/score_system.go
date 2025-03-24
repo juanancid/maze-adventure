@@ -19,14 +19,18 @@ func NewScoreSystem(eventBus *events.Bus) *ScoreSystem {
 }
 
 func (ss *ScoreSystem) Update(w *ecs.World) {
-	mazeLayout := w.Maze().Layout
-	cellSize := w.Maze().CellSize
+	maze, ok := w.GetMaze()
+	if !ok {
+		return
+	}
+	mazeLayout := maze.Layout
+	cellSize := maze.CellSize
 
 	inputControlledEntities := w.GetComponents(reflect.TypeOf(&components.InputControlled{}))
 	positions := w.GetComponents(reflect.TypeOf(&components.Position{}))
 	sizes := w.GetComponents(reflect.TypeOf(&components.Size{}))
 
-	for entity, _ := range inputControlledEntities {
+	for entity := range inputControlledEntities {
 		pos := positions[entity].(*components.Position)
 		size := sizes[entity].(*components.Size)
 

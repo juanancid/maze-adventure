@@ -9,8 +9,6 @@ import (
 type World struct {
 	nextEntityID Entity
 	components   map[reflect.Type]map[Entity]Component
-
-	maze *components.Maze
 }
 
 type Entity int
@@ -36,14 +34,6 @@ func (w *World) AddComponent(entity Entity, component Component) {
 		w.components[componentType] = make(map[Entity]Component)
 	}
 	w.components[componentType][entity] = component
-
-	w.addResource(component)
-}
-
-func (w *World) addResource(component Component) {
-	if maze, ok := component.(*components.Maze); ok {
-		w.maze = maze
-	}
 }
 
 func (w *World) GetComponent(entity Entity, componentType reflect.Type) Component {
@@ -54,6 +44,40 @@ func (w *World) GetComponents(componentType reflect.Type) map[Entity]Component {
 	return w.components[componentType]
 }
 
-func (w *World) Maze() *components.Maze {
-	return w.maze
+func (w *World) GetMaze() (*components.Maze, bool) {
+	mazeType := reflect.TypeOf(&components.Maze{})
+	mazes := w.Query(mazeType)
+	if len(mazes) == 0 {
+		return nil, false
+	}
+
+	comp := w.GetComponent(mazes[0], mazeType).(*components.Maze)
+	return comp, true
+}
+
+func (w *World) Query(types ...reflect.Type) []Entity {
+	if len(types) == 0 {
+		return nil
+	}
+
+	matching := make(map[Entity]bool)
+	firstType := types[0]
+	for e := range w.components[firstType] {
+		matching[e] = true
+	}
+
+	for _, t := range types[1:] {
+		for e := range matching {
+			if _, exists := w.components[t][e]; !exists {
+				delete(matching, e)
+			}
+		}
+	}
+
+	result := make([]Entity, 0, len(matching))
+	for e := range matching {
+		result = append(result, e)
+	}
+
+	return result
 }
