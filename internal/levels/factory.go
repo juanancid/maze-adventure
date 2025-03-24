@@ -4,7 +4,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"github.com/juanancid/maze-adventure/internal/components"
-	"github.com/juanancid/maze-adventure/internal/ecs"
+	"github.com/juanancid/maze-adventure/internal/entities"
 	"github.com/juanancid/maze-adventure/internal/layout"
 	"github.com/juanancid/maze-adventure/internal/utils"
 )
@@ -14,7 +14,7 @@ const (
 	exitSpriteFile   = "internal/assets/images/exit.png"
 )
 
-func createPlayer(world *ecs.World, playerSize, cellSize int) ecs.Entity {
+func createPlayer(world *entities.World, playerSize, cellSize int) entities.Entity {
 	player := world.NewEntity()
 
 	world.AddComponent(player, &components.Size{Width: float64(playerSize), Height: float64(playerSize)})
@@ -37,7 +37,7 @@ func createPlayer(world *ecs.World, playerSize, cellSize int) ecs.Entity {
 	return player
 }
 
-func createMaze(world *ecs.World, mazeWidth, mazeHeight int, cellSize int) ecs.Entity {
+func createMaze(world *entities.World, mazeWidth, mazeHeight int, cellSize int) entities.Entity {
 	mazeEntity := world.NewEntity()
 	world.AddComponent(mazeEntity, &components.Maze{
 		Layout:   layout.New(mazeWidth, mazeHeight),
@@ -47,7 +47,7 @@ func createMaze(world *ecs.World, mazeWidth, mazeHeight int, cellSize int) ecs.E
 	return mazeEntity
 }
 
-func createExit(world *ecs.World, mazeCol, mazeRow, cellSize int) ecs.Entity {
+func createExit(world *entities.World, mazeCol, mazeRow, cellSize int) entities.Entity {
 	exit := world.NewEntity()
 	world.AddComponent(exit, &components.Size{Width: float64(cellSize), Height: float64(cellSize)})
 

@@ -6,14 +6,14 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"github.com/juanancid/maze-adventure/internal/config"
-	"github.com/juanancid/maze-adventure/internal/ecs"
+	"github.com/juanancid/maze-adventure/internal/entities"
 	"github.com/juanancid/maze-adventure/internal/events"
 	"github.com/juanancid/maze-adventure/internal/levels"
 	"github.com/juanancid/maze-adventure/internal/systems"
 )
 
 type Game struct {
-	world        *ecs.World
+	world        *entities.World
 	currentLevel int
 
 	updaters  []Updater
@@ -23,11 +23,11 @@ type Game struct {
 }
 
 type Updater interface {
-	Update(w *ecs.World)
+	Update(w *entities.World)
 }
 
 type Renderer interface {
-	Draw(world *ecs.World, screen *ebiten.Image)
+	Draw(world *entities.World, screen *ebiten.Image)
 }
 
 func NewGame() *Game {
@@ -48,7 +48,7 @@ func newEmptyGame() *Game {
 	}
 }
 
-func (g *Game) setWorld(world *ecs.World) {
+func (g *Game) setWorld(world *entities.World) {
 	g.world = world
 }
 

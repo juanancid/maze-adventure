@@ -4,13 +4,13 @@ import (
 	"reflect"
 
 	"github.com/juanancid/maze-adventure/internal/components"
-	"github.com/juanancid/maze-adventure/internal/ecs"
+	"github.com/juanancid/maze-adventure/internal/entities"
 )
 
 // MazeCollisionSystem ensures entities do not pass through maze walls.
 type MazeCollisionSystem struct{}
 
-func (mcs *MazeCollisionSystem) Update(w *ecs.World) {
+func (mcs *MazeCollisionSystem) Update(w *entities.World) {
 	maze, ok := w.GetMaze()
 	if !ok {
 		return

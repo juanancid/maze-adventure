@@ -6,12 +6,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 
-	"github.com/juanancid/maze-adventure/internal/ecs"
+	"github.com/juanancid/maze-adventure/internal/entities"
 )
 
 type MazeRenderer struct{}
 
-func (r *MazeRenderer) Draw(w *ecs.World, screen *ebiten.Image) {
+func (r *MazeRenderer) Draw(w *entities.World, screen *ebiten.Image) {
 	maze, ok := w.GetMaze()
 	if !ok {
 		return

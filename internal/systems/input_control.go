@@ -6,7 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"github.com/juanancid/maze-adventure/internal/components"
-	"github.com/juanancid/maze-adventure/internal/ecs"
+	"github.com/juanancid/maze-adventure/internal/entities"
 )
 
 const (
@@ -16,7 +16,7 @@ const (
 
 type InputControl struct{}
 
-func (is *InputControl) Update(w *ecs.World) {
+func (is *InputControl) Update(w *entities.World) {
 	inputControlledEntities := w.GetComponents(reflect.TypeOf(&components.InputControlled{}))
 
 	for entity, entityControl := range inputControlledEntities {

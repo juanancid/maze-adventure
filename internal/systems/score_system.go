@@ -4,7 +4,7 @@ import (
 	"reflect"
 
 	"github.com/juanancid/maze-adventure/internal/components"
-	"github.com/juanancid/maze-adventure/internal/ecs"
+	"github.com/juanancid/maze-adventure/internal/entities"
 	"github.com/juanancid/maze-adventure/internal/events"
 )
 
@@ -18,7 +18,7 @@ func NewScoreSystem(eventBus *events.Bus) *ScoreSystem {
 	}
 }
 
-func (ss *ScoreSystem) Update(w *ecs.World) {
+func (ss *ScoreSystem) Update(w *entities.World) {
 	maze, ok := w.GetMaze()
 	if !ok {
 		return

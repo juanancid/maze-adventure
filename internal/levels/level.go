@@ -1,9 +1,9 @@
 package levels
 
-import "github.com/juanancid/maze-adventure/internal/ecs"
+import "github.com/juanancid/maze-adventure/internal/entities"
 
-func CreateLevelWorld(level int) *ecs.World {
-	world := ecs.NewWorld()
+func CreateLevelWorld(level int) *entities.World {
+	world := entities.NewWorld()
 
 	config, ok := levelConfigs[level]
 	if !ok {
