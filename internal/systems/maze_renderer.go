@@ -12,7 +12,7 @@ import (
 type MazeRenderer struct{}
 
 func (r *MazeRenderer) Draw(w *entities.World, screen *ebiten.Image) {
-	maze, ok := w.GetMaze()
+	maze, ok := getMaze(w)
 	if !ok {
 		return
 	}

@@ -11,7 +11,7 @@ import (
 type MazeCollisionSystem struct{}
 
 func (mcs *MazeCollisionSystem) Update(w *entities.World) {
-	maze, ok := w.GetMaze()
+	maze, ok := getMaze(w)
 	if !ok {
 		return
 	}

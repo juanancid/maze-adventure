@@ -2,8 +2,6 @@ package entities
 
 import (
 	"reflect"
-
-	"github.com/juanancid/maze-adventure/internal/components"
 )
 
 type World struct {
@@ -42,17 +40,6 @@ func (w *World) GetComponent(entity Entity, componentType reflect.Type) Componen
 
 func (w *World) GetComponents(componentType reflect.Type) map[Entity]Component {
 	return w.components[componentType]
-}
-
-func (w *World) GetMaze() (*components.Maze, bool) {
-	mazeType := reflect.TypeOf(&components.Maze{})
-	mazes := w.Query(mazeType)
-	if len(mazes) == 0 {
-		return nil, false
-	}
-
-	comp := w.GetComponent(mazes[0], mazeType).(*components.Maze)
-	return comp, true
 }
 
 func (w *World) Query(types ...reflect.Type) []Entity {

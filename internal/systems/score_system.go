@@ -19,7 +19,7 @@ func NewScoreSystem(eventBus *events.Bus) *ScoreSystem {
 }
 
 func (ss *ScoreSystem) Update(w *entities.World) {
-	maze, ok := w.GetMaze()
+	maze, ok := getMaze(w)
 	if !ok {
 		return
 	}
