@@ -1,6 +1,7 @@
 package systems
 
 import (
+	"github.com/juanancid/maze-adventure/internal/queries"
 	"reflect"
 
 	"github.com/juanancid/maze-adventure/internal/components"
@@ -11,7 +12,7 @@ import (
 type MazeCollisionSystem struct{}
 
 func (mcs *MazeCollisionSystem) Update(w *entities.World) {
-	maze, ok := getMaze(w)
+	maze, ok := queries.GetMaze(w)
 	if !ok {
 		return
 	}

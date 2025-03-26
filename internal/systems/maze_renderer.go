@@ -1,6 +1,7 @@
 package systems
 
 import (
+	"github.com/juanancid/maze-adventure/internal/queries"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -12,7 +13,7 @@ import (
 type MazeRenderer struct{}
 
 func (r *MazeRenderer) Draw(w *entities.World, screen *ebiten.Image) {
-	maze, ok := getMaze(w)
+	maze, ok := queries.GetMaze(w)
 	if !ok {
 		return
 	}

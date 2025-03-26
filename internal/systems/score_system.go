@@ -1,6 +1,7 @@
 package systems
 
 import (
+	"github.com/juanancid/maze-adventure/internal/queries"
 	"reflect"
 
 	"github.com/juanancid/maze-adventure/internal/components"
@@ -19,7 +20,7 @@ func NewScoreSystem(eventBus *events.Bus) *ScoreSystem {
 }
 
 func (ss *ScoreSystem) Update(w *entities.World) {
-	maze, ok := getMaze(w)
+	maze, ok := queries.GetMaze(w)
 	if !ok {
 		return
 	}

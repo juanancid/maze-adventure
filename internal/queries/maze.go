@@ -1,4 +1,4 @@
-package systems
+package queries
 
 import (
 	"reflect"
@@ -7,7 +7,7 @@ import (
 	"github.com/juanancid/maze-adventure/internal/entities"
 )
 
-func getMaze(world *entities.World) (*components.Maze, bool) {
+func GetMaze(world *entities.World) (*components.Maze, bool) {
 	mazeType := reflect.TypeOf(&components.Maze{})
 	mazes := world.Query(mazeType)
 	if len(mazes) == 0 {
