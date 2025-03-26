@@ -9,7 +9,8 @@ import (
 	"github.com/juanancid/maze-adventure/internal/entities"
 	"github.com/juanancid/maze-adventure/internal/events"
 	"github.com/juanancid/maze-adventure/internal/levels"
-	"github.com/juanancid/maze-adventure/internal/systems"
+	"github.com/juanancid/maze-adventure/internal/systems/renderers"
+	"github.com/juanancid/maze-adventure/internal/systems/updaters"
 )
 
 type Game struct {
@@ -55,10 +56,10 @@ func (g *Game) setWorld(world *entities.World) {
 func (g *Game) setUpdaters() {
 	g.updaters = make([]Updater, 0)
 
-	g.addUpdater(&systems.InputControl{})
-	g.addUpdater(&systems.Movement{})
-	g.addUpdater(&systems.MazeCollisionSystem{})
-	g.addUpdater(systems.NewScoreSystem(g.eventBus))
+	g.addUpdater(&updaters.InputControl{})
+	g.addUpdater(&updaters.Movement{})
+	g.addUpdater(&updaters.MazeCollisionSystem{})
+	g.addUpdater(updaters.NewScoreSystem(g.eventBus))
 }
 
 func (g *Game) addUpdater(s Updater) {
@@ -68,8 +69,8 @@ func (g *Game) addUpdater(s Updater) {
 func (g *Game) setRenderers() {
 	g.renderers = make([]Renderer, 0)
 
-	g.addRenderer(&systems.MazeRenderer{})
-	g.addRenderer(&systems.SpriteRenderer{})
+	g.addRenderer(&renderers.MazeRenderer{})
+	g.addRenderer(&renderers.SpriteRenderer{})
 }
 
 func (g *Game) addRenderer(r Renderer) {

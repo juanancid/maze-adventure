@@ -1,4 +1,4 @@
-package systems
+package updaters
 
 import (
 	"reflect"

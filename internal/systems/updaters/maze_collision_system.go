@@ -1,11 +1,11 @@
-package systems
+package updaters
 
 import (
-	"github.com/juanancid/maze-adventure/internal/queries"
 	"reflect"
 
 	"github.com/juanancid/maze-adventure/internal/components"
 	"github.com/juanancid/maze-adventure/internal/entities"
+	"github.com/juanancid/maze-adventure/internal/queries"
 )
 
 // MazeCollisionSystem ensures entities do not pass through maze walls.

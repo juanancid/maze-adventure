@@ -1,13 +1,13 @@
-package systems
+package renderers
 
 import (
-	"github.com/juanancid/maze-adventure/internal/queries"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 
 	"github.com/juanancid/maze-adventure/internal/entities"
+	"github.com/juanancid/maze-adventure/internal/queries"
 )
 
 type MazeRenderer struct{}
