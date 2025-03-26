@@ -1,0 +1,12 @@
+maze:
+  width: 8
+  height: 5
+  cell_size: 40
+
+player:
+  size: 12
+
+exit:
+  position:
+    x: 7
+    y: 4

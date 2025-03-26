@@ -14,6 +14,19 @@ const (
 	exitSpriteFile   = "internal/engine/assets/images/exit.png"
 )
 
+func CreateLevel(level *Level) *entities.World {
+	world := entities.NewWorld()
+
+	cellSize := level.Maze.CellSize
+	playerSize := level.Player.Size
+
+	createPlayer(world, playerSize, cellSize)
+	createMaze(world, level.Maze.Width, level.Maze.Height, cellSize)
+	createExit(world, level.Exit.Position.X, level.Exit.Position.Y, cellSize)
+
+	return world
+}
+
 func createPlayer(world *entities.World, playerSize, cellSize int) entities.Entity {
 	player := world.NewEntity()
 

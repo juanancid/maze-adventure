@@ -15,7 +15,7 @@ import (
 
 type Game struct {
 	world        *entities.World
-	currentLevel int
+	levelManager *levels.Manager
 
 	updaters  []Updater
 	renderers []Renderer
@@ -34,7 +34,7 @@ type Renderer interface {
 func NewGame() *Game {
 	game := newEmptyGame()
 
-	game.setWorld(levels.CreateLevelWorld(game.currentLevel))
+	game.loadNextLevel()
 	game.setUpdaters()
 	game.setRenderers()
 	game.setupEventSubscriptions()
@@ -44,13 +44,18 @@ func NewGame() *Game {
 
 func newEmptyGame() *Game {
 	return &Game{
-		currentLevel: 0,
+		levelManager: levels.NewManager(),
 		eventBus:     events.NewBus(),
 	}
 }
 
-func (g *Game) setWorld(world *entities.World) {
-	g.world = world
+func (g *Game) loadNextLevel() {
+	levelConfig, err := g.levelManager.NextLevel()
+	if err != nil {
+		panic(err)
+	}
+
+	g.world = levels.CreateLevel(levelConfig)
 }
 
 func (g *Game) setUpdaters() {
@@ -87,8 +92,7 @@ func (g *Game) onLevelCompleted(e events.Event) {
 		return
 	}
 
-	g.currentLevel++
-	g.world = levels.CreateLevelWorld(g.currentLevel)
+	g.loadNextLevel()
 }
 
 func (g *Game) Update() error {

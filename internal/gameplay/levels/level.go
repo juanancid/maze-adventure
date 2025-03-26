@@ -1,20 +1,26 @@
 package levels
 
-import (
-	"github.com/juanancid/maze-adventure/internal/core/entities"
-)
+type Level struct {
+	Maze   MazeConfig   `yaml:"maze"`
+	Player PlayerConfig `yaml:"player"`
+	Exit   ExitConfig   `yaml:"exit"`
+}
 
-func CreateLevelWorld(level int) *entities.World {
-	world := entities.NewWorld()
+type MazeConfig struct {
+	Width    int `yaml:"width"`
+	Height   int `yaml:"height"`
+	CellSize int `yaml:"cell_size"`
+}
 
-	config, ok := levelConfigs[level]
-	if !ok {
-		config = levelConfigs[-1] // use default config if not found.
-	}
+type PlayerConfig struct {
+	Size int `yaml:"size"`
+}
 
-	createPlayer(world, config.playerSize, config.cellSize)
-	createMaze(world, config.mazeWidth, config.mazeHeight, config.cellSize)
-	createExit(world, config.mazeWidth-1, config.mazeHeight-1, config.cellSize)
+type ExitConfig struct {
+	Position Coordinate `yaml:"position"`
+}
 
-	return world
+type Coordinate struct {
+	X int `yaml:"x"`
+	Y int `yaml:"y"`
 }
