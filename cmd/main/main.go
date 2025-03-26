@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"github.com/juanancid/maze-adventure/internal/config"
-	"github.com/juanancid/maze-adventure/internal/game"
+	"github.com/juanancid/maze-adventure/internal/app"
+	"github.com/juanancid/maze-adventure/internal/engine/config"
 )
 
 func main() {
@@ -12,7 +12,7 @@ func main() {
 	ebiten.SetWindowTitle("Maze Adventure")
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeOnlyFullscreenEnabled)
 
-	g := game.NewGame()
+	g := app.NewGame()
 	if err := ebiten.RunGame(g); err != nil {
 		panic(err)
 	}

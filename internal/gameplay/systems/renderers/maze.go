@@ -6,8 +6,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 
-	"github.com/juanancid/maze-adventure/internal/entities"
-	"github.com/juanancid/maze-adventure/internal/queries"
+	"github.com/juanancid/maze-adventure/internal/core/entities"
+	"github.com/juanancid/maze-adventure/internal/core/queries"
 )
 
 type MazeRenderer struct{}

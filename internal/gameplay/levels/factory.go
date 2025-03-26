@@ -3,10 +3,10 @@ package levels
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"github.com/juanancid/maze-adventure/internal/components"
-	"github.com/juanancid/maze-adventure/internal/entities"
-	"github.com/juanancid/maze-adventure/internal/layout"
-	"github.com/juanancid/maze-adventure/internal/utils"
+	"github.com/juanancid/maze-adventure/internal/core/components"
+	"github.com/juanancid/maze-adventure/internal/core/entities"
+	"github.com/juanancid/maze-adventure/internal/engine/layout"
+	"github.com/juanancid/maze-adventure/internal/engine/utils"
 )
 
 const (

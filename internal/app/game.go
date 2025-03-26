@@ -1,16 +1,16 @@
-package game
+package app
 
 import (
 	"reflect"
 
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"github.com/juanancid/maze-adventure/internal/config"
-	"github.com/juanancid/maze-adventure/internal/entities"
-	"github.com/juanancid/maze-adventure/internal/events"
-	"github.com/juanancid/maze-adventure/internal/levels"
-	"github.com/juanancid/maze-adventure/internal/systems/renderers"
-	"github.com/juanancid/maze-adventure/internal/systems/updaters"
+	"github.com/juanancid/maze-adventure/internal/core/entities"
+	"github.com/juanancid/maze-adventure/internal/engine/config"
+	"github.com/juanancid/maze-adventure/internal/gameplay/events"
+	"github.com/juanancid/maze-adventure/internal/gameplay/levels"
+	"github.com/juanancid/maze-adventure/internal/gameplay/systems/renderers"
+	"github.com/juanancid/maze-adventure/internal/gameplay/systems/updaters"
 )
 
 type Game struct {

@@ -1,6 +1,8 @@
 package levels
 
-import "github.com/juanancid/maze-adventure/internal/entities"
+import (
+	"github.com/juanancid/maze-adventure/internal/core/entities"
+)
 
 func CreateLevelWorld(level int) *entities.World {
 	world := entities.NewWorld()
