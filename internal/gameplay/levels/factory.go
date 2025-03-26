@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	playerSpriteFile = "internal/assets/images/player.png"
-	exitSpriteFile   = "internal/assets/images/exit.png"
+	playerSpriteFile = "internal/engine/assets/images/player.png"
+	exitSpriteFile   = "internal/engine/assets/images/exit.png"
 )
 
 func createPlayer(world *entities.World, playerSize, cellSize int) entities.Entity {
