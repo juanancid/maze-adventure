@@ -38,7 +38,7 @@ func (m *MenuState) OnExit() {
 
 func (m *MenuState) Update() error {
 	if ebiten.IsKeyPressed(ebiten.KeySpace) {
-		playing := NewPlayingState(m.levelManager)
+		playing := NewPlayingState(m.manager, m.levelManager)
 		m.manager.ChangeState(playing)
 	}
 	return nil

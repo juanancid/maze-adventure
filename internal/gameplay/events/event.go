@@ -10,3 +10,9 @@ type LevelCompletedEvent struct{}
 
 // isEvent implements the Event interface explicitly.
 func (LevelCompletedEvent) isEvent() {}
+
+// GameOverEvent indicates that the game is over.
+type GameOverEvent struct{}
+
+// isEvent implements the Event interface explicitly.
+func (GameOverEvent) isEvent() {}

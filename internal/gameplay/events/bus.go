@@ -28,12 +28,15 @@ func (b *Bus) Publish(e Event) {
 
 // Process dispatches all queued events to their subscribers
 func (b *Bus) Process() {
-	for _, event := range b.queue {
-		if handlers, ok := b.handlers[reflect.TypeOf(event)]; ok {
-			for _, handler := range handlers {
-				handler(event)
+	for len(b.queue) > 0 {
+		currentQueue := b.queue
+		b.queue = nil
+		for _, event := range currentQueue {
+			if handlers, ok := b.handlers[reflect.TypeOf(event)]; ok {
+				for _, handler := range handlers {
+					handler(event)
+				}
 			}
 		}
 	}
-	b.queue = b.queue[:0]
 }

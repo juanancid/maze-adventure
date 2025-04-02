@@ -13,6 +13,7 @@ import (
 )
 
 type PlayingState struct {
+	manager      *Manager
 	world        *entities.World
 	levelManager *levels.Manager
 	updaters     []Updater
@@ -28,8 +29,9 @@ type Renderer interface {
 	Draw(world *entities.World, screen *ebiten.Image)
 }
 
-func NewPlayingState(levelManager *levels.Manager) *PlayingState {
+func NewPlayingState(manager *Manager, levelManager *levels.Manager) *PlayingState {
 	ps := &PlayingState{
+		manager:      manager,
 		levelManager: levelManager,
 		eventBus:     events.NewBus(),
 	}
@@ -68,7 +70,9 @@ func (ps *PlayingState) Draw(screen *ebiten.Image) {
 func (ps *PlayingState) loadNextLevel() {
 	levelConfig, err := ps.levelManager.NextLevel()
 	if err != nil {
-		panic(err)
+		// No more levels explicitly available, trigger game over explicitly
+		ps.eventBus.Publish(events.GameOverEvent{})
+		return
 	}
 
 	ps.world = levels.CreateLevel(levelConfig)
@@ -92,8 +96,14 @@ func (ps *PlayingState) setRenderers() {
 
 func (ps *PlayingState) setupEventSubscriptions() {
 	ps.eventBus.Subscribe(reflect.TypeOf(events.LevelCompletedEvent{}), ps.onLevelCompleted)
+	ps.eventBus.Subscribe(reflect.TypeOf(events.GameOverEvent{}), ps.onGameOver)
 }
 
 func (ps *PlayingState) onLevelCompleted(e events.Event) {
 	ps.loadNextLevel()
+}
+
+func (ps *PlayingState) onGameOver(e events.Event) {
+	gameOver := NewGameOverState(ps.manager)
+	ps.manager.ChangeState(gameOver)
 }

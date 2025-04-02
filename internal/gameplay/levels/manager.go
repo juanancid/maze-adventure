@@ -1,18 +1,26 @@
 package levels
 
+import "errors"
+
+const MaxLevels = 1
+
 type Manager struct {
-	CurrentLevel int
+	current int
 }
 
 func NewManager() *Manager {
-	return &Manager{CurrentLevel: 1}
+	return &Manager{current: 1}
 }
 
 func (m *Manager) NextLevel() (*Level, error) {
-	level, err := Load(m.CurrentLevel)
+	if m.current > MaxLevels {
+		return nil, errors.New("no more levels")
+	}
+
+	level, err := Load(m.current)
 	if err != nil {
 		return nil, err
 	}
-	m.CurrentLevel++
+	m.current++
 	return level, nil
 }
