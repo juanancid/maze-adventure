@@ -14,10 +14,13 @@ type Game struct {
 
 func NewGame() *Game {
 	levelManager := levels.NewManager()
-	initialState := states.NewPlayingState(levelManager)
+
+	stateManager := states.NewManager(nil)
+	menuState := states.NewMenuState(stateManager, levelManager)
+	stateManager.ChangeState(menuState)
 
 	return &Game{
-		stateManager: states.NewManager(initialState),
+		stateManager: stateManager,
 	}
 }
 

@@ -7,14 +7,23 @@ type Manager struct {
 }
 
 func NewManager(initial State) *Manager {
-	initial.OnEnter()
+	if initial != nil {
+		initial.OnEnter()
+	}
+
 	return &Manager{current: initial}
 }
 
 func (m *Manager) ChangeState(next State) {
-	m.current.OnExit()
+	if m.current != nil {
+		m.current.OnExit()
+	}
+
 	m.current = next
-	m.current.OnEnter()
+
+	if m.current != nil {
+		m.current.OnEnter()
+	}
 }
 
 func (m *Manager) Update() error {
