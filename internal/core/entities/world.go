@@ -68,3 +68,11 @@ func (w *World) Query(types ...reflect.Type) []Entity {
 
 	return result
 }
+
+func (w *World) QueryComponents(components ...Component) []Entity {
+	var types []reflect.Type
+	for _, c := range components {
+		types = append(types, reflect.TypeOf(c))
+	}
+	return w.Query(types...)
+}

@@ -17,26 +17,31 @@ const (
 type InputControl struct{}
 
 func (is *InputControl) Update(w *entities.World) {
-	inputControlledEntities := w.GetComponents(reflect.TypeOf(&components.InputControlled{}))
+	entitiesToControl := w.QueryComponents(&components.InputControlled{}, &components.Velocity{})
+	for _, entity := range entitiesToControl {
+		handleInput(w, entity)
+	}
+}
 
-	for entity, entityControl := range inputControlledEntities {
-		control := entityControl.(*components.InputControlled)
-		velocity := w.GetComponent(entity, reflect.TypeOf(&components.Velocity{})).(*components.Velocity)
+func handleInput(w *entities.World, entity entities.Entity) {
+	control := w.GetComponent(entity, reflect.TypeOf(&components.InputControlled{})).(*components.InputControlled)
+	velocity := w.GetComponent(entity, reflect.TypeOf(&components.Velocity{})).(*components.Velocity)
 
-		velocity.DX = 0
-		velocity.DY = 0
+	updateVelocityFromInput(control, velocity)
+}
 
-		if ebiten.IsKeyPressed(control.MoveLeftKey) {
-			velocity.DX = -vx
-		}
-		if ebiten.IsKeyPressed(control.MoveRightKey) {
-			velocity.DX = vx
-		}
-		if ebiten.IsKeyPressed(control.MoveUpKey) {
-			velocity.DY = -vy
-		}
-		if ebiten.IsKeyPressed(control.MoveDownKey) {
-			velocity.DY = vy
-		}
+func updateVelocityFromInput(control *components.InputControlled, vel *components.Velocity) {
+	vel.DX, vel.DY = 0, 0
+	if ebiten.IsKeyPressed(control.MoveLeftKey) {
+		vel.DX = -1
+	}
+	if ebiten.IsKeyPressed(control.MoveRightKey) {
+		vel.DX = 1
+	}
+	if ebiten.IsKeyPressed(control.MoveUpKey) {
+		vel.DY = -1
+	}
+	if ebiten.IsKeyPressed(control.MoveDownKey) {
+		vel.DY = 1
 	}
 }
