@@ -13,6 +13,7 @@ func GetMaze(world *entities.World) (*components.Maze, bool) {
 	if len(mazes) == 0 {
 		return nil, false
 	}
+
 	comp := world.GetComponent(mazes[0], mazeType).(*components.Maze)
 	return comp, true
 }

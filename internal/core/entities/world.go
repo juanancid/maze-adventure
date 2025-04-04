@@ -42,7 +42,7 @@ func (w *World) GetComponents(componentType reflect.Type) map[Entity]Component {
 	return w.components[componentType]
 }
 
-func (w *World) Query(types ...reflect.Type) []Entity {
+func (w *World) Query(types ...reflect.Type) EntityList {
 	if len(types) == 0 {
 		return nil
 	}
@@ -69,7 +69,7 @@ func (w *World) Query(types ...reflect.Type) []Entity {
 	return result
 }
 
-func (w *World) QueryComponents(components ...Component) []Entity {
+func (w *World) QueryComponents(components ...Component) EntityList {
 	var types []reflect.Type
 	for _, c := range components {
 		types = append(types, reflect.TypeOf(c))

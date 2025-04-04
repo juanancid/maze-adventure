@@ -9,11 +9,6 @@ import (
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 )
 
-const (
-	vx = 1
-	vy = 1
-)
-
 type InputControl struct{}
 
 func (is *InputControl) Update(w *entities.World) {
