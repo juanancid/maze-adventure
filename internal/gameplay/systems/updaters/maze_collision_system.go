@@ -26,16 +26,14 @@ func (mcs *MazeCollisionSystem) Update(w *entities.World) {
 		vel := entityList.GetVelocity(w, entity)
 
 		handleEntityCollision(pos, size, vel, mazeLayout, cellSize)
-
 	}
 }
 
 func handleEntityCollision(pos *components.Position, size *components.Size, vel *components.Velocity, mazeLayout layout.Layout, cellSize int) {
-	// Compute the player's center
-	centerX := pos.X + size.Width/2
-	centerY := pos.Y + size.Height/2
+	entityBounds := newBoundingBox(pos, size)
 
 	// Determine the cell the player is in
+	centerX, centerY := entityBounds.center()
 	col, row := cellIndices(centerX, centerY, float64(cellSize))
 
 	// Check if out of mazeLayout bounds
@@ -44,8 +42,7 @@ func handleEntityCollision(pos *components.Position, size *components.Size, vel 
 		return
 	}
 
-	cell := mazeLayout.GetCell(col, row)
-	checkAndResolveWallCollision(cell, pos, size, vel, col, row, cellSize, mazeLayout)
+	checkAndResolveWallCollision(pos, size, vel, col, row, cellSize, mazeLayout)
 }
 
 func cellIndices(x, y, cellSize float64) (col, row int) {
@@ -59,7 +56,9 @@ func isCellValid(layout layout.Layout, col, row int) bool {
 	return col >= 0 && col < layout.Cols() && row >= 0 && row < layout.Rows()
 }
 
-func checkAndResolveWallCollision(cell *layout.Cell, pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, cellSize int, mazeLayout layout.Layout) {
+func checkAndResolveWallCollision(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, cellSize int, mazeLayout layout.Layout) {
+	cell := mazeLayout.GetCell(col, row)
+
 	// Check collisions with walls based on velocity direction
 	if vel.DY < 0 && crossedTopBoundary(pos, row, cellSize) { // Moving UP
 		if cell.HasTopWall() {
