@@ -1,4 +1,4 @@
-package systems
+package renderers
 
 import (
 	"image/color"
@@ -6,14 +6,20 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 
-	"github.com/juanancid/maze-adventure/internal/ecs"
+	"github.com/juanancid/maze-adventure/internal/core/entities"
+	"github.com/juanancid/maze-adventure/internal/core/queries"
 )
 
 type MazeRenderer struct{}
 
-func (r *MazeRenderer) Draw(w *ecs.World, screen *ebiten.Image) {
-	mazeLayout := w.Maze().Layout
-	cellSize := w.Maze().CellSize
+func (r *MazeRenderer) Draw(w *entities.World, screen *ebiten.Image) {
+	maze, ok := queries.GetMaze(w)
+	if !ok {
+		return
+	}
+
+	mazeLayout := maze.Layout
+	cellSize := maze.CellSize
 
 	wallColor := color.RGBA{R: 0, G: 255, B: 0, A: 255}
 

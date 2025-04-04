@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-04-04
+
+### Added
+- Game state management system explicitly (Menu, Playing, Game Over).
+- Basic main menu explicitly prompting the player to start.
+- Game Over screen explicitly after completing the available levels.
+
+### Changed
+- Refined ECS package structure explicitly, separating clearly entities, components, systems, queries, and events.
+- Decoupled events explicitly from the World into their dedicated event bus.
+- Explicitly refactored updaters (Movement, InputControl, MazeCollisionSystem) to clearly separate responsibilities and improve maintainability.
+- Improved collision detection logic explicitly, enhancing clarity and accuracy.
+- Explicitly clarified query methods (`Query` and `QueryComponents`) for easier component access.
+
 ## [0.2.0] - 2025-03-14
 
 ### Added
@@ -31,6 +45,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Smooth player movement.
 - Basic collision handling between the player and maze walls.
 
-[Unreleased]: https://github.com/juanancid/maze-adventure/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/juanancid/maze-adventure/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/juanancid/maze-adventure/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/juanancid/maze-adventure/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/juanancid/maze-adventure/releases/tag/v0.1.0

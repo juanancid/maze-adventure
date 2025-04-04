@@ -1,17 +1,17 @@
-package systems
+package renderers
 
 import (
 	"reflect"
 
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"github.com/juanancid/maze-adventure/internal/ecs"
-	"github.com/juanancid/maze-adventure/internal/ecs/components"
+	"github.com/juanancid/maze-adventure/internal/core/components"
+	"github.com/juanancid/maze-adventure/internal/core/entities"
 )
 
 type SpriteRenderer struct{}
 
-func (r *SpriteRenderer) Draw(w *ecs.World, screen *ebiten.Image) {
+func (r *SpriteRenderer) Draw(w *entities.World, screen *ebiten.Image) {
 	positions := w.GetComponents(reflect.TypeOf(&components.Position{}))
 	sprites := w.GetComponents(reflect.TypeOf(&components.Sprite{}))
 	sizes := w.GetComponents(reflect.TypeOf(&components.Size{}))

@@ -1,18 +1,12 @@
-package ecs
+package entities
 
 import (
 	"reflect"
-
-	"github.com/juanancid/maze-adventure/internal/ecs/components"
-	"github.com/juanancid/maze-adventure/internal/ecs/events"
 )
 
 type World struct {
 	nextEntityID Entity
 	components   map[reflect.Type]map[Entity]Component
-	events       []events.Event
-
-	maze *components.Maze
 }
 
 type Entity int
@@ -38,14 +32,6 @@ func (w *World) AddComponent(entity Entity, component Component) {
 		w.components[componentType] = make(map[Entity]Component)
 	}
 	w.components[componentType][entity] = component
-
-	w.addResource(component)
-}
-
-func (w *World) addResource(component Component) {
-	if maze, ok := component.(*components.Maze); ok {
-		w.maze = maze
-	}
 }
 
 func (w *World) GetComponent(entity Entity, componentType reflect.Type) Component {
@@ -56,16 +42,37 @@ func (w *World) GetComponents(componentType reflect.Type) map[Entity]Component {
 	return w.components[componentType]
 }
 
-func (w *World) Maze() *components.Maze {
-	return w.maze
+func (w *World) Query(types ...reflect.Type) EntityList {
+	if len(types) == 0 {
+		return nil
+	}
+
+	matching := make(map[Entity]bool)
+	firstType := types[0]
+	for e := range w.components[firstType] {
+		matching[e] = true
+	}
+
+	for _, t := range types[1:] {
+		for e := range matching {
+			if _, exists := w.components[t][e]; !exists {
+				delete(matching, e)
+			}
+		}
+	}
+
+	result := make([]Entity, 0, len(matching))
+	for e := range matching {
+		result = append(result, e)
+	}
+
+	return result
 }
 
-func (w *World) EmitEvent(e events.Event) {
-	w.events = append(w.events, e)
-}
-
-func (w *World) DrainEvents() []events.Event {
-	ee := w.events
-	w.events = nil
-	return ee
+func (w *World) QueryComponents(components ...Component) EntityList {
+	var types []reflect.Type
+	for _, c := range components {
+		types = append(types, reflect.TypeOf(c))
+	}
+	return w.Query(types...)
 }
