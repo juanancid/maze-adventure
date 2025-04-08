@@ -16,27 +16,27 @@ var (
 	faceSource *text.GoTextFaceSource
 )
 
-type MenuState struct {
+type TitleScreen struct {
 	manager      *Manager
 	levelManager *levels.Manager
 }
 
-func NewMenuState(manager *Manager, levelManager *levels.Manager) *MenuState {
-	return &MenuState{
+func NewTitleScreen(manager *Manager, levelManager *levels.Manager) *TitleScreen {
+	return &TitleScreen{
 		manager:      manager,
 		levelManager: levelManager,
 	}
 }
 
-func (m *MenuState) OnEnter() {
+func (m *TitleScreen) OnEnter() {
 	// Initialize resources explicitly if needed
 }
 
-func (m *MenuState) OnExit() {
+func (m *TitleScreen) OnExit() {
 	// Cleanup explicitly if needed
 }
 
-func (m *MenuState) Update() error {
+func (m *TitleScreen) Update() error {
 	if ebiten.IsKeyPressed(ebiten.KeySpace) {
 		playing := NewPlayingState(m.manager, m.levelManager)
 		m.manager.ChangeState(playing)
@@ -44,7 +44,7 @@ func (m *MenuState) Update() error {
 	return nil
 }
 
-func (m *MenuState) Draw(screen *ebiten.Image) {
+func (m *TitleScreen) Draw(screen *ebiten.Image) {
 	textOp := &text.DrawOptions{}
 	textOp.GeoM.Translate(160, 100)
 	textOp.ColorScale.ScaleWithColor(color.White)
