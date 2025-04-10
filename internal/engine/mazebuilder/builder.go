@@ -1,4 +1,4 @@
-package layout
+package mazebuilder
 
 import (
 	"math/rand"

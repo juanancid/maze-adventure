@@ -5,7 +5,7 @@ import (
 
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
-	"github.com/juanancid/maze-adventure/internal/engine/layout"
+	"github.com/juanancid/maze-adventure/internal/engine/mazebuilder"
 	"github.com/juanancid/maze-adventure/internal/engine/utils"
 )
 
@@ -53,7 +53,7 @@ func createPlayer(world *entities.World, playerSize, cellSize int) entities.Enti
 func createMaze(world *entities.World, mazeWidth, mazeHeight int, cellSize int) entities.Entity {
 	mazeEntity := world.NewEntity()
 	world.AddComponent(mazeEntity, &components.Maze{
-		Layout:   layout.New(mazeWidth, mazeHeight),
+		Layout:   mazebuilder.New(mazeWidth, mazeHeight),
 		CellSize: cellSize,
 	})
 

@@ -1,10 +1,10 @@
 package components
 
 import (
-	"github.com/juanancid/maze-adventure/internal/engine/layout"
+	"github.com/juanancid/maze-adventure/internal/engine/mazebuilder"
 )
 
 type Maze struct {
-	Layout   layout.Layout
+	Layout   mazebuilder.Layout
 	CellSize int
 }
