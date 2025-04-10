@@ -22,7 +22,7 @@ func CreateLevel(level *Level) *entities.World {
 	mazeRows := level.Maze.Rows
 
 	cellWidth := config.ScreenWidth / mazeCols
-	cellHeight := config.ScreenHeight / mazeRows
+	cellHeight := (config.ScreenHeight - config.HudHeight) / mazeRows
 
 	playerSize := level.Player.Size
 

@@ -8,6 +8,7 @@ import (
 
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/core/queries"
+	"github.com/juanancid/maze-adventure/internal/engine/config"
 )
 
 type MazeRenderer struct{}
@@ -31,9 +32,9 @@ func (r *MazeRenderer) Draw(w *entities.World, screen *ebiten.Image) {
 
 			// Calculate pixel coordinates.
 			x1 := float64(col*cellWidth) + 1
-			y1 := float64(row*cellHeight) + 1
+			y1 := float64(row*cellHeight+config.HudHeight) + 1
 			x2 := float64((col+1)*cellWidth) + 1
-			y2 := float64((row+1)*cellHeight) + 1
+			y2 := float64((row+1)*cellHeight+config.HudHeight) + 1
 
 			if cell.HasTopWall() {
 				vector.StrokeLine(screen, float32(x1), float32(y1), float32(x2), float32(y1), 1, wallColor, false)

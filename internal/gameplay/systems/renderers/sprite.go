@@ -7,6 +7,7 @@ import (
 
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
+	"github.com/juanancid/maze-adventure/internal/engine/config"
 )
 
 type SpriteRenderer struct{}
@@ -40,7 +41,7 @@ func (r *SpriteRenderer) Draw(w *entities.World, screen *ebiten.Image) {
 		options.GeoM.Scale(scaleX, scaleY)
 
 		// Translate the position based on the scaled dimensions
-		options.GeoM.Translate(position.X, position.Y)
+		options.GeoM.Translate(position.X, position.Y+float64(config.HudHeight))
 
 		screen.DrawImage(spriteComp.Image, options)
 	}
