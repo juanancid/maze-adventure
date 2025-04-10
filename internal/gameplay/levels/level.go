@@ -7,9 +7,8 @@ type Level struct {
 }
 
 type MazeConfig struct {
-	Width    int `yaml:"width"`
-	Height   int `yaml:"height"`
-	CellSize int `yaml:"cell_size"`
+	Cols int `yaml:"cols"`
+	Rows int `yaml:"rows"`
 }
 
 type PlayerConfig struct {

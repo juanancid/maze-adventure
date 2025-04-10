@@ -1,7 +1,7 @@
 package config
 
 const (
-	ScreenWidth  = 320
-	ScreenHeight = 200
+	ScreenWidth  = 480
+	ScreenHeight = 270
 	ScaleFactor  = 3
 )

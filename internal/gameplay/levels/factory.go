@@ -5,6 +5,7 @@ import (
 
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
+	"github.com/juanancid/maze-adventure/internal/engine/config"
 	"github.com/juanancid/maze-adventure/internal/engine/mazebuilder"
 	"github.com/juanancid/maze-adventure/internal/engine/utils"
 )
@@ -17,24 +18,29 @@ const (
 func CreateLevel(level *Level) *entities.World {
 	world := entities.NewWorld()
 
-	cellSize := level.Maze.CellSize
+	mazeCols := level.Maze.Cols
+	mazeRows := level.Maze.Rows
+
+	cellWidth := config.ScreenWidth / mazeCols
+	cellHeight := config.ScreenHeight / mazeRows
+
 	playerSize := level.Player.Size
 
-	createPlayer(world, playerSize, cellSize)
-	createMaze(world, level.Maze.Width, level.Maze.Height, cellSize)
-	createExit(world, level.Exit.Position.X, level.Exit.Position.Y, cellSize)
+	createPlayer(world, playerSize, cellWidth, cellHeight)
+	createMaze(world, mazeCols, mazeRows, cellWidth, cellHeight)
+	createExit(world, level.Exit.Position.X, level.Exit.Position.Y, cellWidth, cellHeight)
 
 	return world
 }
 
-func createPlayer(world *entities.World, playerSize, cellSize int) entities.Entity {
+func createPlayer(world *entities.World, playerSize, cellWidth, cellHeight int) entities.Entity {
 	player := world.NewEntity()
 
 	world.AddComponent(player, &components.Size{Width: float64(playerSize), Height: float64(playerSize)})
 	world.AddComponent(player, &components.Velocity{DX: 0, DY: 0})
 
-	posX := float64(cellSize-playerSize) / 2
-	posY := float64(cellSize-playerSize) / 2
+	posX := float64(cellWidth-playerSize) / 2
+	posY := float64(cellHeight-playerSize) / 2
 	world.AddComponent(player, &components.Position{X: posX, Y: posY})
 
 	world.AddComponent(player, &components.InputControlled{
@@ -50,23 +56,23 @@ func createPlayer(world *entities.World, playerSize, cellSize int) entities.Enti
 	return player
 }
 
-func createMaze(world *entities.World, mazeWidth, mazeHeight int, cellSize int) entities.Entity {
+func createMaze(world *entities.World, mazeCols, mazeRows int, cellWidth, cellHeight int) entities.Entity {
 	mazeEntity := world.NewEntity()
 	world.AddComponent(mazeEntity, &components.Maze{
-		Layout:     mazebuilder.NewMazeLayout(mazeWidth, mazeHeight),
-		CellWidth:  cellSize,
-		CellHeight: cellSize,
+		Layout:     mazebuilder.NewMazeLayout(mazeCols, mazeRows),
+		CellWidth:  cellWidth,
+		CellHeight: cellHeight,
 	})
 
 	return mazeEntity
 }
 
-func createExit(world *entities.World, mazeCol, mazeRow, cellSize int) entities.Entity {
+func createExit(world *entities.World, mazeCol, mazeRow, cellWidth, cellHeight int) entities.Entity {
 	exit := world.NewEntity()
-	world.AddComponent(exit, &components.Size{Width: float64(cellSize), Height: float64(cellSize)})
+	world.AddComponent(exit, &components.Size{Width: float64(cellWidth), Height: float64(cellHeight)})
 
-	posX := float64(mazeCol * cellSize)
-	posY := float64(mazeRow * cellSize)
+	posX := float64(mazeCol * cellWidth)
+	posY := float64(mazeRow * cellHeight)
 	world.AddComponent(exit, &components.Position{X: posX, Y: posY})
 
 	world.AddComponent(exit, &components.Exit{})

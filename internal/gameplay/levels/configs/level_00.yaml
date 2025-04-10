@@ -1,7 +1,6 @@
 maze:
-  width: 32
-  height: 20
-  cell_size: 10
+  cols: 32
+  rows: 20
 
 player:
   size: 6
