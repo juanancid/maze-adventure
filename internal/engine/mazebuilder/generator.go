@@ -100,7 +100,7 @@ func convertToLayout(grid builderGrid, cols, rows int) MazeLayout {
 	for y := range grid {
 		finalGrid[y] = make([]MazeCell, cols)
 		for x := range grid[y] {
-			finalGrid[y][x] = MazeCell{Walls: grid[y][x].walls}
+			finalGrid[y][x] = MazeCell{walls: grid[y][x].walls}
 		}
 	}
 	return MazeLayout{cols: cols, rows: rows, grid: finalGrid}

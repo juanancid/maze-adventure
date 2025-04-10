@@ -9,28 +9,27 @@ type MazeLayout struct {
 
 // MazeCell represents a cell in the maze.
 type MazeCell struct {
-	// Walls: [top, right, bottom, left]
-	Walls [4]bool
+	walls [4]bool
 }
 
 // HasTopWall returns true if the cell has a top wall.
 func (c *MazeCell) HasTopWall() bool {
-	return c.Walls[0]
+	return c.walls[0]
 }
 
 // HasRightWall returns true if the cell has a right wall.
 func (c *MazeCell) HasRightWall() bool {
-	return c.Walls[1]
+	return c.walls[1]
 }
 
 // HasBottomWall returns true if the cell has a bottom wall.
 func (c *MazeCell) HasBottomWall() bool {
-	return c.Walls[2]
+	return c.walls[2]
 }
 
 // HasLeftWall returns true if the cell has a left wall.
 func (c *MazeCell) HasLeftWall() bool {
-	return c.Walls[3]
+	return c.walls[3]
 }
 
 // Cols returns the number of columns in the maze.

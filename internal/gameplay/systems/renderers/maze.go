@@ -34,20 +34,19 @@ func (r *MazeRenderer) Draw(w *entities.World, screen *ebiten.Image) {
 			x2 := float64((col+1)*cellSize) + 1
 			y2 := float64((row+1)*cellSize) + 1
 
-			// Draw top wall.
-			if cell.Walls[0] {
+			if cell.HasTopWall() {
 				vector.StrokeLine(screen, float32(x1), float32(y1), float32(x2), float32(y1), 1, wallColor, false)
 			}
-			// Draw right wall.
-			if cell.Walls[1] {
+
+			if cell.HasRightWall() {
 				vector.StrokeLine(screen, float32(x2-1), float32(y1), float32(x2-1), float32(y2), 1, wallColor, false)
 			}
-			// Draw bottom wall.
-			if cell.Walls[2] {
+
+			if cell.HasBottomWall() {
 				vector.StrokeLine(screen, float32(x2), float32(y2-1), float32(x1), float32(y2-1), 1, wallColor, false)
 			}
-			// Draw left wall.
-			if cell.Walls[3] {
+
+			if cell.HasLeftWall() {
 				vector.StrokeLine(screen, float32(x1), float32(y2), float32(x1), float32(y1), 1, wallColor, false)
 			}
 		}
