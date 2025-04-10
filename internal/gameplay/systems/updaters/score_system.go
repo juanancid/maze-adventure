@@ -25,7 +25,8 @@ func (ss *ScoreSystem) Update(w *entities.World) {
 		return
 	}
 	mazeLayout := maze.Layout
-	cellSize := maze.CellSize
+	cellWidth := maze.CellWidth
+	cellHeight := maze.CellHeight
 
 	inputControlledEntities := w.GetComponents(reflect.TypeOf(&components.InputControlled{}))
 	positions := w.GetComponents(reflect.TypeOf(&components.Position{}))
@@ -40,8 +41,8 @@ func (ss *ScoreSystem) Update(w *entities.World) {
 		centerY := pos.Y + size.Height/2
 
 		// Determine the cell the player is in
-		col := int(centerX / float64(cellSize))
-		row := int(centerY / float64(cellSize))
+		col := int(centerX / float64(cellWidth))
+		row := int(centerY / float64(cellHeight))
 
 		if col == mazeLayout.Cols()-1 && row == mazeLayout.Rows()-1 {
 			ss.eventBus.Publish(events.LevelCompletedEvent{})

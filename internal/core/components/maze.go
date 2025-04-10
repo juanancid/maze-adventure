@@ -5,6 +5,7 @@ import (
 )
 
 type Maze struct {
-	Layout   mazebuilder.Layout
-	CellSize int
+	Layout     mazebuilder.Layout
+	CellWidth  int
+	CellHeight int
 }

@@ -53,8 +53,9 @@ func createPlayer(world *entities.World, playerSize, cellSize int) entities.Enti
 func createMaze(world *entities.World, mazeWidth, mazeHeight int, cellSize int) entities.Entity {
 	mazeEntity := world.NewEntity()
 	world.AddComponent(mazeEntity, &components.Maze{
-		Layout:   mazebuilder.NewMazeLayout(mazeWidth, mazeHeight),
-		CellSize: cellSize,
+		Layout:     mazebuilder.NewMazeLayout(mazeWidth, mazeHeight),
+		CellWidth:  cellSize,
+		CellHeight: cellSize,
 	})
 
 	return mazeEntity

@@ -19,7 +19,8 @@ func (r *MazeRenderer) Draw(w *entities.World, screen *ebiten.Image) {
 	}
 
 	mazeLayout := maze.Layout
-	cellSize := maze.CellSize
+	cellWidth := maze.CellWidth
+	cellHeight := maze.CellHeight
 
 	wallColor := color.RGBA{R: 0, G: 255, B: 0, A: 255}
 
@@ -29,10 +30,10 @@ func (r *MazeRenderer) Draw(w *entities.World, screen *ebiten.Image) {
 			cell := mazeLayout.GetCell(col, row)
 
 			// Calculate pixel coordinates.
-			x1 := float64(col*cellSize) + 1
-			y1 := float64(row*cellSize) + 1
-			x2 := float64((col+1)*cellSize) + 1
-			y2 := float64((row+1)*cellSize) + 1
+			x1 := float64(col*cellWidth) + 1
+			y1 := float64(row*cellHeight) + 1
+			x2 := float64((col+1)*cellWidth) + 1
+			y2 := float64((row+1)*cellHeight) + 1
 
 			if cell.HasTopWall() {
 				vector.StrokeLine(screen, float32(x1), float32(y1), float32(x2), float32(y1), 1, wallColor, false)
