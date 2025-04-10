@@ -4,21 +4,21 @@ import (
 	"math/rand"
 )
 
-// Layout represents a maze with a 2D grid of cells.
-type Layout struct {
+// MazeLayout represents a maze with a 2D grid of cells.
+type MazeLayout struct {
 	cols int
 	rows int
-	grid Grid
+	grid MazeGrid
 }
 
-// Grid represents a 2D grid of cells.
-type Grid []Row
+// MazeGrid represents a 2D grid of cells.
+type MazeGrid []MazeRow
 
-// Row represents a row of cells.
-type Row []*Cell
+// MazeRow represents a row of cells.
+type MazeRow []*MazeCell
 
-// Cell represents a cell in the maze.
-type Cell struct {
+// MazeCell represents a cell in the maze.
+type MazeCell struct {
 	x, y    int
 	visited bool
 	// Walls: [top, right, bottom, left]
@@ -26,62 +26,62 @@ type Cell struct {
 }
 
 // HasTopWall returns true if the cell has a top wall.
-func (c *Cell) HasTopWall() bool {
+func (c *MazeCell) HasTopWall() bool {
 	return c.Walls[0]
 }
 
 // HasRightWall returns true if the cell has a right wall.
-func (c *Cell) HasRightWall() bool {
+func (c *MazeCell) HasRightWall() bool {
 	return c.Walls[1]
 }
 
 // HasBottomWall returns true if the cell has a bottom wall.
-func (c *Cell) HasBottomWall() bool {
+func (c *MazeCell) HasBottomWall() bool {
 	return c.Walls[2]
 }
 
 // HasLeftWall returns true if the cell has a left wall.
-func (c *Cell) HasLeftWall() bool {
+func (c *MazeCell) HasLeftWall() bool {
 	return c.Walls[3]
 }
 
 // Cols returns the number of columns in the maze.
-func (m Layout) Cols() int {
+func (m MazeLayout) Cols() int {
 	return m.cols
 }
 
 // Rows returns the number of rows in the maze.
-func (m Layout) Rows() int {
+func (m MazeLayout) Rows() int {
 	return m.rows
 }
 
 // GetCell returns the cell at the given coordinates.
-func (m Layout) GetCell(x, y int) *Cell {
+func (m MazeLayout) GetCell(x, y int) *MazeCell {
 	return m.grid[y][x]
 }
 
 // GetCellAbove returns the cell above the given coordinates.
-func (m Layout) GetCellAbove(x, y int) *Cell {
+func (m MazeLayout) GetCellAbove(x, y int) *MazeCell {
 	return m.GetCell(x, y-1)
 }
 
 // GetCellRight returns the cell to the right of the given coordinates.
-func (m Layout) GetCellRight(x, y int) *Cell {
+func (m MazeLayout) GetCellRight(x, y int) *MazeCell {
 	return m.GetCell(x+1, y)
 }
 
 // GetCellBelow returns the cell below the given coordinates.
-func (m Layout) GetCellBelow(x, y int) *Cell {
+func (m MazeLayout) GetCellBelow(x, y int) *MazeCell {
 	return m.GetCell(x, y+1)
 }
 
 // GetCellLeft returns the cell to the left of the given coordinates.
-func (m Layout) GetCellLeft(x, y int) *Cell {
+func (m MazeLayout) GetCellLeft(x, y int) *MazeCell {
 	return m.GetCell(x-1, y)
 }
 
-// New creates a new maze with the given width and height.
-func New(cols, rows int) Layout {
+// NewMazeLayout creates a new maze with the given width and height.
+func NewMazeLayout(cols, rows int) MazeLayout {
 	grid := initializeGrid(cols, rows)
 
 	startCol, startRow := 0, 0
@@ -90,14 +90,14 @@ func New(cols, rows int) Layout {
 	return maze
 }
 
-func initializeGrid(cols, rows int) Grid {
-	grid := make(Grid, rows)
+func initializeGrid(cols, rows int) MazeGrid {
+	grid := make(MazeGrid, rows)
 
 	for row := 0; row < rows; row++ {
-		grid[row] = make(Row, cols)
+		grid[row] = make(MazeRow, cols)
 
 		for col := 0; col < cols; col++ {
-			grid[row][col] = &Cell{
+			grid[row][col] = &MazeCell{
 				x:       col,
 				y:       row,
 				visited: false,
@@ -109,13 +109,13 @@ func initializeGrid(cols, rows int) Grid {
 	return grid
 }
 
-func carveMaze(startCol, startRow int, cols, rows int, grid Grid) Layout {
+func carveMaze(startCol, startRow int, cols, rows int, grid MazeGrid) MazeLayout {
 	var (
 		dx = [4]int{0, 1, 0, -1}
 		dy = [4]int{-1, 0, 1, 0}
 	)
 
-	stack := Row{}
+	stack := MazeRow{}
 
 	start := grid[startRow][startCol]
 	start.visited = true
@@ -126,7 +126,7 @@ func carveMaze(startCol, startRow int, cols, rows int, grid Grid) Layout {
 		current := stack[len(stack)-1]
 
 		// Collect all unvisited neighbors.
-		var neighbors Row
+		var neighbors MazeRow
 		var directions []int
 		for dir := 0; dir < 4; dir++ {
 			nx := current.x + dx[dir]
@@ -155,7 +155,7 @@ func carveMaze(startCol, startRow int, cols, rows int, grid Grid) Layout {
 		}
 	}
 
-	return Layout{
+	return MazeLayout{
 		cols: cols,
 		rows: rows,
 		grid: grid,
@@ -166,7 +166,7 @@ func inBounds(x, y, width, height int) bool {
 	return x >= 0 && x < width && y >= 0 && y < height
 }
 
-func removeWall(current, neighbor *Cell, dir int) {
+func removeWall(current, neighbor *MazeCell, dir int) {
 	current.Walls[dir] = false
 	neighbor.Walls[(dir+2)%4] = false // Remove the opposite wall in neighbor.
 }
