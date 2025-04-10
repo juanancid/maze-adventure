@@ -9,23 +9,31 @@ func NewMazeLayout(cols, rows int) MazeLayout {
 	grid := initializeGrid(cols, rows)
 
 	startCol, startRow := 0, 0
-	maze := carveMaze(startCol, startRow, cols, rows, grid)
+	carveMaze(startCol, startRow, cols, rows, grid)
 
-	return maze
+	return convertToLayout(grid, cols, rows)
 }
 
-func initializeGrid(cols, rows int) MazeGrid {
-	grid := make(MazeGrid, rows)
+type builderCell struct {
+	x, y    int
+	visited bool
+	walls   [4]bool
+}
+
+type builderGrid [][]*builderCell
+
+func initializeGrid(cols, rows int) builderGrid {
+	grid := make(builderGrid, rows)
 
 	for row := 0; row < rows; row++ {
-		grid[row] = make(MazeRow, cols)
+		grid[row] = make([]*builderCell, cols)
 
 		for col := 0; col < cols; col++ {
-			grid[row][col] = &MazeCell{
+			grid[row][col] = &builderCell{
 				x:       col,
 				y:       row,
 				visited: false,
-				Walls:   [4]bool{true, true, true, true},
+				walls:   [4]bool{true, true, true, true},
 			}
 		}
 	}
@@ -33,13 +41,11 @@ func initializeGrid(cols, rows int) MazeGrid {
 	return grid
 }
 
-func carveMaze(startCol, startRow int, cols, rows int, grid MazeGrid) MazeLayout {
-	var (
-		dx = [4]int{0, 1, 0, -1}
-		dy = [4]int{-1, 0, 1, 0}
-	)
+func carveMaze(startCol, startRow int, cols, rows int, grid builderGrid) {
+	dx := [4]int{0, 1, 0, -1}
+	dy := [4]int{-1, 0, 1, 0}
 
-	stack := MazeRow{}
+	stack := []*builderCell{grid[startRow][startCol]}
 
 	start := grid[startRow][startCol]
 	start.visited = true
@@ -50,7 +56,7 @@ func carveMaze(startCol, startRow int, cols, rows int, grid MazeGrid) MazeLayout
 		current := stack[len(stack)-1]
 
 		// Collect all unvisited neighbors.
-		var neighbors MazeRow
+		var neighbors []*builderCell
 		var directions []int
 		for dir := 0; dir < 4; dir++ {
 			nx := current.x + dx[dir]
@@ -78,19 +84,24 @@ func carveMaze(startCol, startRow int, cols, rows int, grid MazeGrid) MazeLayout
 			stack = stack[:len(stack)-1]
 		}
 	}
-
-	return MazeLayout{
-		cols: cols,
-		rows: rows,
-		grid: grid,
-	}
 }
 
 func inBounds(x, y, width, height int) bool {
 	return x >= 0 && x < width && y >= 0 && y < height
 }
 
-func removeWall(current, neighbor *MazeCell, dir int) {
-	current.Walls[dir] = false
-	neighbor.Walls[(dir+2)%4] = false // Remove the opposite wall in neighbor.
+func removeWall(current, neighbor *builderCell, dir int) {
+	current.walls[dir] = false
+	neighbor.walls[(dir+2)%4] = false // Remove the opposite wall in neighbor.
+}
+
+func convertToLayout(grid builderGrid, cols, rows int) MazeLayout {
+	finalGrid := make([][]MazeCell, rows)
+	for y := range grid {
+		finalGrid[y] = make([]MazeCell, cols)
+		for x := range grid[y] {
+			finalGrid[y][x] = MazeCell{Walls: grid[y][x].walls}
+		}
+	}
+	return MazeLayout{cols: cols, rows: rows, grid: finalGrid}
 }

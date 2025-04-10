@@ -4,19 +4,11 @@ package mazebuilder
 type MazeLayout struct {
 	cols int
 	rows int
-	grid MazeGrid
+	grid [][]MazeCell
 }
-
-// MazeGrid represents a 2D grid of cells.
-type MazeGrid []MazeRow
-
-// MazeRow represents a row of cells.
-type MazeRow []*MazeCell
 
 // MazeCell represents a cell in the maze.
 type MazeCell struct {
-	x, y    int
-	visited bool
 	// Walls: [top, right, bottom, left]
 	Walls [4]bool
 }
@@ -53,7 +45,7 @@ func (m MazeLayout) Rows() int {
 
 // GetCell returns the cell at the given coordinates.
 func (m MazeLayout) GetCell(x, y int) *MazeCell {
-	return m.grid[y][x]
+	return &m.grid[y][x]
 }
 
 // GetCellAbove returns the cell above the given coordinates.
