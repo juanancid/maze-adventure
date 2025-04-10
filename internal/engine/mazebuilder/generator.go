@@ -12,7 +12,7 @@ type builderCell struct {
 
 type builderGrid [][]*builderCell
 
-func initializeGrid(cols, rows int) builderGrid {
+func initializeBuilderGrid(cols, rows int) builderGrid {
 	grid := make(builderGrid, rows)
 
 	for row := 0; row < rows; row++ {
@@ -31,7 +31,7 @@ func initializeGrid(cols, rows int) builderGrid {
 	return grid
 }
 
-func carveMaze(startCol, startRow int, cols, rows int, grid builderGrid) {
+func carveMazePaths(startCol, startRow int, cols, rows int, grid builderGrid) {
 	dx := [4]int{0, 1, 0, -1}
 	dy := [4]int{-1, 0, 1, 0}
 
@@ -85,13 +85,13 @@ func removeWall(current, neighbor *builderCell, dir int) {
 	neighbor.walls[(dir+2)%4] = false // Remove the opposite wall in neighbor.
 }
 
-func convertToLayout(grid builderGrid, cols, rows int) MazeLayout {
-	finalGrid := make([][]MazeCell, rows)
+func convertBuilderGridToLayout(grid builderGrid, cols, rows int) Layout {
+	finalGrid := make([][]Cell, rows)
 	for y := range grid {
-		finalGrid[y] = make([]MazeCell, cols)
+		finalGrid[y] = make([]Cell, cols)
 		for x := range grid[y] {
-			finalGrid[y][x] = MazeCell{walls: grid[y][x].walls}
+			finalGrid[y][x] = Cell{walls: grid[y][x].walls}
 		}
 	}
-	return MazeLayout{cols: cols, rows: rows, grid: finalGrid}
+	return Layout{cols: cols, rows: rows, grid: finalGrid}
 }

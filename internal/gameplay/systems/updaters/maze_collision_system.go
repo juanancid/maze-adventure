@@ -29,7 +29,7 @@ func (mcs *MazeCollisionSystem) Update(w *entities.World) {
 	}
 }
 
-func handleEntityCollision(pos *components.Position, size *components.Size, vel *components.Velocity, mazeLayout mazebuilder.MazeLayout, cellSize int) {
+func handleEntityCollision(pos *components.Position, size *components.Size, vel *components.Velocity, mazeLayout mazebuilder.Layout, cellSize int) {
 	entityBounds := newBoundingBox(pos, size)
 
 	// Determine the cell the player is in
@@ -52,17 +52,17 @@ func cellIndices(x, y, cellSize float64) (col, row int) {
 }
 
 // isCellValid explicitly checks if cell coordinates are valid
-func isCellValid(layout mazebuilder.MazeLayout, col, row int) bool {
+func isCellValid(layout mazebuilder.Layout, col, row int) bool {
 	return col >= 0 && col < layout.Cols() && row >= 0 && row < layout.Rows()
 }
 
-func checkAndResolveWallCollision(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, cellSize int, mazeLayout mazebuilder.MazeLayout) {
+func checkAndResolveWallCollision(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, cellSize int, mazeLayout mazebuilder.Layout) {
 	checkCurrentCellBoundaryCollision(pos, size, vel, col, row, cellSize, mazeLayout)
 	checkNeighborCellEdgeCollision(pos, size, vel, col, row, cellSize, mazeLayout)
 	checkNeighborCellBoundaryCollision(pos, size, vel, col, row, cellSize, mazeLayout)
 }
 
-func checkCurrentCellBoundaryCollision(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, cellSize int, mazeLayout mazebuilder.MazeLayout) {
+func checkCurrentCellBoundaryCollision(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, cellSize int, mazeLayout mazebuilder.Layout) {
 	currentCell := mazeLayout.GetCell(col, row)
 
 	// Check collisions with walls based on velocity direction
@@ -95,7 +95,7 @@ func checkCurrentCellBoundaryCollision(pos *components.Position, size *component
 	}
 }
 
-func checkNeighborCellEdgeCollision(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, cellSize int, mazeLayout mazebuilder.MazeLayout) {
+func checkNeighborCellEdgeCollision(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, cellSize int, mazeLayout mazebuilder.Layout) {
 	// Check collisions with edges based on velocity direction
 	if vel.DY < 0 && crossedTopBoundary(pos, row, cellSize) && row > 0 { // Moving UP
 		if crossedLeftBoundary(pos, col, cellSize) && mazeLayout.GetCellAbove(col, row).HasLeftWall() ||
@@ -130,7 +130,7 @@ func checkNeighborCellEdgeCollision(pos *components.Position, size *components.S
 	}
 }
 
-func checkNeighborCellBoundaryCollision(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, cellSize int, mazeLayout mazebuilder.MazeLayout) {
+func checkNeighborCellBoundaryCollision(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, cellSize int, mazeLayout mazebuilder.Layout) {
 	// Check collisions with other cells walls based on velocity direction
 	if vel.DY < 0 && crossedTopBoundary(pos, row, cellSize) { // Moving UP
 		if col > 0 && crossedLeftBoundary(pos, col, cellSize) && mazeLayout.GetCellLeft(col, row).HasTopWall() ||
