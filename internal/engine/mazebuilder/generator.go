@@ -4,16 +4,6 @@ import (
 	"math/rand"
 )
 
-// NewMazeLayout creates a new maze with the given width and height.
-func NewMazeLayout(cols, rows int) MazeLayout {
-	grid := initializeGrid(cols, rows)
-
-	startCol, startRow := 0, 0
-	carveMaze(startCol, startRow, cols, rows, grid)
-
-	return convertToLayout(grid, cols, rows)
-}
-
 type builderCell struct {
 	x, y    int
 	visited bool
