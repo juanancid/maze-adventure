@@ -83,7 +83,7 @@ func (ps *PlayingState) setUpdaters() {
 		updaters.NewInputControl(),
 		updaters.NewMovement(),
 		updaters.NewMazeCollision(),
-		updaters.NewScore(ps.eventBus),
+		updaters.NewExitCollision(ps.eventBus),
 	}
 }
 

@@ -28,7 +28,7 @@ func CreateLevel(level *Level) *entities.World {
 
 	createPlayer(world, playerSize, cellWidth, cellHeight)
 	createMaze(world, mazeCols, mazeRows, cellWidth, cellHeight)
-	createExit(world, level.Exit.Position.X, level.Exit.Position.Y, cellWidth, cellHeight)
+	createExit(world, level.Exit.Position.X, level.Exit.Position.Y, cellWidth, cellHeight, playerSize)
 
 	// Add level information to the world
 	levelEntity := world.NewEntity()
@@ -73,9 +73,9 @@ func createMaze(world *entities.World, mazeCols, mazeRows int, cellWidth, cellHe
 	return mazeEntity
 }
 
-func createExit(world *entities.World, mazeCol, mazeRow, cellWidth, cellHeight int) entities.Entity {
+func createExit(world *entities.World, mazeCol, mazeRow, cellWidth, cellHeight, playerSize int) entities.Entity {
 	exit := world.NewEntity()
-	world.AddComponent(exit, &components.Size{Width: float64(cellWidth), Height: float64(cellHeight)})
+	world.AddComponent(exit, &components.Size{Width: float64(playerSize), Height: float64(playerSize)})
 
 	posX := float64(mazeCol * cellWidth)
 	posY := float64(mazeRow * cellHeight)
