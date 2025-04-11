@@ -11,7 +11,11 @@ import (
 
 type InputControl struct{}
 
-func (is *InputControl) Update(w *entities.World) {
+func NewInputControl() InputControl {
+	return InputControl{}
+}
+
+func (is InputControl) Update(w *entities.World) {
 	entitiesToControl := w.QueryComponents(&components.InputControlled{}, &components.Velocity{})
 	for _, entity := range entitiesToControl {
 		handleInput(w, entity)

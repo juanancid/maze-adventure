@@ -9,7 +9,11 @@ import (
 
 type Movement struct{}
 
-func (ms *Movement) Update(w *entities.World) {
+func NewMovement() Movement {
+	return Movement{}
+}
+
+func (ms Movement) Update(w *entities.World) {
 	entitiesToMove := w.QueryComponents(&components.Velocity{}, &components.Position{})
 	for _, entity := range entitiesToMove {
 		moveEntity(w, entity)

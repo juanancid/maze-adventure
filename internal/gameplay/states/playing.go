@@ -80,9 +80,9 @@ func (ps *PlayingState) loadNextLevel() {
 
 func (ps *PlayingState) setUpdaters() {
 	ps.updaters = []Updater{
-		&updaters.InputControl{},
-		&updaters.Movement{},
-		&updaters.MazeCollisionSystem{},
+		updaters.NewInputControl(),
+		updaters.NewMovement(),
+		updaters.NewMazeCollisionSystem(),
 		updaters.NewScoreSystem(ps.eventBus),
 	}
 }

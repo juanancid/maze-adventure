@@ -10,7 +10,11 @@ import (
 // MazeCollisionSystem ensures entities do not pass through maze walls.
 type MazeCollisionSystem struct{}
 
-func (mcs *MazeCollisionSystem) Update(w *entities.World) {
+func NewMazeCollisionSystem() MazeCollisionSystem {
+	return MazeCollisionSystem{}
+}
+
+func (mcs MazeCollisionSystem) Update(w *entities.World) {
 	maze, ok := queries.GetMaze(w)
 	if !ok {
 		return
