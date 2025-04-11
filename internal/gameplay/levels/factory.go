@@ -28,7 +28,7 @@ func CreateLevel(level *Level) *entities.World {
 
 	createPlayer(world, playerSize, cellWidth, cellHeight)
 	createMaze(world, mazeCols, mazeRows, cellWidth, cellHeight)
-	createExit(world, level.Exit.Position.X, level.Exit.Position.Y, cellWidth, cellHeight, playerSize)
+	createExit(world, level.Exit.Position.X, level.Exit.Position.Y, cellWidth, cellHeight, level.Exit.Size)
 
 	// Add level information to the world
 	levelEntity := world.NewEntity()
@@ -73,12 +73,18 @@ func createMaze(world *entities.World, mazeCols, mazeRows int, cellWidth, cellHe
 	return mazeEntity
 }
 
-func createExit(world *entities.World, mazeCol, mazeRow, cellWidth, cellHeight, playerSize int) entities.Entity {
+func createExit(world *entities.World, mazeCol, mazeRow, cellWidth, cellHeight, exitSize int) entities.Entity {
 	exit := world.NewEntity()
-	world.AddComponent(exit, &components.Size{Width: float64(playerSize), Height: float64(playerSize)})
+	world.AddComponent(exit, &components.Size{Width: float64(exitSize), Height: float64(exitSize)})
 
-	posX := float64(mazeCol * cellWidth)
-	posY := float64(mazeRow * cellHeight)
+	// Calculate the center position of the cell
+	cellX := float64(mazeCol * cellWidth)
+	cellY := float64(mazeRow * cellHeight)
+
+	// Center the exit in the cell
+	posX := cellX + float64(cellWidth-exitSize)/2
+	posY := cellY + float64(cellHeight-exitSize)/2
+
 	world.AddComponent(exit, &components.Position{X: posX, Y: posY})
 
 	world.AddComponent(exit, &components.Exit{})

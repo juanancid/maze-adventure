@@ -18,6 +18,7 @@ type PlayerConfig struct {
 
 type ExitConfig struct {
 	Position Coordinate `yaml:"position"`
+	Size     int        `yaml:"size"`
 }
 
 type Coordinate struct {
