@@ -11,13 +11,13 @@ import (
 	"github.com/juanancid/maze-adventure/internal/engine/config"
 )
 
-type MazeRenderer struct{}
+type Maze struct{}
 
-func NewMazeRenderer() MazeRenderer {
-	return MazeRenderer{}
+func NewMaze() Maze {
+	return Maze{}
 }
 
-func (r MazeRenderer) Draw(w *entities.World, screen *ebiten.Image) {
+func (r Maze) Draw(w *entities.World, screen *ebiten.Image) {
 	maze, ok := queries.GetMaze(w)
 	if !ok {
 		return

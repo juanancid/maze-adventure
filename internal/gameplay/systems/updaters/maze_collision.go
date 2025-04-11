@@ -7,14 +7,14 @@ import (
 	"github.com/juanancid/maze-adventure/internal/engine/mazebuilder"
 )
 
-// MazeCollisionSystem ensures entities do not pass through maze walls.
-type MazeCollisionSystem struct{}
+// MazeCollision ensures entities do not pass through maze walls.
+type MazeCollision struct{}
 
-func NewMazeCollisionSystem() MazeCollisionSystem {
-	return MazeCollisionSystem{}
+func NewMazeCollision() MazeCollision {
+	return MazeCollision{}
 }
 
-func (mcs MazeCollisionSystem) Update(w *entities.World) {
+func (mc MazeCollision) Update(w *entities.World) {
 	maze, ok := queries.GetMaze(w)
 	if !ok {
 		return

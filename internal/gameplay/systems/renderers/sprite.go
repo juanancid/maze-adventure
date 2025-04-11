@@ -10,13 +10,13 @@ import (
 	"github.com/juanancid/maze-adventure/internal/engine/config"
 )
 
-type SpriteRenderer struct{}
+type Sprite struct{}
 
-func NewSpriteRenderer() SpriteRenderer {
-	return SpriteRenderer{}
+func NewSprite() Sprite {
+	return Sprite{}
 }
 
-func (r SpriteRenderer) Draw(w *entities.World, screen *ebiten.Image) {
+func (r Sprite) Draw(w *entities.World, screen *ebiten.Image) {
 	positions := w.GetComponents(reflect.TypeOf(&components.Position{}))
 	sprites := w.GetComponents(reflect.TypeOf(&components.Sprite{}))
 	sizes := w.GetComponents(reflect.TypeOf(&components.Size{}))

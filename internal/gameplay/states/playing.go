@@ -82,16 +82,16 @@ func (ps *PlayingState) setUpdaters() {
 	ps.updaters = []Updater{
 		updaters.NewInputControl(),
 		updaters.NewMovement(),
-		updaters.NewMazeCollisionSystem(),
-		updaters.NewScoreSystem(ps.eventBus),
+		updaters.NewMazeCollision(),
+		updaters.NewScore(ps.eventBus),
 	}
 }
 
 func (ps *PlayingState) setRenderers() {
 	ps.renderers = []Renderer{
-		renderers.NewMazeRenderer(),
-		renderers.NewSpriteRenderer(),
-		renderers.NewHUDRenderer(),
+		renderers.NewMaze(),
+		renderers.NewSprite(),
+		renderers.NewHUD(),
 	}
 }
 

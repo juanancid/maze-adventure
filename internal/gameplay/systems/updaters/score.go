@@ -9,17 +9,17 @@ import (
 	"github.com/juanancid/maze-adventure/internal/gameplay/events"
 )
 
-type ScoreSystem struct {
+type Score struct {
 	eventBus *events.Bus
 }
 
-func NewScoreSystem(eventBus *events.Bus) *ScoreSystem {
-	return &ScoreSystem{
+func NewScore(eventBus *events.Bus) *Score {
+	return &Score{
 		eventBus: eventBus,
 	}
 }
 
-func (ss ScoreSystem) Update(w *entities.World) {
+func (s Score) Update(w *entities.World) {
 	maze, ok := queries.GetMaze(w)
 	if !ok {
 		return
@@ -45,7 +45,7 @@ func (ss ScoreSystem) Update(w *entities.World) {
 		row := int(centerY / float64(cellHeight))
 
 		if col == mazeLayout.Cols()-1 && row == mazeLayout.Rows()-1 {
-			ss.eventBus.Publish(events.LevelCompletedEvent{})
+			s.eventBus.Publish(events.LevelCompletedEvent{})
 		}
 	}
 }

@@ -16,20 +16,20 @@ import (
 	"github.com/juanancid/maze-adventure/internal/engine/config"
 )
 
-type HUDRenderer struct {
+type HUD struct {
 	faceSource *text.GoTextFaceSource
 }
 
-func NewHUDRenderer() *HUDRenderer {
+func NewHUD() *HUD {
 	s, err := text.NewGoTextFaceSource(bytes.NewReader(fonts.PressStart2P_ttf))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return &HUDRenderer{faceSource: s}
+	return &HUD{faceSource: s}
 }
 
-func (r *HUDRenderer) Draw(w *entities.World, screen *ebiten.Image) {
+func (r *HUD) Draw(w *entities.World, screen *ebiten.Image) {
 	// Draw game title
 	textOp := &text.DrawOptions{}
 	textOp.GeoM.Translate(8, float64(config.HudHeight/2-4)) // Vertically centered-ish
@@ -53,9 +53,9 @@ func (r *HUDRenderer) Draw(w *entities.World, screen *ebiten.Image) {
 			levelEntity = entity
 			break
 		}
-		
+
 		level := w.GetComponent(levelEntity, reflect.TypeOf(&components.Level{})).(*components.Level)
-		
+
 		levelText := fmt.Sprintf("LEVEL %d", level.Number)
 		levelOp := &text.DrawOptions{}
 		levelOp.GeoM.Translate(float64(config.ScreenWidth-100), float64(config.HudHeight/2-4))
