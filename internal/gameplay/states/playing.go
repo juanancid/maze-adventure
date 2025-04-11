@@ -89,8 +89,8 @@ func (ps *PlayingState) setUpdaters() {
 
 func (ps *PlayingState) setRenderers() {
 	ps.renderers = []Renderer{
-		&renderers.MazeRenderer{},
-		&renderers.SpriteRenderer{},
+		renderers.NewMazeRenderer(),
+		renderers.NewSpriteRenderer(),
 		renderers.NewHUDRenderer(),
 	}
 }

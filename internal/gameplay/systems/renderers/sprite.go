@@ -12,7 +12,11 @@ import (
 
 type SpriteRenderer struct{}
 
-func (r *SpriteRenderer) Draw(w *entities.World, screen *ebiten.Image) {
+func NewSpriteRenderer() SpriteRenderer {
+	return SpriteRenderer{}
+}
+
+func (r SpriteRenderer) Draw(w *entities.World, screen *ebiten.Image) {
 	positions := w.GetComponents(reflect.TypeOf(&components.Position{}))
 	sprites := w.GetComponents(reflect.TypeOf(&components.Sprite{}))
 	sizes := w.GetComponents(reflect.TypeOf(&components.Size{}))

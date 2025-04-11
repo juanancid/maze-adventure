@@ -17,18 +17,18 @@ type HUDRenderer struct {
 	faceSource *text.GoTextFaceSource
 }
 
-func NewHUDRenderer() *HUDRenderer {
+func NewHUDRenderer() HUDRenderer {
 	s, err := text.NewGoTextFaceSource(bytes.NewReader(fonts.PressStart2P_ttf))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return &HUDRenderer{faceSource: s}
+	return HUDRenderer{faceSource: s}
 }
 
-func (r *HUDRenderer) Draw(w *entities.World, screen *ebiten.Image) {
+func (r HUDRenderer) Draw(w *entities.World, screen *ebiten.Image) {
 	textOp := &text.DrawOptions{}
-	textOp.GeoM.Translate(8, float64(config.HudHeight/2-4)) // Vertically centered-ish
+	textOp.GeoM.Translate(8, float64(config.HudHeight/2-4))
 	textOp.ColorScale.ScaleWithColor(color.White)
 
 	text.Draw(screen,

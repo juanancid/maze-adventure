@@ -13,7 +13,11 @@ import (
 
 type MazeRenderer struct{}
 
-func (r *MazeRenderer) Draw(w *entities.World, screen *ebiten.Image) {
+func NewMazeRenderer() MazeRenderer {
+	return MazeRenderer{}
+}
+
+func (r MazeRenderer) Draw(w *entities.World, screen *ebiten.Image) {
 	maze, ok := queries.GetMaze(w)
 	if !ok {
 		return
