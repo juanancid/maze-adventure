@@ -20,9 +20,10 @@ func Load(levelNumber int) (*Level, error) {
 	}
 
 	var lvl Level
-	if err := yaml.Unmarshal(data, &lvl); err != nil {
+	if err = yaml.Unmarshal(data, &lvl); err != nil {
 		return nil, err
 	}
 
+	lvl.Number = levelNumber
 	return &lvl, nil
 }

@@ -1,6 +1,7 @@
 package levels
 
 type Level struct {
+	Number int
 	Maze   MazeConfig   `yaml:"maze"`
 	Player PlayerConfig `yaml:"player"`
 	Exit   ExitConfig   `yaml:"exit"`

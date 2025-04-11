@@ -30,6 +30,12 @@ func CreateLevel(level *Level) *entities.World {
 	createMaze(world, mazeCols, mazeRows, cellWidth, cellHeight)
 	createExit(world, level.Exit.Position.X, level.Exit.Position.Y, cellWidth, cellHeight)
 
+	// Add level information to the world
+	levelEntity := world.NewEntity()
+	world.AddComponent(levelEntity, &components.Level{
+		Number: level.Number,
+	})
+
 	return world
 }
 
