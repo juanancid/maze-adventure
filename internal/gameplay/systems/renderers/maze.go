@@ -27,7 +27,11 @@ func (r Maze) Draw(w *entities.World, screen *ebiten.Image) {
 	cellWidth := maze.CellWidth
 	cellHeight := maze.CellHeight
 
-	wallColor := color.RGBA{R: 0, G: 255, B: 0, A: 255}
+	// Fill the entire maze area with background color
+	bgColor := color.RGBA{R: 0x12, G: 0x18, B: 0x21, A: 0xFF}
+	screen.Fill(bgColor)
+
+	wallColor := color.RGBA{R: 0x36, G: 0x9b, B: 0x48, A: 0xFF}
 
 	// Iterate over each cell and draw its walls.
 	for row := 0; row < mazeLayout.Rows(); row++ {

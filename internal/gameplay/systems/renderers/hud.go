@@ -36,7 +36,7 @@ func (r *HUD) Draw(w *entities.World, screen *ebiten.Image) {
 	textOp.ColorScale.ScaleWithColor(color.White)
 
 	text.Draw(screen,
-		"MAZE ADVENTURE",
+		"Mission: navigate, survive, awaken.",
 		&text.GoTextFace{
 			Source: r.faceSource,
 			Size:   8,
@@ -56,7 +56,7 @@ func (r *HUD) Draw(w *entities.World, screen *ebiten.Image) {
 
 		level := w.GetComponent(levelEntity, reflect.TypeOf(&components.Level{})).(*components.Level)
 
-		levelText := fmt.Sprintf("LEVEL %d", level.Number)
+		levelText := fmt.Sprintf("SECTOR %d", level.Number)
 		levelOp := &text.DrawOptions{}
 		levelOp.GeoM.Translate(float64(config.ScreenWidth-100), float64(config.HudHeight/2-4))
 		levelOp.ColorScale.ScaleWithColor(color.White)
