@@ -11,41 +11,41 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
-type MissionAccomplished struct {
+type VictoryScreen struct {
 	manager    *Manager
 	faceSource *text.GoTextFaceSource
 }
 
-func NewMissionAccomplished(manager *Manager) *MissionAccomplished {
+func NewVictoryScreen(manager *Manager) *VictoryScreen {
 	faceSrc, err := text.NewGoTextFaceSource(bytes.NewReader(fonts.PressStart2P_ttf))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return &MissionAccomplished{
+	return &VictoryScreen{
 		manager:    manager,
 		faceSource: faceSrc,
 	}
 }
 
-func (a *MissionAccomplished) OnEnter() {
-	// Setup explicitly, e.a., play sound, reset scores, etc.
+func (s *VictoryScreen) OnEnter() {
+	// Setup explicitly, e.s., play sound, reset scores, etc.
 }
 
-func (a *MissionAccomplished) OnExit() {
+func (s *VictoryScreen) OnExit() {
 	// Cleanup explicitly, if needed
 }
 
-func (a *MissionAccomplished) Update() error {
+func (s *VictoryScreen) Update() error {
 	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
 		// explicitly restart or go back to menu
-		menu := NewBootScreen(a.manager, levels.NewManager())
-		a.manager.ChangeState(menu)
+		menu := NewBootScreen(s.manager, levels.NewManager())
+		s.manager.ChangeState(menu)
 	}
 	return nil
 }
 
-func (a *MissionAccomplished) Draw(screen *ebiten.Image) {
+func (s *VictoryScreen) Draw(screen *ebiten.Image) {
 	textOp := &text.DrawOptions{}
 	textOp.GeoM.Translate(160, 100)
 	textOp.ColorScale.ScaleWithColor(color.RGBA{R: 255, A: 255})
@@ -53,7 +53,7 @@ func (a *MissionAccomplished) Draw(screen *ebiten.Image) {
 	textOp.SecondaryAlign = text.AlignCenter
 
 	textFace := &text.GoTextFace{
-		Source: a.faceSource,
+		Source: s.faceSource,
 		Size:   8,
 	}
 

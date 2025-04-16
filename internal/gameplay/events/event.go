@@ -11,8 +11,8 @@ type LevelCompletedEvent struct{}
 // isEvent implements the Event interface explicitly.
 func (LevelCompletedEvent) isEvent() {}
 
-// MissionAccomplished indicates that the game is over.
-type MissionAccomplished struct{}
+// Victory indicates that the game has been won.
+type Victory struct{}
 
 // isEvent implements the Event interface explicitly.
-func (MissionAccomplished) isEvent() {}
+func (Victory) isEvent() {}

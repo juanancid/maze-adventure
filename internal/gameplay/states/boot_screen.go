@@ -46,52 +46,52 @@ func NewBootScreen(manager *Manager, levelManager *levels.Manager) *BootScreen {
 	}
 }
 
-func (b *BootScreen) OnEnter() {
-	b.blinkTimer = 0
-	b.blinkOn = false
+func (s *BootScreen) OnEnter() {
+	s.blinkTimer = 0
+	s.blinkOn = false
 }
 
-func (b *BootScreen) OnExit() {}
+func (s *BootScreen) OnExit() {}
 
-func (b *BootScreen) Update() error {
-	b.blinkTimer++
-	if b.blinkTimer >= 60 {
-		b.blinkTimer = 0
-		b.blinkOn = !b.blinkOn
+func (s *BootScreen) Update() error {
+	s.blinkTimer++
+	if s.blinkTimer >= 60 {
+		s.blinkTimer = 0
+		s.blinkOn = !s.blinkOn
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeySpace) {
-		playing := NewPlayingState(b.manager, b.levelManager)
-		b.manager.ChangeState(playing)
+		playingScreen := NewPlayingScreen(s.manager, s.levelManager)
+		s.manager.ChangeState(playingScreen)
 	}
 	return nil
 }
 
-func (b *BootScreen) Draw(screen *ebiten.Image) {
+func (s *BootScreen) Draw(screen *ebiten.Image) {
 	screen.Fill(bgColor)
 
-	b.drawIntroIllustration(screen)
+	s.drawIntroIllustration(screen)
 
 	centerX := float64(config.ScreenWidth / 2)
-	b.drawText(screen, "MAZE ADVENTURE", centerX, 20, titleFontSize)
-	b.drawText(screen, "Reactivation Protocol: AVA-002", centerX, 50, regularFontSize)
-	b.drawText(screen, "Codename: Picatoste", centerX, 65, regularFontSize)
-	b.drawText(screen, "MEMORY CORE INTEGRITY: 12%", centerX, 200, regularFontSize)
-	b.drawText(screen, "SECTOR MAP: UNAVAILABLE", centerX, 215, regularFontSize)
-	b.drawText(screen, "LAST BOOT: UNKNOWN", centerX, 230, regularFontSize)
+	s.drawText(screen, "MAZE ADVENTURE", centerX, 20, titleFontSize)
+	s.drawText(screen, "Reactivation Protocol: AVA-002", centerX, 50, regularFontSize)
+	s.drawText(screen, "Codename: Picatoste", centerX, 65, regularFontSize)
+	s.drawText(screen, "MEMORY CORE INTEGRITY: 12%", centerX, 200, regularFontSize)
+	s.drawText(screen, "SECTOR MAP: UNAVAILABLE", centerX, 215, regularFontSize)
+	s.drawText(screen, "LAST BOOT: UNKNOWN", centerX, 230, regularFontSize)
 
-	if b.blinkOn {
-		b.drawText(screen, "Press SPACE to wake up…", centerX, 250, regularFontSize)
+	if s.blinkOn {
+		s.drawText(screen, "Press SPACE to wake up…", centerX, 250, regularFontSize)
 	}
 }
 
-func (b *BootScreen) drawIntroIllustration(screen *ebiten.Image) {
+func (s *BootScreen) drawIntroIllustration(screen *ebiten.Image) {
 	options := &ebiten.DrawImageOptions{}
 	options.GeoM.Translate(140, 90)
-	screen.DrawImage(b.sprite, options)
+	screen.DrawImage(s.sprite, options)
 }
 
-func (b *BootScreen) drawText(screen *ebiten.Image, txt string, x, y float64, size float64) {
+func (s *BootScreen) drawText(screen *ebiten.Image, txt string, x, y float64, size float64) {
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(x, y)
 	op.ColorScale.ScaleWithColor(textColor)
@@ -99,7 +99,7 @@ func (b *BootScreen) drawText(screen *ebiten.Image, txt string, x, y float64, si
 	op.SecondaryAlign = text.AlignCenter
 
 	face := &text.GoTextFace{
-		Source: b.font,
+		Source: s.font,
 		Size:   size,
 	}
 
