@@ -35,10 +35,12 @@ func NewPlayingState(manager *Manager, levelManager *levels.Manager) *PlayingSta
 		levelManager: levelManager,
 		eventBus:     events.NewBus(),
 	}
+
 	ps.loadNextLevel()
 	ps.setUpdaters()
 	ps.setRenderers()
 	ps.setupEventSubscriptions()
+
 	return ps
 }
 
@@ -68,10 +70,14 @@ func (ps *PlayingState) Draw(screen *ebiten.Image) {
 // The existing helper methods (loadNextLevel, setUpdaters, etc.) are moved here unchanged.
 
 func (ps *PlayingState) loadNextLevel() {
-	levelConfig, err := ps.levelManager.NextLevel()
+	levelConfig, hasMore, err := ps.levelManager.NextLevel()
 	if err != nil {
-		// No more levels explicitly available, trigger game over explicitly
-		ps.eventBus.Publish(events.GameOverEvent{})
+		panic(err)
+	}
+
+	if !hasMore {
+		// No more levels explicitly available,
+		ps.eventBus.Publish(events.MissionAccomplished{})
 		return
 	}
 
@@ -97,14 +103,14 @@ func (ps *PlayingState) setRenderers() {
 
 func (ps *PlayingState) setupEventSubscriptions() {
 	ps.eventBus.Subscribe(reflect.TypeOf(events.LevelCompletedEvent{}), ps.onLevelCompleted)
-	ps.eventBus.Subscribe(reflect.TypeOf(events.GameOverEvent{}), ps.onGameOver)
+	ps.eventBus.Subscribe(reflect.TypeOf(events.MissionAccomplished{}), ps.onMissionAccomplished)
 }
 
 func (ps *PlayingState) onLevelCompleted(e events.Event) {
 	ps.loadNextLevel()
 }
 
-func (ps *PlayingState) onGameOver(e events.Event) {
-	gameOver := NewGameOverState(ps.manager)
-	ps.manager.ChangeState(gameOver)
+func (ps *PlayingState) onMissionAccomplished(e events.Event) {
+	missionAccomplished := NewMissionAccomplished(ps.manager)
+	ps.manager.ChangeState(missionAccomplished)
 }
