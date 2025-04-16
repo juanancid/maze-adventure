@@ -1,9 +1,7 @@
 package states
 
 import (
-	"bytes"
 	"image/color"
-	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
@@ -15,75 +13,85 @@ import (
 )
 
 const (
-	bootScreenFile = "internal/engine/assets/images/boot_screen.png"
+	introIllustrationFile = "internal/engine/assets/images/intro_illustration.png"
+	titleFontSize         = 16
+	regularFontSize       = 8
+)
+
+var (
+	textColor = color.RGBA{R: 0x36, G: 0x9b, B: 0x48, A: 0xFF}
+	bgColor   = color.RGBA{R: 0x00, G: 0x13, B: 0x1F, A: 0xFF}
 )
 
 type BootScreen struct {
 	manager      *Manager
 	levelManager *levels.Manager
-	faceSource   *text.GoTextFaceSource
+
+	font   *text.GoTextFaceSource
+	sprite *ebiten.Image
+
+	blinkTimer int
+	blinkOn    bool
 }
 
 func NewBootScreen(manager *Manager, levelManager *levels.Manager) *BootScreen {
-	s, err := text.NewGoTextFaceSource(bytes.NewReader(fonts.PressStart2P_ttf))
-	if err != nil {
-		log.Fatal(err)
-	}
+	fontSource := utils.MustLoadGoTextFaceSource(fonts.PressStart2P_ttf)
+	sprite := utils.MustLoadSprite(introIllustrationFile)
 
 	return &BootScreen{
 		manager:      manager,
 		levelManager: levelManager,
-		faceSource:   s,
+		font:         fontSource,
+		sprite:       sprite,
 	}
 }
 
-func (m *BootScreen) OnEnter() {
-	// Initialize resources explicitly if needed
+func (b *BootScreen) OnEnter() {
+	b.blinkTimer = 0
+	b.blinkOn = false
 }
 
-func (m *BootScreen) OnExit() {
-	// Cleanup explicitly if needed
-}
+func (b *BootScreen) OnExit() {}
 
-func (m *BootScreen) Update() error {
+func (b *BootScreen) Update() error {
+	b.blinkTimer++
+	if b.blinkTimer >= 60 {
+		b.blinkTimer = 0
+		b.blinkOn = !b.blinkOn
+	}
+
 	if ebiten.IsKeyPressed(ebiten.KeySpace) {
-		playing := NewPlayingState(m.manager, m.levelManager)
-		m.manager.ChangeState(playing)
+		playing := NewPlayingState(b.manager, b.levelManager)
+		b.manager.ChangeState(playing)
 	}
 	return nil
 }
 
-func (m *BootScreen) Draw(screen *ebiten.Image) {
-	bgColor := color.RGBA{R: 0x00, G: 0x14, B: 0x1D, A: 0xFF}
+func (b *BootScreen) Draw(screen *ebiten.Image) {
 	screen.Fill(bgColor)
 
-	options := &ebiten.DrawImageOptions{}
-	bootScreen := utils.MustLoadSprite(bootScreenFile)
-	options.GeoM.Translate(140, 90)
-	screen.DrawImage(bootScreen, options)
+	b.drawIntroIllustration(screen)
 
-	textHorizontalCenter := float64(config.ScreenWidth / 2)
-	textTitleSize := float64(16)
-	textNormalSize := float64(8)
+	centerX := float64(config.ScreenWidth / 2)
+	b.drawText(screen, "MAZE ADVENTURE", centerX, 20, titleFontSize)
+	b.drawText(screen, "Reactivation Protocol: AVA-002", centerX, 50, regularFontSize)
+	b.drawText(screen, "Codename: Picatoste", centerX, 65, regularFontSize)
+	b.drawText(screen, "MEMORY CORE INTEGRITY: 12%", centerX, 200, regularFontSize)
+	b.drawText(screen, "SECTOR MAP: UNAVAILABLE", centerX, 215, regularFontSize)
+	b.drawText(screen, "LAST BOOT: UNKNOWN", centerX, 230, regularFontSize)
 
-	m.drawText(screen, "MAZE ADVENTURE", textHorizontalCenter, 20, textTitleSize)
-
-	// Protocol and codename section
-	m.drawText(screen, "Reactivation Protocol: AVA-002", textHorizontalCenter, 50, textNormalSize)
-	m.drawText(screen, "Codename: Picatoste", textHorizontalCenter, 65, textNormalSize)
-
-	// System information section
-	m.drawText(screen, "MEMORY CORE INTEGRITY: 12%", textHorizontalCenter, 200, textNormalSize)
-	m.drawText(screen, "SECTOR MAP: UNAVAILABLE", textHorizontalCenter, 215, textNormalSize)
-	m.drawText(screen, "LAST BOOT: UNKNOWN", textHorizontalCenter, 230, textNormalSize)
-
-	// Call to action
-	m.drawText(screen, "Press SPACE to wake up…", textHorizontalCenter, 250, 8)
+	if b.blinkOn {
+		b.drawText(screen, "Press SPACE to wake up…", centerX, 250, regularFontSize)
+	}
 }
 
-func (m *BootScreen) drawText(screen *ebiten.Image, txt string, x, y float64, size float64) {
-	textColor := color.RGBA{R: 0x0D, G: 0x82, B: 0x5D, A: 0xFF}
+func (b *BootScreen) drawIntroIllustration(screen *ebiten.Image) {
+	options := &ebiten.DrawImageOptions{}
+	options.GeoM.Translate(140, 90)
+	screen.DrawImage(b.sprite, options)
+}
 
+func (b *BootScreen) drawText(screen *ebiten.Image, txt string, x, y float64, size float64) {
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(x, y)
 	op.ColorScale.ScaleWithColor(textColor)
@@ -91,7 +99,7 @@ func (m *BootScreen) drawText(screen *ebiten.Image, txt string, x, y float64, si
 	op.SecondaryAlign = text.AlignCenter
 
 	face := &text.GoTextFace{
-		Source: m.faceSource,
+		Source: b.font,
 		Size:   size,
 	}
 
