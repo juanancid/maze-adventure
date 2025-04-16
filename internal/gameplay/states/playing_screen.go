@@ -76,8 +76,8 @@ func (s *PlayingScreen) loadNextLevel() {
 	}
 
 	if !hasMore {
-		// No more levels explicitly available,
-		s.eventBus.Publish(events.Victory{})
+		// No more levels to load, trigger game complete event
+		s.eventBus.Publish(events.GameComplete{})
 		return
 	}
 
@@ -103,14 +103,14 @@ func (s *PlayingScreen) setRenderers() {
 
 func (s *PlayingScreen) setupEventSubscriptions() {
 	s.eventBus.Subscribe(reflect.TypeOf(events.LevelCompletedEvent{}), s.onLevelCompleted)
-	s.eventBus.Subscribe(reflect.TypeOf(events.Victory{}), s.onVictory)
+	s.eventBus.Subscribe(reflect.TypeOf(events.GameComplete{}), s.onGameCompleted)
 }
 
 func (s *PlayingScreen) onLevelCompleted(e events.Event) {
 	s.loadNextLevel()
 }
 
-func (s *PlayingScreen) onVictory(e events.Event) {
-	victoryScreen := NewVictoryScreen(s.manager)
-	s.manager.ChangeState(victoryScreen)
+func (s *PlayingScreen) onGameCompleted(e events.Event) {
+	endScreen := NewEndScreen(s.manager)
+	s.manager.ChangeState(endScreen)
 }
