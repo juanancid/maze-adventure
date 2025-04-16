@@ -39,7 +39,7 @@ func (g *GameOverState) OnExit() {
 func (g *GameOverState) Update() error {
 	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
 		// explicitly restart or go back to menu
-		menu := NewTitleScreen(g.manager, levels.NewManager())
+		menu := NewBootScreen(g.manager, levels.NewManager())
 		g.manager.ChangeState(menu)
 	}
 	return nil

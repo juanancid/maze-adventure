@@ -16,8 +16,8 @@ func NewGame() *Game {
 	levelManager := levels.NewManager()
 
 	stateManager := states.NewManager(nil)
-	titleScreen := states.NewTitleScreen(stateManager, levelManager)
-	stateManager.ChangeState(titleScreen)
+	bootScreen := states.NewBootScreen(stateManager, levelManager)
+	stateManager.ChangeState(bootScreen)
 
 	return &Game{
 		stateManager: stateManager,
