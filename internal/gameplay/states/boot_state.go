@@ -11,7 +11,7 @@ const (
 	introIllustrationFile = "internal/engine/assets/images/intro-illustration.png"
 )
 
-type BootScreen struct {
+type BootState struct {
 	manager      *Manager
 	levelManager *levels.Manager
 
@@ -21,24 +21,24 @@ type BootScreen struct {
 	blinkOn    bool
 }
 
-func NewBootScreen(manager *Manager, levelManager *levels.Manager) *BootScreen {
+func NewBootState(manager *Manager, levelManager *levels.Manager) *BootState {
 	sprite := utils.MustLoadSprite(introIllustrationFile)
 
-	return &BootScreen{
+	return &BootState{
 		manager:      manager,
 		levelManager: levelManager,
 		sprite:       sprite,
 	}
 }
 
-func (s *BootScreen) OnEnter() {
+func (s *BootState) OnEnter() {
 	s.blinkTimer = 0
 	s.blinkOn = false
 }
 
-func (s *BootScreen) OnExit() {}
+func (s *BootState) OnExit() {}
 
-func (s *BootScreen) Update() error {
+func (s *BootState) Update() error {
 	s.blinkTimer++
 	if s.blinkTimer >= 60 {
 		s.blinkTimer = 0
@@ -46,13 +46,13 @@ func (s *BootScreen) Update() error {
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeySpace) {
-		playingScreen := NewPlayingScreen(s.manager, s.levelManager)
-		s.manager.ChangeState(playingScreen)
+		playingState := NewPlayingState(s.manager, s.levelManager)
+		s.manager.ChangeState(playingState)
 	}
 	return nil
 }
 
-func (s *BootScreen) Draw(screen *ebiten.Image) {
+func (s *BootState) Draw(screen *ebiten.Image) {
 	screen.Fill(bgColor)
 
 	s.drawIntroIllustration(screen)
@@ -69,7 +69,7 @@ func (s *BootScreen) Draw(screen *ebiten.Image) {
 	}
 }
 
-func (s *BootScreen) drawIntroIllustration(screen *ebiten.Image) {
+func (s *BootState) drawIntroIllustration(screen *ebiten.Image) {
 	options := &ebiten.DrawImageOptions{}
 	options.GeoM.Translate(140, 90)
 	screen.DrawImage(s.sprite, options)

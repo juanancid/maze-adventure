@@ -12,7 +12,7 @@ import (
 	"github.com/juanancid/maze-adventure/internal/gameplay/systems/updaters"
 )
 
-type PlayingScreen struct {
+type PlayingState struct {
 	manager      *Manager
 	world        *entities.World
 	levelManager *levels.Manager
@@ -29,8 +29,8 @@ type Renderer interface {
 	Draw(world *entities.World, screen *ebiten.Image)
 }
 
-func NewPlayingScreen(manager *Manager, levelManager *levels.Manager) *PlayingScreen {
-	ps := &PlayingScreen{
+func NewPlayingState(manager *Manager, levelManager *levels.Manager) *PlayingState {
+	ps := &PlayingState{
 		manager:      manager,
 		levelManager: levelManager,
 		eventBus:     events.NewBus(),
@@ -44,15 +44,15 @@ func NewPlayingScreen(manager *Manager, levelManager *levels.Manager) *PlayingSc
 	return ps
 }
 
-func (s *PlayingScreen) OnEnter() {
+func (s *PlayingState) OnEnter() {
 	// Initialize or reset state explicitly
 }
 
-func (s *PlayingScreen) OnExit() {
+func (s *PlayingState) OnExit() {
 	// Cleanup state explicitly
 }
 
-func (s *PlayingScreen) Update() error {
+func (s *PlayingState) Update() error {
 	for _, updater := range s.updaters {
 		updater.Update(s.world)
 	}
@@ -61,7 +61,7 @@ func (s *PlayingScreen) Update() error {
 	return nil
 }
 
-func (s *PlayingScreen) Draw(screen *ebiten.Image) {
+func (s *PlayingState) Draw(screen *ebiten.Image) {
 	for _, renderer := range s.renderers {
 		renderer.Draw(s.world, screen)
 	}
@@ -69,7 +69,7 @@ func (s *PlayingScreen) Draw(screen *ebiten.Image) {
 
 // The existing helper methods (loadNextLevel, setUpdaters, etc.) are moved here unchanged.
 
-func (s *PlayingScreen) loadNextLevel() {
+func (s *PlayingState) loadNextLevel() {
 	levelConfig, hasMore := s.levelManager.NextLevel()
 
 	if !hasMore {
@@ -81,7 +81,7 @@ func (s *PlayingScreen) loadNextLevel() {
 	s.world = levels.CreateLevel(levelConfig)
 }
 
-func (s *PlayingScreen) setUpdaters() {
+func (s *PlayingState) setUpdaters() {
 	s.updaters = []Updater{
 		updaters.NewInputControl(),
 		updaters.NewMovement(),
@@ -91,7 +91,7 @@ func (s *PlayingScreen) setUpdaters() {
 	}
 }
 
-func (s *PlayingScreen) setRenderers() {
+func (s *PlayingState) setRenderers() {
 	s.renderers = []Renderer{
 		renderers.NewMaze(),
 		renderers.NewSprite(),
@@ -99,16 +99,16 @@ func (s *PlayingScreen) setRenderers() {
 	}
 }
 
-func (s *PlayingScreen) setupEventSubscriptions() {
+func (s *PlayingState) setupEventSubscriptions() {
 	s.eventBus.Subscribe(reflect.TypeOf(events.LevelCompletedEvent{}), s.onLevelCompleted)
 	s.eventBus.Subscribe(reflect.TypeOf(events.GameComplete{}), s.onGameCompleted)
 }
 
-func (s *PlayingScreen) onLevelCompleted(e events.Event) {
+func (s *PlayingState) onLevelCompleted(e events.Event) {
 	s.loadNextLevel()
 }
 
-func (s *PlayingScreen) onGameCompleted(e events.Event) {
-	endScreen := NewEndScreen(s.manager)
-	s.manager.ChangeState(endScreen)
+func (s *PlayingState) onGameCompleted(e events.Event) {
+	endState := NewEndState(s.manager)
+	s.manager.ChangeState(endState)
 }
