@@ -29,6 +29,8 @@ func CreateLevel(level Level) *entities.World {
 	createPlayer(world, playerSize, cellWidth, cellHeight)
 	createMaze(world, mazeCols, mazeRows, cellWidth, cellHeight)
 	createExit(world, level.Exit.Position.X, level.Exit.Position.Y, cellWidth, cellHeight, level.Exit.Size)
+	createScoreCollectible(world, 2, 2, cellWidth, cellHeight)
+	createScoreCollectible(world, 4, 4, cellWidth, cellHeight)
 
 	// Add level information to the world
 	levelEntity := world.NewEntity()
@@ -58,6 +60,7 @@ func createPlayer(world *entities.World, playerSize, cellWidth, cellHeight int) 
 
 	playerSprite := utils.MustLoadSprite(playerSpriteFile)
 	world.AddComponent(player, &components.Sprite{Image: playerSprite})
+	world.AddComponent(player, &components.Score{Points: 0})
 
 	return player
 }
@@ -93,4 +96,23 @@ func createExit(world *entities.World, mazeCol, mazeRow, cellWidth, cellHeight, 
 	world.AddComponent(exit, &components.Sprite{Image: exitSprite})
 
 	return exit
+}
+
+func createScoreCollectible(world *entities.World, col, row, cellWidth, cellHeight int) entities.Entity {
+	coin := world.NewEntity()
+
+	x := float64(col*cellWidth) + float64(cellWidth)/4
+	y := float64(row*cellHeight) + float64(cellHeight)/4
+
+	world.AddComponent(coin, &components.Position{X: x, Y: y})
+	world.AddComponent(coin, &components.Size{Width: float64(cellWidth) / 2, Height: float64(cellHeight) / 2})
+	world.AddComponent(coin, &components.Collectible{
+		Kind:  components.CollectibleScore,
+		Value: 100,
+	})
+	world.AddComponent(coin, &components.Sprite{
+		Image: utils.MustLoadSprite("internal/engine/assets/images/collectible-score.png"),
+	})
+
+	return coin
 }

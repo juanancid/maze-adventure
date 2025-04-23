@@ -87,6 +87,7 @@ func (s *PlayingScreen) setUpdaters() {
 		updaters.NewMovement(),
 		updaters.NewMazeCollision(),
 		updaters.NewExitCollision(s.eventBus),
+		updaters.NewCollectiblePickup(),
 	}
 }
 

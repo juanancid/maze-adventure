@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	introIllustrationFile = "internal/engine/assets/images/intro_illustration.png"
+	introIllustrationFile = "internal/engine/assets/images/intro-illustration.png"
 )
 
 type BootScreen struct {

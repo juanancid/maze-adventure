@@ -35,8 +35,15 @@ func (r *HUD) Draw(w *entities.World, screen *ebiten.Image) {
 	textOp.GeoM.Translate(8, float64(config.HudHeight/2-4)) // Vertically centered-ish
 	textOp.ColorScale.ScaleWithColor(color.White)
 
+	scores := w.GetComponents(reflect.TypeOf(&components.Score{}))
+	var scoreEntity entities.Entity
+	for score := range scores {
+		scoreEntity = score
+		break
+	}
+
 	text.Draw(screen,
-		"Mission: navigate, survive, awaken.",
+		fmt.Sprintf("SCORE: %d", w.GetComponent(scoreEntity, reflect.TypeOf(&components.Score{})).(*components.Score).Points),
 		&text.GoTextFace{
 			Source: r.faceSource,
 			Size:   8,
