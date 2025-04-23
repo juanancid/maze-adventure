@@ -18,7 +18,7 @@ func NewMaze() Maze {
 }
 
 func (r Maze) Draw(w *entities.World, screen *ebiten.Image) {
-	maze, ok := queries.GetMaze(w)
+	maze, ok := queries.GetMazeComponent(w)
 	if !ok {
 		return
 	}

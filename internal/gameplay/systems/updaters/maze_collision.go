@@ -15,7 +15,7 @@ func NewMazeCollision() MazeCollision {
 }
 
 func (mc MazeCollision) Update(w *entities.World) {
-	maze, ok := queries.GetMaze(w)
+	maze, ok := queries.GetMazeComponent(w)
 	if !ok {
 		return
 	}

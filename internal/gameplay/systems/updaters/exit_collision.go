@@ -5,6 +5,7 @@ import (
 
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
+	"github.com/juanancid/maze-adventure/internal/core/queries"
 	"github.com/juanancid/maze-adventure/internal/gameplay/events"
 )
 
@@ -19,27 +20,14 @@ func NewExitCollision(eventBus *events.Bus) *ExitCollision {
 }
 
 func (ec ExitCollision) Update(w *entities.World) {
-	// Get all entities with Position, Size, and Exit components
-	exits := w.QueryComponents(&components.Position{}, &components.Size{}, &components.Exit{})
-	if len(exits) == 0 {
+	exitEntity, found := queries.GetExitEntity(w)
+	if !found {
 		return
 	}
 
-	// Get all entities with Position, Size, and InputControlled components (player)
-	players := w.QueryComponents(&components.Position{}, &components.Size{}, &components.InputControlled{})
-	if len(players) == 0 {
+	playerEntity, found := queries.GetPlayerEntity(w)
+	if !found {
 		return
-	}
-
-	// Get the first exit and player (there should only be one of each)
-	var exitEntity, playerEntity entities.Entity
-	for _, entity := range exits {
-		exitEntity = entity
-		break
-	}
-	for _, entity := range players {
-		playerEntity = entity
-		break
 	}
 
 	// Get their components

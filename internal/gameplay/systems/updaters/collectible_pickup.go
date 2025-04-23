@@ -5,6 +5,7 @@ import (
 
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
+	"github.com/juanancid/maze-adventure/internal/core/queries"
 )
 
 type CollectiblePickupSystem struct{}
@@ -14,15 +15,9 @@ func NewCollectiblePickup() *CollectiblePickupSystem {
 }
 
 func (s *CollectiblePickupSystem) Update(w *entities.World) {
-	players := w.QueryComponents(&components.Position{}, &components.Size{}, &components.InputControlled{})
-	if len(players) == 0 {
+	playerEntity, found := queries.GetPlayerEntity(w)
+	if !found {
 		return
-	}
-
-	var playerEntity entities.Entity
-	for _, entity := range players {
-		playerEntity = entity
-		break
 	}
 
 	playerPos := w.GetComponent(playerEntity, reflect.TypeOf(&components.Position{})).(*components.Position)
