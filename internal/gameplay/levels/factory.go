@@ -15,7 +15,7 @@ const (
 	exitSpriteFile   = "internal/engine/assets/images/exit.png"
 )
 
-func CreateLevel(level *Level) *entities.World {
+func CreateLevel(level Level) *entities.World {
 	world := entities.NewWorld()
 
 	mazeCols := level.Maze.Cols

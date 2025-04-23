@@ -1,27 +1,14 @@
 package levels
 
+import "github.com/juanancid/maze-adventure/internal/gameplay/levels/definitions"
+
+// Level represents a game level configuration.
 type Level struct {
 	Number int
-	Maze   MazeConfig   `yaml:"maze"`
-	Player PlayerConfig `yaml:"player"`
-	Exit   ExitConfig   `yaml:"exit"`
+	Maze   definitions.MazeConfig
+	Player definitions.PlayerConfig
+	Exit   definitions.ExitConfig
 }
 
-type MazeConfig struct {
-	Cols int `yaml:"cols"`
-	Rows int `yaml:"rows"`
-}
-
-type PlayerConfig struct {
-	Size int `yaml:"size"`
-}
-
-type ExitConfig struct {
-	Position Coordinate `yaml:"position"`
-	Size     int        `yaml:"size"`
-}
-
-type Coordinate struct {
-	X int `yaml:"x"`
-	Y int `yaml:"y"`
-}
+// EmptyLevel is a placeholder for an empty level.
+var EmptyLevel = Level{}

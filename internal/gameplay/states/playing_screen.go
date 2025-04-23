@@ -70,10 +70,7 @@ func (s *PlayingScreen) Draw(screen *ebiten.Image) {
 // The existing helper methods (loadNextLevel, setUpdaters, etc.) are moved here unchanged.
 
 func (s *PlayingScreen) loadNextLevel() {
-	levelConfig, hasMore, err := s.levelManager.NextLevel()
-	if err != nil {
-		panic(err)
-	}
+	levelConfig, hasMore := s.levelManager.NextLevel()
 
 	if !hasMore {
 		// No more levels to load, trigger game complete event

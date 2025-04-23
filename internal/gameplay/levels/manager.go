@@ -1,10 +1,7 @@
 package levels
 
 import (
-	"fmt"
-	"os"
-
-	"gopkg.in/yaml.v3"
+	"github.com/juanancid/maze-adventure/internal/gameplay/levels/definitions"
 )
 
 type Manager struct {
@@ -13,50 +10,29 @@ type Manager struct {
 
 func NewManager() *Manager {
 	return &Manager{
-		currentLevel: 1,
+		currentLevel: 0,
 	}
 }
 
-// NextLevel loads the next level configuration.
+// NextLevel returns the next level configuration.
 // It returns the level, a boolean indicating if there is a next level,
 // and an error if there was a problem loading the level.
-func (m *Manager) NextLevel() (*Level, bool, error) {
-	if !m.hasLevel(m.currentLevel) {
-		return nil, false, nil // no more levels
-	}
-
-	level, err := m.loadLevel(m.currentLevel)
-	if err != nil {
-		return nil, false, err // loading error
-	}
-
+func (m *Manager) NextLevel() (level Level, found bool) {
 	m.currentLevel++
-	return level, true, nil // whether there's a *next* one
-}
 
-func (m *Manager) loadLevel(levelNumber int) (*Level, error) {
-	filePath := m.getLevelFilePath(levelNumber)
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		return nil, err
+	if m.currentLevel > len(definitions.LevelRegistry) {
+		level = EmptyLevel
+		found = false
+		return
 	}
 
-	var lvl Level
-	if err = yaml.Unmarshal(data, &lvl); err != nil {
-		return nil, err
+	levelConfig := definitions.LevelRegistry[m.currentLevel-1]()
+	level = Level{
+		Number: m.currentLevel,
+		Maze:   levelConfig.Maze,
+		Player: levelConfig.Player,
+		Exit:   levelConfig.Exit,
 	}
-
-	lvl.Number = levelNumber
-	return &lvl, nil
-}
-
-func (m *Manager) hasLevel(n int) bool {
-	levelPath := m.getLevelFilePath(n)
-	_, err := os.Stat(levelPath)
-
-	return err == nil
-}
-
-func (m *Manager) getLevelFilePath(levelNumber int) string {
-	return fmt.Sprintf("internal/gameplay/levels/configs/level_%02d.yaml", levelNumber)
+	found = true
+	return
 }
