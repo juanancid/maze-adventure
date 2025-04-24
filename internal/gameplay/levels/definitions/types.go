@@ -1,5 +1,7 @@
 package definitions
 
+var EmptyLevelConfig = LevelConfig{}
+
 // LevelConfig represents the configuration for a game level
 type LevelConfig struct {
 	Maze         MazeConfig

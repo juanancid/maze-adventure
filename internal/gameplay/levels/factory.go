@@ -1,6 +1,7 @@
 package levels
 
 import (
+	"github.com/juanancid/maze-adventure/internal/gameplay/levels/definitions"
 	"math/rand"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -17,7 +18,7 @@ const (
 	exitSpriteFile   = "internal/engine/assets/images/exit.png"
 )
 
-func CreateLevel(levelConfig Config) *entities.World {
+func CreateLevel(levelConfig definitions.LevelConfig) *entities.World {
 	world := entities.NewWorld()
 
 	mazeCols := levelConfig.Maze.Cols
@@ -92,7 +93,7 @@ func createExit(world *entities.World, mazeCol, mazeRow, cellWidth, cellHeight, 
 	return exit
 }
 
-func createCollectibles(world *entities.World, levelConfig Config) {
+func createCollectibles(world *entities.World, levelConfig definitions.LevelConfig) {
 	mazeCols := levelConfig.Maze.Cols
 	mazeRows := levelConfig.Maze.Rows
 
