@@ -5,14 +5,19 @@ import (
 
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
+	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
 type Movement struct{}
 
-func (ms *Movement) Update(w *entities.World) {
-	entitiesToMove := w.QueryComponents(&components.Velocity{}, &components.Position{})
+func NewMovement() Movement {
+	return Movement{}
+}
+
+func (ms Movement) Update(wold *entities.World, gameSession *session.GameSession) {
+	entitiesToMove := wold.QueryComponents(&components.Velocity{}, &components.Position{})
 	for _, entity := range entitiesToMove {
-		moveEntity(w, entity)
+		moveEntity(wold, entity)
 	}
 }
 

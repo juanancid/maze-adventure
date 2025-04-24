@@ -76,3 +76,9 @@ func (w *World) QueryComponents(components ...Component) EntityList {
 	}
 	return w.Query(types...)
 }
+
+func (w *World) RemoveEntity(entity Entity) {
+	for _, componentMap := range w.components {
+		delete(componentMap, entity)
+	}
+}

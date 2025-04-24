@@ -1,26 +1,34 @@
 package levels
 
-import "errors"
-
-const MaxLevels = 1
+import (
+	"github.com/juanancid/maze-adventure/internal/gameplay/levels/definitions"
+)
 
 type Manager struct {
-	current int
+	currentLevel int
 }
 
 func NewManager() *Manager {
-	return &Manager{current: 1}
+	return &Manager{
+		currentLevel: 0,
+	}
 }
 
-func (m *Manager) NextLevel() (*Level, error) {
-	if m.current > MaxLevels {
-		return nil, errors.New("no more levels")
+// NextLevel returns the next level configuration.
+// It returns the level, a boolean indicating if there is a next level,
+// and an error if there was a problem loading the level.
+func (m *Manager) NextLevel() (levelConfig definitions.LevelConfig, levelNumber int, found bool) {
+	m.currentLevel++
+
+	if m.currentLevel > len(definitions.LevelRegistry) {
+		levelConfig = definitions.EmptyLevelConfig
+		levelNumber = 0
+		found = false
+		return
 	}
 
-	level, err := Load(m.current)
-	if err != nil {
-		return nil, err
-	}
-	m.current++
-	return level, nil
+	levelConfig = definitions.LevelRegistry[m.currentLevel-1]()
+	levelNumber = m.currentLevel
+	found = true
+	return
 }

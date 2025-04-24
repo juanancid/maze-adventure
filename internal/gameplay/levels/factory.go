@@ -1,12 +1,16 @@
 package levels
 
 import (
+	"math/rand"
+
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
-	"github.com/juanancid/maze-adventure/internal/engine/layout"
+	"github.com/juanancid/maze-adventure/internal/engine/config"
+	"github.com/juanancid/maze-adventure/internal/engine/mazebuilder"
 	"github.com/juanancid/maze-adventure/internal/engine/utils"
+	"github.com/juanancid/maze-adventure/internal/gameplay/levels/definitions"
 )
 
 const (
@@ -14,27 +18,33 @@ const (
 	exitSpriteFile   = "internal/engine/assets/images/exit.png"
 )
 
-func CreateLevel(level *Level) *entities.World {
+func CreateLevel(levelConfig definitions.LevelConfig) *entities.World {
 	world := entities.NewWorld()
 
-	cellSize := level.Maze.CellSize
-	playerSize := level.Player.Size
+	mazeCols := levelConfig.Maze.Cols
+	mazeRows := levelConfig.Maze.Rows
 
-	createPlayer(world, playerSize, cellSize)
-	createMaze(world, level.Maze.Width, level.Maze.Height, cellSize)
-	createExit(world, level.Exit.Position.X, level.Exit.Position.Y, cellSize)
+	cellWidth := config.ScreenWidth / mazeCols
+	cellHeight := (config.ScreenHeight - config.HudHeight) / mazeRows
+
+	playerSize := levelConfig.Player.Size
+
+	createPlayer(world, playerSize, cellWidth, cellHeight)
+	createMaze(world, mazeCols, mazeRows, cellWidth, cellHeight)
+	createExit(world, levelConfig.Exit.Position.X, levelConfig.Exit.Position.Y, cellWidth, cellHeight, levelConfig.Exit.Size)
+	createCollectibles(world, levelConfig)
 
 	return world
 }
 
-func createPlayer(world *entities.World, playerSize, cellSize int) entities.Entity {
+func createPlayer(world *entities.World, playerSize, cellWidth, cellHeight int) entities.Entity {
 	player := world.NewEntity()
 
 	world.AddComponent(player, &components.Size{Width: float64(playerSize), Height: float64(playerSize)})
 	world.AddComponent(player, &components.Velocity{DX: 0, DY: 0})
 
-	posX := float64(cellSize-playerSize) / 2
-	posY := float64(cellSize-playerSize) / 2
+	posX := float64(cellWidth-playerSize) / 2
+	posY := float64(cellHeight-playerSize) / 2
 	world.AddComponent(player, &components.Position{X: posX, Y: posY})
 
 	world.AddComponent(player, &components.InputControlled{
@@ -50,22 +60,29 @@ func createPlayer(world *entities.World, playerSize, cellSize int) entities.Enti
 	return player
 }
 
-func createMaze(world *entities.World, mazeWidth, mazeHeight int, cellSize int) entities.Entity {
+func createMaze(world *entities.World, mazeCols, mazeRows int, cellWidth, cellHeight int) entities.Entity {
 	mazeEntity := world.NewEntity()
 	world.AddComponent(mazeEntity, &components.Maze{
-		Layout:   layout.New(mazeWidth, mazeHeight),
-		CellSize: cellSize,
+		Layout:     mazebuilder.NewMazeLayout(mazeCols, mazeRows),
+		CellWidth:  cellWidth,
+		CellHeight: cellHeight,
 	})
 
 	return mazeEntity
 }
 
-func createExit(world *entities.World, mazeCol, mazeRow, cellSize int) entities.Entity {
+func createExit(world *entities.World, mazeCol, mazeRow, cellWidth, cellHeight, exitSize int) entities.Entity {
 	exit := world.NewEntity()
-	world.AddComponent(exit, &components.Size{Width: float64(cellSize), Height: float64(cellSize)})
+	world.AddComponent(exit, &components.Size{Width: float64(exitSize), Height: float64(exitSize)})
 
-	posX := float64(mazeCol * cellSize)
-	posY := float64(mazeRow * cellSize)
+	// Calculate the center position of the cell
+	cellX := float64(mazeCol * cellWidth)
+	cellY := float64(mazeRow * cellHeight)
+
+	// Center the exit in the cell
+	posX := cellX + float64(cellWidth-exitSize)/2
+	posY := cellY + float64(cellHeight-exitSize)/2
+
 	world.AddComponent(exit, &components.Position{X: posX, Y: posY})
 
 	world.AddComponent(exit, &components.Exit{})
@@ -74,4 +91,43 @@ func createExit(world *entities.World, mazeCol, mazeRow, cellSize int) entities.
 	world.AddComponent(exit, &components.Sprite{Image: exitSprite})
 
 	return exit
+}
+
+func createCollectibles(world *entities.World, levelConfig definitions.LevelConfig) {
+	mazeCols := levelConfig.Maze.Cols
+	mazeRows := levelConfig.Maze.Rows
+
+	cellWidth := config.ScreenWidth / mazeCols
+	cellHeight := (config.ScreenHeight - config.HudHeight) / mazeRows
+
+	for i := 0; i < levelConfig.Collectibles.Number; i++ {
+		// Generate random cell coordinates within maze bounds
+		row := rand.Intn(mazeRows)
+		col := rand.Intn(mazeCols)
+
+		// Create a collectible at the random cell
+		createCollectible(world, row, col, cellWidth, cellHeight, levelConfig.Collectibles.Value, levelConfig.Collectibles.Size)
+	}
+}
+
+func createCollectible(world *entities.World, row, col, cellWidth, cellHeight, value, size int) {
+	collectible := world.NewEntity()
+
+	// Calculate the center position of the cell
+	cellX := float64(col * cellWidth)
+	cellY := float64(row * cellHeight)
+
+	// Center the collectible in the cell
+	x := cellX + float64(cellWidth-size)/2
+	y := cellY + float64(cellHeight-size)/2
+
+	world.AddComponent(collectible, &components.Position{X: x, Y: y})
+	world.AddComponent(collectible, &components.Size{Width: float64(size), Height: float64(size)})
+	world.AddComponent(collectible, &components.Collectible{
+		Kind:  components.CollectibleScore,
+		Value: value,
+	})
+	world.AddComponent(collectible, &components.Sprite{
+		Image: utils.MustLoadSprite("internal/engine/assets/images/collectible-score.png"),
+	})
 }
