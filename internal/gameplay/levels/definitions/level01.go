@@ -17,5 +17,10 @@ func Level01() LevelConfig {
 			},
 			Size: 24,
 		},
+		Collectibles: Collectibles{
+			Number: 2,
+			Size:   8,
+			Value:  1,
+		},
 	}
 }

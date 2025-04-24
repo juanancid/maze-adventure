@@ -17,7 +17,7 @@ func NewManager() *Manager {
 // NextLevel returns the next level configuration.
 // It returns the level, a boolean indicating if there is a next level,
 // and an error if there was a problem loading the level.
-func (m *Manager) NextLevel() (level Level, found bool) {
+func (m *Manager) NextLevel() (level Config, found bool) {
 	m.currentLevel++
 
 	if m.currentLevel > len(definitions.LevelRegistry) {
@@ -27,11 +27,12 @@ func (m *Manager) NextLevel() (level Level, found bool) {
 	}
 
 	levelConfig := definitions.LevelRegistry[m.currentLevel-1]()
-	level = Level{
-		Number: m.currentLevel,
-		Maze:   levelConfig.Maze,
-		Player: levelConfig.Player,
-		Exit:   levelConfig.Exit,
+	level = Config{
+		Number:       m.currentLevel,
+		Maze:         levelConfig.Maze,
+		Player:       levelConfig.Player,
+		Exit:         levelConfig.Exit,
+		Collectibles: levelConfig.Collectibles,
 	}
 	found = true
 	return

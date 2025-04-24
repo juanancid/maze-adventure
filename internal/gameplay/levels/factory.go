@@ -1,6 +1,8 @@
 package levels
 
 import (
+	"math/rand"
+
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"github.com/juanancid/maze-adventure/internal/core/components"
@@ -15,27 +17,26 @@ const (
 	exitSpriteFile   = "internal/engine/assets/images/exit.png"
 )
 
-func CreateLevel(level Level) *entities.World {
+func CreateLevel(levelConfig Config) *entities.World {
 	world := entities.NewWorld()
 
-	mazeCols := level.Maze.Cols
-	mazeRows := level.Maze.Rows
+	mazeCols := levelConfig.Maze.Cols
+	mazeRows := levelConfig.Maze.Rows
 
 	cellWidth := config.ScreenWidth / mazeCols
 	cellHeight := (config.ScreenHeight - config.HudHeight) / mazeRows
 
-	playerSize := level.Player.Size
+	playerSize := levelConfig.Player.Size
 
 	createPlayer(world, playerSize, cellWidth, cellHeight)
 	createMaze(world, mazeCols, mazeRows, cellWidth, cellHeight)
-	createExit(world, level.Exit.Position.X, level.Exit.Position.Y, cellWidth, cellHeight, level.Exit.Size)
-	createScoreCollectible(world, 2, 2, cellWidth, cellHeight)
-	createScoreCollectible(world, 4, 4, cellWidth, cellHeight)
+	createExit(world, levelConfig.Exit.Position.X, levelConfig.Exit.Position.Y, cellWidth, cellHeight, levelConfig.Exit.Size)
+	createCollectibles(world, levelConfig)
 
-	// Add level information to the world
+	// Add levelConfig information to the world
 	levelEntity := world.NewEntity()
 	world.AddComponent(levelEntity, &components.Level{
-		Number: level.Number,
+		Number: levelConfig.Number,
 	})
 
 	return world
@@ -97,21 +98,41 @@ func createExit(world *entities.World, mazeCol, mazeRow, cellWidth, cellHeight, 
 	return exit
 }
 
-func createScoreCollectible(world *entities.World, col, row, cellWidth, cellHeight int) entities.Entity {
-	coin := world.NewEntity()
+func createCollectibles(world *entities.World, levelConfig Config) {
+	mazeCols := levelConfig.Maze.Cols
+	mazeRows := levelConfig.Maze.Rows
 
-	x := float64(col*cellWidth) + float64(cellWidth)/4
-	y := float64(row*cellHeight) + float64(cellHeight)/4
+	cellWidth := config.ScreenWidth / mazeCols
+	cellHeight := (config.ScreenHeight - config.HudHeight) / mazeRows
 
-	world.AddComponent(coin, &components.Position{X: x, Y: y})
-	world.AddComponent(coin, &components.Size{Width: float64(cellWidth) / 2, Height: float64(cellHeight) / 2})
-	world.AddComponent(coin, &components.Collectible{
+	for i := 0; i < levelConfig.Collectibles.Number; i++ {
+		// Generate random cell coordinates within maze bounds
+		row := rand.Intn(mazeRows)
+		col := rand.Intn(mazeCols)
+
+		// Create a collectible at the random cell
+		createCollectible(world, row, col, cellWidth, cellHeight, levelConfig.Collectibles.Value, levelConfig.Collectibles.Size)
+	}
+}
+
+func createCollectible(world *entities.World, row, col, cellWidth, cellHeight, value, size int) {
+	collectible := world.NewEntity()
+
+	// Calculate the center position of the cell
+	cellX := float64(col * cellWidth)
+	cellY := float64(row * cellHeight)
+
+	// Center the collectible in the cell
+	x := cellX + float64(cellWidth-size)/2
+	y := cellY + float64(cellHeight-size)/2
+
+	world.AddComponent(collectible, &components.Position{X: x, Y: y})
+	world.AddComponent(collectible, &components.Size{Width: float64(size), Height: float64(size)})
+	world.AddComponent(collectible, &components.Collectible{
 		Kind:  components.CollectibleScore,
-		Value: 100,
+		Value: value,
 	})
-	world.AddComponent(coin, &components.Sprite{
+	world.AddComponent(collectible, &components.Sprite{
 		Image: utils.MustLoadSprite("internal/engine/assets/images/collectible-score.png"),
 	})
-
-	return coin
 }

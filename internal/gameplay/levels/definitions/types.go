@@ -2,9 +2,10 @@ package definitions
 
 // LevelConfig represents the configuration for a game level
 type LevelConfig struct {
-	Maze   MazeConfig
-	Player PlayerConfig
-	Exit   ExitConfig
+	Maze         MazeConfig
+	Player       PlayerConfig
+	Exit         ExitConfig
+	Collectibles Collectibles
 }
 
 // MazeConfig defines the maze dimensions
@@ -28,4 +29,10 @@ type ExitConfig struct {
 type Coordinate struct {
 	X int
 	Y int
+}
+
+type Collectibles struct {
+	Number int
+	Size   int
+	Value  int
 }

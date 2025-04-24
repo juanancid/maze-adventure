@@ -15,7 +15,7 @@ const (
 )
 
 var (
-	textColor = color.RGBA{R: 0x36, G: 0x9b, B: 0x48, A: 0xFF}
+	textColor = color.RGBA{R: 0x0A, G: 0x90, B: 0x6B, A: 0xFF}
 	bgColor   = color.RGBA{R: 0x00, G: 0x13, B: 0x1F, A: 0xFF}
 	font      *text.GoTextFaceSource
 	centerX   = float64(config.ScreenWidth / 2)

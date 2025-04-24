@@ -2,13 +2,14 @@ package levels
 
 import "github.com/juanancid/maze-adventure/internal/gameplay/levels/definitions"
 
-// Level represents a game level configuration.
-type Level struct {
-	Number int
-	Maze   definitions.MazeConfig
-	Player definitions.PlayerConfig
-	Exit   definitions.ExitConfig
+// Config represents a game level configuration.
+type Config struct {
+	Number       int
+	Maze         definitions.MazeConfig
+	Player       definitions.PlayerConfig
+	Exit         definitions.ExitConfig
+	Collectibles definitions.Collectibles
 }
 
 // EmptyLevel is a placeholder for an empty level.
-var EmptyLevel = Level{}
+var EmptyLevel = Config{}
