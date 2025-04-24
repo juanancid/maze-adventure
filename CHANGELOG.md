@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2025-04-24
+
+### Added
+- New **Boot Screen** introducing narrative tone and Picatoste, the exploration drone.
+- New **Victory Screen** shown after completing all available levels.
+- Added a **collectible system**: memory fragments now spawn in each level and are tracked in the HUD.
+- Introduced a **HUD bar** displaying current level and collected memory fragments.
+- Added a **GameSession and GameState** system to manage score, session-wide data, and player progress.
+
+### Changed
+- Updated game resolution to **480x270**, providing more screen space and a modern-retro aspect ratio.
+- Replaced legacy YAML level definitions with **code-driven level configuration**, allowing more flexibility.
+- Renamed game states to **BootScreen**, **PlayingState**, and **VictoryScreen** for better clarity.
+- Improved maze visuals and color palette for **better contrast and readability**.
+- Refined game loop logic: completing a level now properly advances or ends the session.
+
 ## [0.3.0] - 2025-04-04
 
 ### Added
@@ -45,7 +61,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Smooth player movement.
 - Basic collision handling between the player and maze walls.
 
-[Unreleased]: https://github.com/juanancid/maze-adventure/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/juanancid/maze-adventure/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/juanancid/maze-adventure/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/juanancid/maze-adventure/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/juanancid/maze-adventure/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/juanancid/maze-adventure/releases/tag/v0.1.0
