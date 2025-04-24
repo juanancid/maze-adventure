@@ -5,13 +5,11 @@ import (
 	"fmt"
 	"image/color"
 	"log"
-	"reflect"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 
-	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/engine/config"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
@@ -46,29 +44,17 @@ func (r *HUD) Draw(world *entities.World, gameSession *session.GameSession, scre
 	)
 
 	// Draw level number
-	levels := world.GetComponents(reflect.TypeOf(&components.Level{}))
-	if len(levels) > 0 {
-		// Get the first level component (there should only be one)
-		var levelEntity entities.Entity
-		for entity := range levels {
-			levelEntity = entity
-			break
-		}
+	levelText := fmt.Sprintf("SECTOR %d", gameSession.CurrentLevel)
+	levelOp := &text.DrawOptions{}
+	levelOp.GeoM.Translate(float64(config.ScreenWidth-100), float64(config.HudHeight/2-4))
+	levelOp.ColorScale.ScaleWithColor(color.White)
 
-		level := world.GetComponent(levelEntity, reflect.TypeOf(&components.Level{})).(*components.Level)
-
-		levelText := fmt.Sprintf("SECTOR %d", level.Number)
-		levelOp := &text.DrawOptions{}
-		levelOp.GeoM.Translate(float64(config.ScreenWidth-100), float64(config.HudHeight/2-4))
-		levelOp.ColorScale.ScaleWithColor(color.White)
-
-		text.Draw(screen,
-			levelText,
-			&text.GoTextFace{
-				Source: r.faceSource,
-				Size:   8,
-			},
-			levelOp,
-		)
-	}
+	text.Draw(screen,
+		levelText,
+		&text.GoTextFace{
+			Source: r.faceSource,
+			Size:   8,
+		},
+		levelOp,
+	)
 }

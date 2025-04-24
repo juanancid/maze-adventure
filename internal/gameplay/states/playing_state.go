@@ -75,7 +75,7 @@ func (s *PlayingState) Draw(screen *ebiten.Image) {
 // Helper methods
 
 func (s *PlayingState) loadNextLevel() {
-	levelConfig, hasMore := s.levelManager.NextLevel()
+	levelConfig, levelNumber, hasMore := s.levelManager.NextLevel()
 
 	if !hasMore {
 		// No more levels to load, trigger game complete event
@@ -83,6 +83,7 @@ func (s *PlayingState) loadNextLevel() {
 		return
 	}
 
+	s.gameSession.CurrentLevel = levelNumber
 	s.world = levels.CreateLevel(levelConfig)
 }
 

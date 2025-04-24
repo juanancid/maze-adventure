@@ -33,12 +33,6 @@ func CreateLevel(levelConfig Config) *entities.World {
 	createExit(world, levelConfig.Exit.Position.X, levelConfig.Exit.Position.Y, cellWidth, cellHeight, levelConfig.Exit.Size)
 	createCollectibles(world, levelConfig)
 
-	// Add levelConfig information to the world
-	levelEntity := world.NewEntity()
-	world.AddComponent(levelEntity, &components.Level{
-		Number: levelConfig.Number,
-	})
-
 	return world
 }
 

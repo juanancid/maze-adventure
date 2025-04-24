@@ -1,12 +1,12 @@
 package updaters
 
 import (
-	"github.com/juanancid/maze-adventure/internal/gameplay/events"
 	"reflect"
 
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/core/queries"
+	"github.com/juanancid/maze-adventure/internal/gameplay/events"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
