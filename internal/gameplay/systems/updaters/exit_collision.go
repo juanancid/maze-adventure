@@ -7,6 +7,7 @@ import (
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/core/queries"
 	"github.com/juanancid/maze-adventure/internal/gameplay/events"
+	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
 type ExitCollision struct {
@@ -19,7 +20,7 @@ func NewExitCollision(eventBus *events.Bus) *ExitCollision {
 	}
 }
 
-func (ec ExitCollision) Update(w *entities.World) {
+func (ec ExitCollision) Update(w *entities.World, gameSession *session.GameSession) {
 	exitEntity, found := queries.GetExitEntity(w)
 	if !found {
 		return

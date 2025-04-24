@@ -6,6 +6,7 @@ import (
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/core/queries"
+	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
 type CollectiblePickupSystem struct{}
@@ -14,25 +15,25 @@ func NewCollectiblePickup() *CollectiblePickupSystem {
 	return &CollectiblePickupSystem{}
 }
 
-func (s *CollectiblePickupSystem) Update(w *entities.World) {
-	playerEntity, found := queries.GetPlayerEntity(w)
+func (s *CollectiblePickupSystem) Update(world *entities.World, gameSession *session.GameSession) {
+	playerEntity, found := queries.GetPlayerEntity(world)
 	if !found {
 		return
 	}
 
-	playerPos := w.GetComponent(playerEntity, reflect.TypeOf(&components.Position{})).(*components.Position)
-	playerSize := w.GetComponent(playerEntity, reflect.TypeOf(&components.Size{})).(*components.Size)
-	playerScore := w.GetComponent(playerEntity, reflect.TypeOf(&components.Score{})).(*components.Score)
+	playerPos := world.GetComponent(playerEntity, reflect.TypeOf(&components.Position{})).(*components.Position)
+	playerSize := world.GetComponent(playerEntity, reflect.TypeOf(&components.Size{})).(*components.Size)
+	playerScore := world.GetComponent(playerEntity, reflect.TypeOf(&components.Score{})).(*components.Score)
 
-	collectibles := w.Query(reflect.TypeOf(&components.Collectible{}), reflect.TypeOf(&components.Position{}), reflect.TypeOf(&components.Size{}))
+	collectibles := world.Query(reflect.TypeOf(&components.Collectible{}), reflect.TypeOf(&components.Position{}), reflect.TypeOf(&components.Size{}))
 	for _, collectible := range collectibles {
-		cPos := w.GetComponent(collectible, reflect.TypeOf(&components.Position{})).(*components.Position)
-		cSize := w.GetComponent(collectible, reflect.TypeOf(&components.Size{})).(*components.Size)
-		cData := w.GetComponent(collectible, reflect.TypeOf(&components.Collectible{})).(*components.Collectible)
+		cPos := world.GetComponent(collectible, reflect.TypeOf(&components.Position{})).(*components.Position)
+		cSize := world.GetComponent(collectible, reflect.TypeOf(&components.Size{})).(*components.Size)
+		cData := world.GetComponent(collectible, reflect.TypeOf(&components.Collectible{})).(*components.Collectible)
 
 		if intersects(playerPos, playerSize, cPos, cSize) && cData.Kind == components.CollectibleScore {
 			playerScore.Points += cData.Value
-			w.RemoveEntity(collectible)
+			world.RemoveEntity(collectible)
 		}
 	}
 }

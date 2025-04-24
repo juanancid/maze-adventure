@@ -8,6 +8,7 @@ import (
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/engine/config"
+	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
 type Sprite struct{}
@@ -16,10 +17,10 @@ func NewSprite() Sprite {
 	return Sprite{}
 }
 
-func (r Sprite) Draw(w *entities.World, screen *ebiten.Image) {
-	positions := w.GetComponents(reflect.TypeOf(&components.Position{}))
-	sprites := w.GetComponents(reflect.TypeOf(&components.Sprite{}))
-	sizes := w.GetComponents(reflect.TypeOf(&components.Size{}))
+func (r Sprite) Draw(world *entities.World, gameSession *session.GameSession, screen *ebiten.Image) {
+	positions := world.GetComponents(reflect.TypeOf(&components.Position{}))
+	sprites := world.GetComponents(reflect.TypeOf(&components.Sprite{}))
+	sizes := world.GetComponents(reflect.TypeOf(&components.Size{}))
 
 	for entity, pos := range positions {
 		position := pos.(*components.Position)

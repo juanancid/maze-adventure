@@ -12,7 +12,7 @@ const (
 )
 
 type BootState struct {
-	manager      *Manager
+	stateManager *Manager
 	levelManager *levels.Manager
 
 	sprite *ebiten.Image
@@ -21,11 +21,11 @@ type BootState struct {
 	blinkOn    bool
 }
 
-func NewBootState(manager *Manager, levelManager *levels.Manager) *BootState {
+func NewBootState(stateManager *Manager, levelManager *levels.Manager) *BootState {
 	sprite := utils.MustLoadSprite(introIllustrationFile)
 
 	return &BootState{
-		manager:      manager,
+		stateManager: stateManager,
 		levelManager: levelManager,
 		sprite:       sprite,
 	}
@@ -46,8 +46,8 @@ func (s *BootState) Update() error {
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeySpace) {
-		playingState := NewPlayingState(s.manager, s.levelManager)
-		s.manager.ChangeState(playingState)
+		playingState := NewPlayingState(s.stateManager, s.levelManager)
+		s.stateManager.ChangeState(playingState)
 	}
 	return nil
 }

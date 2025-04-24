@@ -7,6 +7,7 @@ import (
 
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
+	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
 type InputControl struct{}
@@ -15,10 +16,10 @@ func NewInputControl() InputControl {
 	return InputControl{}
 }
 
-func (is InputControl) Update(w *entities.World) {
-	entitiesToControl := w.QueryComponents(&components.InputControlled{}, &components.Velocity{})
+func (is InputControl) Update(world *entities.World, gameSession *session.GameSession) {
+	entitiesToControl := world.QueryComponents(&components.InputControlled{}, &components.Velocity{})
 	for _, entity := range entitiesToControl {
-		handleInput(w, entity)
+		handleInput(world, entity)
 	}
 }
 

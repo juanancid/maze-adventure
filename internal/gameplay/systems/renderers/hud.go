@@ -14,6 +14,7 @@ import (
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/engine/config"
+	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
 type HUD struct {
@@ -29,13 +30,13 @@ func NewHUD() *HUD {
 	return &HUD{faceSource: s}
 }
 
-func (r *HUD) Draw(w *entities.World, screen *ebiten.Image) {
+func (r *HUD) Draw(world *entities.World, gameSession *session.GameSession, screen *ebiten.Image) {
 	// Draw game title
 	textOp := &text.DrawOptions{}
 	textOp.GeoM.Translate(8, float64(config.HudHeight/2-4)) // Vertically centered-ish
 	textOp.ColorScale.ScaleWithColor(color.White)
 
-	scores := w.GetComponents(reflect.TypeOf(&components.Score{}))
+	scores := world.GetComponents(reflect.TypeOf(&components.Score{}))
 	var scoreEntity entities.Entity
 	for score := range scores {
 		scoreEntity = score
@@ -43,7 +44,7 @@ func (r *HUD) Draw(w *entities.World, screen *ebiten.Image) {
 	}
 
 	text.Draw(screen,
-		fmt.Sprintf("SCORE: %d", w.GetComponent(scoreEntity, reflect.TypeOf(&components.Score{})).(*components.Score).Points),
+		fmt.Sprintf("SCORE: %d", world.GetComponent(scoreEntity, reflect.TypeOf(&components.Score{})).(*components.Score).Points),
 		&text.GoTextFace{
 			Source: r.faceSource,
 			Size:   8,
@@ -52,7 +53,7 @@ func (r *HUD) Draw(w *entities.World, screen *ebiten.Image) {
 	)
 
 	// Draw level number
-	levels := w.GetComponents(reflect.TypeOf(&components.Level{}))
+	levels := world.GetComponents(reflect.TypeOf(&components.Level{}))
 	if len(levels) > 0 {
 		// Get the first level component (there should only be one)
 		var levelEntity entities.Entity
@@ -61,7 +62,7 @@ func (r *HUD) Draw(w *entities.World, screen *ebiten.Image) {
 			break
 		}
 
-		level := w.GetComponent(levelEntity, reflect.TypeOf(&components.Level{})).(*components.Level)
+		level := world.GetComponent(levelEntity, reflect.TypeOf(&components.Level{})).(*components.Level)
 
 		levelText := fmt.Sprintf("SECTOR %d", level.Number)
 		levelOp := &text.DrawOptions{}

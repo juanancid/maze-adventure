@@ -8,31 +8,36 @@ import (
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/gameplay/events"
 	"github.com/juanancid/maze-adventure/internal/gameplay/levels"
+	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 	"github.com/juanancid/maze-adventure/internal/gameplay/systems/renderers"
 	"github.com/juanancid/maze-adventure/internal/gameplay/systems/updaters"
 )
 
 type PlayingState struct {
-	manager      *Manager
-	world        *entities.World
+	stateManager *Manager
 	levelManager *levels.Manager
-	updaters     []Updater
-	renderers    []Renderer
-	eventBus     *events.Bus
+
+	gameSession *session.GameSession
+	eventBus    *events.Bus
+
+	world     *entities.World
+	updaters  []Updater
+	renderers []Renderer
 }
 
 type Updater interface {
-	Update(w *entities.World)
+	Update(world *entities.World, gameSession *session.GameSession)
 }
 
 type Renderer interface {
-	Draw(world *entities.World, screen *ebiten.Image)
+	Draw(world *entities.World, gameSession *session.GameSession, screen *ebiten.Image)
 }
 
-func NewPlayingState(manager *Manager, levelManager *levels.Manager) *PlayingState {
+func NewPlayingState(stateManager *Manager, levelManager *levels.Manager) *PlayingState {
 	ps := &PlayingState{
-		manager:      manager,
+		stateManager: stateManager,
 		levelManager: levelManager,
+		gameSession:  session.NewGameSession(),
 		eventBus:     events.NewBus(),
 	}
 
@@ -54,7 +59,7 @@ func (s *PlayingState) OnExit() {
 
 func (s *PlayingState) Update() error {
 	for _, updater := range s.updaters {
-		updater.Update(s.world)
+		updater.Update(s.world, s.gameSession)
 	}
 
 	s.eventBus.Process()
@@ -63,11 +68,11 @@ func (s *PlayingState) Update() error {
 
 func (s *PlayingState) Draw(screen *ebiten.Image) {
 	for _, renderer := range s.renderers {
-		renderer.Draw(s.world, screen)
+		renderer.Draw(s.world, s.gameSession, screen)
 	}
 }
 
-// The existing helper methods (loadNextLevel, setUpdaters, etc.) are moved here unchanged.
+// Helper methods
 
 func (s *PlayingState) loadNextLevel() {
 	levelConfig, hasMore := s.levelManager.NextLevel()
@@ -109,6 +114,6 @@ func (s *PlayingState) onLevelCompleted(e events.Event) {
 }
 
 func (s *PlayingState) onGameCompleted(e events.Event) {
-	endState := NewEndState(s.manager)
-	s.manager.ChangeState(endState)
+	endState := NewEndState(s.stateManager)
+	s.stateManager.ChangeState(endState)
 }

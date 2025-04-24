@@ -9,6 +9,7 @@ import (
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/core/queries"
 	"github.com/juanancid/maze-adventure/internal/engine/config"
+	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
 type Maze struct{}
@@ -17,8 +18,8 @@ func NewMaze() Maze {
 	return Maze{}
 }
 
-func (r Maze) Draw(w *entities.World, screen *ebiten.Image) {
-	maze, ok := queries.GetMazeComponent(w)
+func (r Maze) Draw(world *entities.World, gameSession *session.GameSession, screen *ebiten.Image) {
+	maze, ok := queries.GetMazeComponent(world)
 	if !ok {
 		return
 	}

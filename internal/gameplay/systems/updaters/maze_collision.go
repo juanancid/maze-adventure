@@ -5,6 +5,7 @@ import (
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/core/queries"
 	"github.com/juanancid/maze-adventure/internal/engine/mazebuilder"
+	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
 // MazeCollision ensures entities do not pass through maze walls.
@@ -14,17 +15,17 @@ func NewMazeCollision() MazeCollision {
 	return MazeCollision{}
 }
 
-func (mc MazeCollision) Update(w *entities.World) {
-	maze, ok := queries.GetMazeComponent(w)
+func (mc MazeCollision) Update(world *entities.World, gameSession *session.GameSession) {
+	maze, ok := queries.GetMazeComponent(world)
 	if !ok {
 		return
 	}
 
-	entityList := w.QueryComponents(&components.Position{}, &components.Size{}, &components.Velocity{})
+	entityList := world.QueryComponents(&components.Position{}, &components.Size{}, &components.Velocity{})
 	for _, entity := range entityList {
-		pos := entityList.GetPosition(w, entity)
-		size := entityList.GetSize(w, entity)
-		vel := entityList.GetVelocity(w, entity)
+		pos := entityList.GetPosition(world, entity)
+		size := entityList.GetSize(world, entity)
+		vel := entityList.GetVelocity(world, entity)
 
 		handleEntityCollision(pos, size, vel, maze)
 	}
