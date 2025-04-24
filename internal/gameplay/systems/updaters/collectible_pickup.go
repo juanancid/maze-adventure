@@ -1,6 +1,7 @@
 package updaters
 
 import (
+	"github.com/juanancid/maze-adventure/internal/gameplay/events"
 	"reflect"
 
 	"github.com/juanancid/maze-adventure/internal/core/components"
@@ -9,10 +10,14 @@ import (
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
-type CollectiblePickupSystem struct{}
+type CollectiblePickupSystem struct {
+	eventBus *events.Bus
+}
 
-func NewCollectiblePickup() *CollectiblePickupSystem {
-	return &CollectiblePickupSystem{}
+func NewCollectiblePickup(eventBus *events.Bus) *CollectiblePickupSystem {
+	return &CollectiblePickupSystem{
+		eventBus: eventBus,
+	}
 }
 
 func (s *CollectiblePickupSystem) Update(world *entities.World, gameSession *session.GameSession) {
@@ -23,7 +28,6 @@ func (s *CollectiblePickupSystem) Update(world *entities.World, gameSession *ses
 
 	playerPos := world.GetComponent(playerEntity, reflect.TypeOf(&components.Position{})).(*components.Position)
 	playerSize := world.GetComponent(playerEntity, reflect.TypeOf(&components.Size{})).(*components.Size)
-	playerScore := world.GetComponent(playerEntity, reflect.TypeOf(&components.Score{})).(*components.Score)
 
 	collectibles := world.Query(reflect.TypeOf(&components.Collectible{}), reflect.TypeOf(&components.Position{}), reflect.TypeOf(&components.Size{}))
 	for _, collectible := range collectibles {
@@ -32,7 +36,7 @@ func (s *CollectiblePickupSystem) Update(world *entities.World, gameSession *ses
 		cData := world.GetComponent(collectible, reflect.TypeOf(&components.Collectible{})).(*components.Collectible)
 
 		if intersects(playerPos, playerSize, cPos, cSize) && cData.Kind == components.CollectibleScore {
-			playerScore.Points += cData.Value
+			s.eventBus.Publish(events.CollectiblePicked{Value: cData.Value})
 			world.RemoveEntity(collectible)
 		}
 	}

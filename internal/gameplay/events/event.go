@@ -5,6 +5,14 @@ type Event interface {
 	isEvent()
 }
 
+// CollectiblePicked indicates that a collectible has been picked up.
+type CollectiblePicked struct {
+	Value int
+}
+
+// isEvent implements the Event interface explicitly.
+func (CollectiblePicked) isEvent() {}
+
 // LevelCompletedEvent indicates that a level has been successfully completed.
 type LevelCompletedEvent struct{}
 

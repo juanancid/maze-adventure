@@ -60,7 +60,6 @@ func createPlayer(world *entities.World, playerSize, cellWidth, cellHeight int) 
 
 	playerSprite := utils.MustLoadSprite(playerSpriteFile)
 	world.AddComponent(player, &components.Sprite{Image: playerSprite})
-	world.AddComponent(player, &components.Score{Points: 0})
 
 	return player
 }

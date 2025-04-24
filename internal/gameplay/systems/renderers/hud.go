@@ -36,15 +36,8 @@ func (r *HUD) Draw(world *entities.World, gameSession *session.GameSession, scre
 	textOp.GeoM.Translate(8, float64(config.HudHeight/2-4)) // Vertically centered-ish
 	textOp.ColorScale.ScaleWithColor(color.White)
 
-	scores := world.GetComponents(reflect.TypeOf(&components.Score{}))
-	var scoreEntity entities.Entity
-	for score := range scores {
-		scoreEntity = score
-		break
-	}
-
 	text.Draw(screen,
-		fmt.Sprintf("SCORE: %d", world.GetComponent(scoreEntity, reflect.TypeOf(&components.Score{})).(*components.Score).Points),
+		fmt.Sprintf("SCORE: %d", gameSession.Score),
 		&text.GoTextFace{
 			Source: r.faceSource,
 			Size:   8,

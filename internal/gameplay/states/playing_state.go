@@ -92,7 +92,7 @@ func (s *PlayingState) setUpdaters() {
 		updaters.NewMovement(),
 		updaters.NewMazeCollision(),
 		updaters.NewExitCollision(s.eventBus),
-		updaters.NewCollectiblePickup(),
+		updaters.NewCollectiblePickup(s.eventBus),
 	}
 }
 
@@ -105,8 +105,13 @@ func (s *PlayingState) setRenderers() {
 }
 
 func (s *PlayingState) setupEventSubscriptions() {
+	s.eventBus.Subscribe(reflect.TypeOf(events.CollectiblePicked{}), s.OnCollectiblePicked)
 	s.eventBus.Subscribe(reflect.TypeOf(events.LevelCompletedEvent{}), s.onLevelCompleted)
 	s.eventBus.Subscribe(reflect.TypeOf(events.GameComplete{}), s.onGameCompleted)
+}
+
+func (s *PlayingState) OnCollectiblePicked(e events.Event) {
+	s.gameSession.Score += e.(events.CollectiblePicked).Value
 }
 
 func (s *PlayingState) onLevelCompleted(e events.Event) {
