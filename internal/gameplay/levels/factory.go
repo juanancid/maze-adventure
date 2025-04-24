@@ -1,7 +1,6 @@
 package levels
 
 import (
-	"github.com/juanancid/maze-adventure/internal/gameplay/levels/definitions"
 	"math/rand"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -11,6 +10,7 @@ import (
 	"github.com/juanancid/maze-adventure/internal/engine/config"
 	"github.com/juanancid/maze-adventure/internal/engine/mazebuilder"
 	"github.com/juanancid/maze-adventure/internal/engine/utils"
+	"github.com/juanancid/maze-adventure/internal/gameplay/levels/definitions"
 )
 
 const (
