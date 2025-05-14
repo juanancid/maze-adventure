@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"github.com/juanancid/maze-adventure/internal/core/entities"
+	"github.com/juanancid/maze-adventure/internal/engine/utils"
 	"github.com/juanancid/maze-adventure/internal/gameplay/events"
 	"github.com/juanancid/maze-adventure/internal/gameplay/levels"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
@@ -113,6 +114,7 @@ func (s *PlayingState) setupEventSubscriptions() {
 
 func (s *PlayingState) OnCollectiblePicked(e events.Event) {
 	s.gameSession.Score += e.(events.CollectiblePicked).Value
+	utils.PlayCollectibleSound()
 }
 
 func (s *PlayingState) onLevelCompleted(e events.Event) {
