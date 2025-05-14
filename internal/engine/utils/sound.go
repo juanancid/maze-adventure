@@ -9,60 +9,49 @@ import (
 	"github.com/juanancid/maze-adventure/internal/engine/assets"
 )
 
-var (
-	audioContext         = audio.NewContext(44100)
-	collectiblePlayer    *audio.Player
-	levelCompletedPlayer *audio.Player
+const sampleRate = 44100
+
+type SoundEffect int
+
+const (
+	SoundCollectibleBip SoundEffect = iota
+	SoundLevelCompleted
 )
 
-func PlayCollectibleSound() {
-	if collectiblePlayer == nil {
-		// Decode the WAV file
-		stream, err := wav.DecodeWithSampleRate(44100, bytes.NewReader(assets.CollectibleBip))
-		if err != nil {
-			log.Printf("error decoding sound: %v", err)
+var (
+	audioContext = audio.NewContext(sampleRate)
+
+	soundPlayers = map[SoundEffect]*audio.Player{}
+	soundSources = map[SoundEffect][]byte{
+		SoundCollectibleBip: assets.CollectibleBip,
+		SoundLevelCompleted: assets.LevelCompleted,
+	}
+)
+
+func PlaySound(effect SoundEffect) {
+	player, exists := soundPlayers[effect]
+	if !exists {
+		data, ok := soundSources[effect]
+		if !ok {
+			log.Printf("sound '%d' not found", effect)
 			return
 		}
 
-		// Create a new player
-		collectiblePlayer, err = audioContext.NewPlayer(stream)
+		stream, err := wav.DecodeWithSampleRate(sampleRate, bytes.NewReader(data))
 		if err != nil {
-			log.Printf("error creating audio player: %v", err)
-			return
-		}
-	}
-
-	// Rewind the player to the beginning
-	err := collectiblePlayer.Rewind()
-	if err != nil {
-		log.Printf("error rewinding sound: %v", err)
-	}
-	// Play the sound
-	collectiblePlayer.Play()
-}
-
-func PlayLevelCompletedSound() {
-	if levelCompletedPlayer == nil {
-		// Decode the WAV file
-		stream, err := wav.DecodeWithSampleRate(44100, bytes.NewReader(assets.LevelCompleted))
-		if err != nil {
-			log.Printf("error decoding sound: %v", err)
+			log.Printf("error decoding sound '%d': %v", effect, err)
 			return
 		}
 
-		// Create a new player
-		levelCompletedPlayer, err = audioContext.NewPlayer(stream)
+		player, err = audioContext.NewPlayer(stream)
 		if err != nil {
-			log.Printf("error creating audio player: %v", err)
+			log.Printf("error creating player for sound '%d': %v", effect, err)
 			return
 		}
+
+		soundPlayers[effect] = player
 	}
 
-	// Rewind the player to the beginning
-	err := levelCompletedPlayer.Rewind()
-	if err != nil {
-		log.Printf("error rewinding sound: %v", err)
-	}
-	// Play the sound
-	levelCompletedPlayer.Play()
+	_ = player.Rewind()
+	player.Play()
 }
