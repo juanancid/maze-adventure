@@ -14,8 +14,7 @@ import (
 )
 
 const (
-	playerSpriteFile = "internal/engine/assets/images/player.png"
-	exitSpriteFile   = "internal/engine/assets/images/exit.png"
+	exitSpriteFile = "internal/engine/assets/images/exit.png"
 )
 
 func CreateLevel(levelConfig definitions.LevelConfig) *entities.World {
@@ -54,7 +53,7 @@ func createPlayer(world *entities.World, playerSize, cellWidth, cellHeight int) 
 		MoveDownKey:  ebiten.KeyDown,
 	})
 
-	playerSprite := utils.MustLoadSprite(playerSpriteFile)
+	playerSprite := utils.LoadImage(utils.ImagePlayer)
 	world.AddComponent(player, &components.Sprite{Image: playerSprite})
 
 	return player
