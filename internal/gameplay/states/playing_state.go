@@ -113,11 +113,12 @@ func (s *PlayingState) setupEventSubscriptions() {
 }
 
 func (s *PlayingState) OnCollectiblePicked(e events.Event) {
-	s.gameSession.Score += e.(events.CollectiblePicked).Value
 	utils.PlayCollectibleSound()
+	s.gameSession.Score += e.(events.CollectiblePicked).Value
 }
 
 func (s *PlayingState) onLevelCompleted(e events.Event) {
+	utils.PlayLevelCompletedSound()
 	s.loadNextLevel()
 }
 

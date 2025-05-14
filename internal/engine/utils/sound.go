@@ -10,12 +10,13 @@ import (
 )
 
 var (
-	audioContext = audio.NewContext(44100)
-	player       *audio.Player
+	audioContext         = audio.NewContext(44100)
+	collectiblePlayer    *audio.Player
+	levelCompletedPlayer *audio.Player
 )
 
 func PlayCollectibleSound() {
-	if player == nil {
+	if collectiblePlayer == nil {
 		// Decode the WAV file
 		stream, err := wav.DecodeWithSampleRate(44100, bytes.NewReader(assets.CollectibleBip))
 		if err != nil {
@@ -24,7 +25,7 @@ func PlayCollectibleSound() {
 		}
 
 		// Create a new player
-		player, err = audioContext.NewPlayer(stream)
+		collectiblePlayer, err = audioContext.NewPlayer(stream)
 		if err != nil {
 			log.Printf("error creating audio player: %v", err)
 			return
@@ -32,10 +33,36 @@ func PlayCollectibleSound() {
 	}
 
 	// Rewind the player to the beginning
-	err := player.Rewind()
+	err := collectiblePlayer.Rewind()
 	if err != nil {
 		log.Printf("error rewinding sound: %v", err)
 	}
 	// Play the sound
-	player.Play()
+	collectiblePlayer.Play()
+}
+
+func PlayLevelCompletedSound() {
+	if levelCompletedPlayer == nil {
+		// Decode the WAV file
+		stream, err := wav.DecodeWithSampleRate(44100, bytes.NewReader(assets.LevelCompleted))
+		if err != nil {
+			log.Printf("error decoding sound: %v", err)
+			return
+		}
+
+		// Create a new player
+		levelCompletedPlayer, err = audioContext.NewPlayer(stream)
+		if err != nil {
+			log.Printf("error creating audio player: %v", err)
+			return
+		}
+	}
+
+	// Rewind the player to the beginning
+	err := levelCompletedPlayer.Rewind()
+	if err != nil {
+		log.Printf("error rewinding sound: %v", err)
+	}
+	// Play the sound
+	levelCompletedPlayer.Play()
 }

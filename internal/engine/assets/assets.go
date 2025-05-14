@@ -6,3 +6,6 @@ import (
 
 //go:embed sounds/collectible-bip.wav
 var CollectibleBip []byte
+
+//go:embed sounds/level-completed.wav
+var LevelCompleted []byte
