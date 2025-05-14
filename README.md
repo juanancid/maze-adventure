@@ -10,7 +10,7 @@ Maze Adventure is a retro-inspired 2D maze game built with [Ebitengine](https://
 
 - **Dynamic maze generation:** Unique maze layouts generated on-the-fly each playthrough.
 - **Multiple game states:** Menu, gameplay, and game over screens clearly structured for enhanced user experience.
-- **Retro visuals:** Classic EGA-inspired aesthetic (320x200 pixels resolution with a 16-color palette).
+- **Retro visuals:** Classic pixel art aesthetic with a 480x270 resolution.
 - **Smooth gameplay:** Fluid player controls and precise collision detection.
 
 ## Technologies used
