@@ -1,5 +1,9 @@
 # Maze Adventure
 
+[![Go Version](https://img.shields.io/badge/Go-1.24-blue.svg)](https://golang.org)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/juanancid/maze-adventure)
+
 Maze Adventure is a retro-inspired 2D maze game built with [Ebitengine](https://ebiten.org/) using Go. It leverages the Entity-Component-System (ECS) architecture pattern for clean, scalable, and maintainable code.
 
 ## Features
