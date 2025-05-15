@@ -15,14 +15,16 @@ const (
 	ImagePlayer GameImage = iota
 	ImageExit
 	ImageCollectible
+	ImageIntroIllustration
 )
 
 var (
 	gameImages   = map[GameImage]*ebiten.Image{}
 	imageSources = map[GameImage][]byte{
-		ImagePlayer:      assets.PlayerImage,
-		ImageExit:        assets.ExitImage,
-		ImageCollectible: assets.CollectibleImage,
+		ImagePlayer:            assets.PlayerImage,
+		ImageExit:              assets.ExitImage,
+		ImageCollectible:       assets.CollectibleImage,
+		ImageIntroIllustration: assets.IntroIllustration,
 	}
 )
 

@@ -18,3 +18,6 @@ var ExitImage []byte
 
 //go:embed images/collectible.png
 var CollectibleImage []byte
+
+//go:embed images/intro-illustration.png
+var IntroIllustration []byte

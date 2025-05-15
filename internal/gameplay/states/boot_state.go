@@ -7,10 +7,6 @@ import (
 	"github.com/juanancid/maze-adventure/internal/gameplay/levels"
 )
 
-const (
-	introIllustrationFile = "internal/engine/assets/images/intro-illustration.png"
-)
-
 type BootState struct {
 	stateManager *Manager
 	levelManager *levels.Manager
@@ -22,7 +18,7 @@ type BootState struct {
 }
 
 func NewBootState(stateManager *Manager, levelManager *levels.Manager) *BootState {
-	sprite := utils.MustLoadSprite(introIllustrationFile)
+	sprite := utils.LoadImage(utils.ImageIntroIllustration)
 
 	return &BootState{
 		stateManager: stateManager,
