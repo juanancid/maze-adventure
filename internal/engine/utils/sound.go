@@ -11,6 +11,11 @@ import (
 
 const sampleRate = 44100
 
+var (
+	audioContext = audio.NewContext(sampleRate)
+	players      = map[SoundEffect]*audio.Player{}
+)
+
 type SoundEffect int
 
 const (
@@ -18,40 +23,54 @@ const (
 	SoundLevelCompleted
 )
 
-var (
-	audioContext = audio.NewContext(sampleRate)
+var soundSources = map[SoundEffect][]byte{
+	SoundCollectibleBip: assets.CollectibleBip,
+	SoundLevelCompleted: assets.LevelCompleted,
+}
 
-	soundPlayers = map[SoundEffect]*audio.Player{}
-	soundSources = map[SoundEffect][]byte{
-		SoundCollectibleBip: assets.CollectibleBip,
-		SoundLevelCompleted: assets.LevelCompleted,
+// PreloadSounds loads all game sounds into the cache
+func PreloadSounds() {
+	for sound := range soundSources {
+		if err := loadSound(sound); err != nil {
+			log.Printf("error preloading sound %d: %v", sound, err)
+		}
 	}
-)
+}
 
-func PlaySound(effect SoundEffect) {
-	player, exists := soundPlayers[effect]
+func loadSound(sound SoundEffect) error {
+	if _, exists := players[sound]; exists {
+		return nil
+	}
+
+	// Decode the WAV file
+	stream, err := wav.DecodeWithSampleRate(sampleRate, bytes.NewReader(soundSources[sound]))
+	if err != nil {
+		return err
+	}
+
+	// Create a new player
+	player, err := audioContext.NewPlayer(stream)
+	if err != nil {
+		return err
+	}
+
+	players[sound] = player
+	return nil
+}
+
+func PlaySound(sound SoundEffect) {
+	player, exists := players[sound]
 	if !exists {
-		data, ok := soundSources[effect]
-		if !ok {
-			log.Printf("sound '%d' not found", effect)
-			return
-		}
-
-		stream, err := wav.DecodeWithSampleRate(sampleRate, bytes.NewReader(data))
-		if err != nil {
-			log.Printf("error decoding sound '%d': %v", effect, err)
-			return
-		}
-
-		player, err = audioContext.NewPlayer(stream)
-		if err != nil {
-			log.Printf("error creating player for sound '%d': %v", effect, err)
-			return
-		}
-
-		soundPlayers[effect] = player
+		log.Printf("sound %d not loaded", sound)
+		return
 	}
 
-	_ = player.Rewind()
+	// Rewind the player to the beginning
+	err := player.Rewind()
+	if err != nil {
+		log.Printf("error rewinding sound: %v", err)
+		return
+	}
+	// Play the sound
 	player.Play()
 }

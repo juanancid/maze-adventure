@@ -18,8 +18,9 @@ type BootState struct {
 }
 
 func NewBootState(stateManager *Manager, levelManager *levels.Manager) *BootState {
-	// Preload all game images
+	// Preload all game assets
 	utils.PreloadImages()
+	utils.PreloadSounds()
 
 	return &BootState{
 		stateManager: stateManager,
