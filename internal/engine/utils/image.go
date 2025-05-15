@@ -28,17 +28,30 @@ var (
 	}
 )
 
-func LoadImage(image GameImage) *ebiten.Image {
-	if cached, exists := gameImages[image]; exists {
-		return cached
+// PreloadImages loads all game images into the cache
+func PreloadImages() {
+	for img := range imageSources {
+		if err := loadImage(img); err != nil {
+			log.Printf("error preloading image %d: %v", img, err)
+		}
+	}
+}
+
+func loadImage(image GameImage) error {
+	if _, exists := gameImages[image]; exists {
+		return nil
 	}
 
 	img, _, err := ebitenutil.NewImageFromReader(bytes.NewReader(imageSources[image]))
 	if err != nil {
-		log.Printf("error loading image: %v", err)
-		return nil
+		return err
 	}
 
 	gameImages[image] = img
-	return img
+	return nil
+}
+
+// GetImage returns the cached image or nil if not loaded
+func GetImage(image GameImage) *ebiten.Image {
+	return gameImages[image]
 }

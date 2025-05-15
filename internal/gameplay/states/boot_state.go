@@ -18,12 +18,13 @@ type BootState struct {
 }
 
 func NewBootState(stateManager *Manager, levelManager *levels.Manager) *BootState {
-	sprite := utils.LoadImage(utils.ImageIntroIllustration)
+	// Preload all game images
+	utils.PreloadImages()
 
 	return &BootState{
 		stateManager: stateManager,
 		levelManager: levelManager,
-		sprite:       sprite,
+		sprite:       utils.GetImage(utils.ImageIntroIllustration),
 	}
 }
 

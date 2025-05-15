@@ -49,7 +49,7 @@ func createPlayer(world *entities.World, playerSize, cellWidth, cellHeight int) 
 		MoveDownKey:  ebiten.KeyDown,
 	})
 
-	playerSprite := utils.LoadImage(utils.ImagePlayer)
+	playerSprite := utils.GetImage(utils.ImagePlayer)
 	world.AddComponent(player, &components.Sprite{Image: playerSprite})
 
 	return player
@@ -82,7 +82,7 @@ func createExit(world *entities.World, mazeCol, mazeRow, cellWidth, cellHeight, 
 
 	world.AddComponent(exit, &components.Exit{})
 
-	exitSprite := utils.LoadImage(utils.ImageExit)
+	exitSprite := utils.GetImage(utils.ImageExit)
 	world.AddComponent(exit, &components.Sprite{Image: exitSprite})
 
 	return exit
@@ -123,6 +123,6 @@ func createCollectible(world *entities.World, row, col, cellWidth, cellHeight, v
 		Value: value,
 	})
 	world.AddComponent(collectible, &components.Sprite{
-		Image: utils.LoadImage(utils.ImageCollectible),
+		Image: utils.GetImage(utils.ImageCollectible),
 	})
 }
