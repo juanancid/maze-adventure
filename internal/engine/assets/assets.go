@@ -12,3 +12,6 @@ var LevelCompleted []byte
 
 //go:embed images/player.png
 var PlayerImage []byte
+
+//go:embed images/exit.png
+var ExitImage []byte

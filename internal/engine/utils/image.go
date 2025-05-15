@@ -13,12 +13,14 @@ type GameImage int
 
 const (
 	ImagePlayer GameImage = iota
+	ImageExit
 )
 
 var (
 	gameImages   = map[GameImage]*ebiten.Image{}
 	imageSources = map[GameImage][]byte{
 		ImagePlayer: assets.PlayerImage,
+		ImageExit:   assets.ExitImage,
 	}
 )
 

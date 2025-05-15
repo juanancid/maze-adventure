@@ -13,10 +13,6 @@ import (
 	"github.com/juanancid/maze-adventure/internal/gameplay/levels/definitions"
 )
 
-const (
-	exitSpriteFile = "internal/engine/assets/images/exit.png"
-)
-
 func CreateLevel(levelConfig definitions.LevelConfig) *entities.World {
 	world := entities.NewWorld()
 
@@ -86,7 +82,7 @@ func createExit(world *entities.World, mazeCol, mazeRow, cellWidth, cellHeight, 
 
 	world.AddComponent(exit, &components.Exit{})
 
-	exitSprite := utils.MustLoadSprite(exitSpriteFile)
+	exitSprite := utils.LoadImage(utils.ImageExit)
 	world.AddComponent(exit, &components.Sprite{Image: exitSprite})
 
 	return exit
