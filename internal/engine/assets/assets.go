@@ -15,3 +15,6 @@ var PlayerImage []byte
 
 //go:embed images/exit.png
 var ExitImage []byte
+
+//go:embed images/collectible.png
+var CollectibleImage []byte

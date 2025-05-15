@@ -123,6 +123,6 @@ func createCollectible(world *entities.World, row, col, cellWidth, cellHeight, v
 		Value: value,
 	})
 	world.AddComponent(collectible, &components.Sprite{
-		Image: utils.MustLoadSprite("internal/engine/assets/images/collectible-score.png"),
+		Image: utils.LoadImage(utils.ImageCollectible),
 	})
 }
