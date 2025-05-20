@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"runtime"
 	"time"
+
+	"github.com/hajimehoshi/ebiten/v2"
+
+	"github.com/juanancid/maze-adventure/internal/engine/input"
 )
 
 var (
@@ -50,4 +54,32 @@ func TrackFPS() {
 // GetDebugInfo returns the current debug information
 func GetDebugInfo() string {
 	return debugString
+}
+
+// System handles engine-level debug functionality
+type System struct {
+	showDebug    bool
+	inputHandler *input.Handler
+}
+
+// NewSystem creates a new debug system
+func NewSystem(inputHandler *input.Handler) *System {
+	return &System{
+		inputHandler: inputHandler,
+	}
+}
+
+// Update handles debug-related updates
+func (s *System) Update() {
+	TrackFPS()
+	s.inputHandler.Update()
+
+	if s.inputHandler.IsKeyCombinationToggled(ebiten.KeyMeta, ebiten.KeyD) {
+		s.showDebug = !s.showDebug
+	}
+}
+
+// IsDebugEnabled returns whether debug mode is enabled
+func (s *System) IsDebugEnabled() bool {
+	return s.showDebug
 }
