@@ -38,7 +38,7 @@ func NewPlayingState(stateManager *Manager, levelManager *levels.Manager) *Playi
 	ps := &PlayingState{
 		stateManager: stateManager,
 		levelManager: levelManager,
-		gameSession:  session.NewGameSession(),
+		gameSession:  session.NewGameSession(3), // Start with 3 hearts
 		eventBus:     events.NewBus(),
 	}
 

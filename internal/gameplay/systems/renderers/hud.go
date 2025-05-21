@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"image/color"
 	"log"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
@@ -25,11 +26,13 @@ func NewHUD() *HUD {
 		log.Fatal(err)
 	}
 
-	return &HUD{faceSource: s}
+	return &HUD{
+		faceSource: s,
+	}
 }
 
 func (r *HUD) Draw(world *entities.World, gameSession *session.GameSession, screen *ebiten.Image) {
-	// Draw game title
+	// Draw score
 	textOp := &text.DrawOptions{}
 	textOp.GeoM.Translate(8, float64(config.HudHeight/2-4)) // Vertically centered-ish
 	textOp.ColorScale.ScaleWithColor(color.White)
@@ -56,5 +59,20 @@ func (r *HUD) Draw(world *entities.World, gameSession *session.GameSession, scre
 			Size:   8,
 		},
 		levelOp,
+	)
+
+	// Draw hearts
+	hearts := strings.Repeat("♥", gameSession.CurrentHearts) + strings.Repeat("♡", gameSession.MaxHearts-gameSession.CurrentHearts)
+	heartsOp := &text.DrawOptions{}
+	heartsOp.GeoM.Translate(float64(config.ScreenWidth/2-24), float64(config.HudHeight/2-4))
+	heartsOp.ColorScale.ScaleWithColor(color.White)
+
+	text.Draw(screen,
+		hearts,
+		&text.GoTextFace{
+			Source: r.faceSource,
+			Size:   8,
+		},
+		heartsOp,
 	)
 }
