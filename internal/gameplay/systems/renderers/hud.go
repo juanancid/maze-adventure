@@ -16,25 +16,46 @@ import (
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
+// HUD is a composite renderer that combines all HUD elements
 type HUD struct {
-	faceSource *text.GoTextFaceSource
+	scoreRenderer  *ScoreRenderer
+	levelRenderer  *LevelRenderer
+	healthRenderer *HealthRenderer
 }
 
 func NewHUD() *HUD {
-	s, err := text.NewGoTextFaceSource(bytes.NewReader(fonts.PressStart2P_ttf))
+	faceSource, err := text.NewGoTextFaceSource(bytes.NewReader(fonts.PressStart2P_ttf))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	return &HUD{
-		faceSource: s,
+		scoreRenderer:  NewScoreRenderer(faceSource),
+		levelRenderer:  NewLevelRenderer(faceSource),
+		healthRenderer: NewHealthRenderer(faceSource),
 	}
 }
 
 func (r *HUD) Draw(world *entities.World, gameSession *session.GameSession, screen *ebiten.Image) {
-	// Draw score
+	r.scoreRenderer.Draw(gameSession, screen)
+	r.levelRenderer.Draw(gameSession, screen)
+	r.healthRenderer.Draw(gameSession, screen)
+}
+
+// ScoreRenderer handles drawing the score
+type ScoreRenderer struct {
+	faceSource *text.GoTextFaceSource
+}
+
+func NewScoreRenderer(faceSource *text.GoTextFaceSource) *ScoreRenderer {
+	return &ScoreRenderer{
+		faceSource: faceSource,
+	}
+}
+
+func (r *ScoreRenderer) Draw(gameSession *session.GameSession, screen *ebiten.Image) {
 	textOp := &text.DrawOptions{}
-	textOp.GeoM.Translate(8, float64(config.HudHeight/2-4)) // Vertically centered-ish
+	textOp.GeoM.Translate(8, float64(config.HudHeight/2-4))
 	textOp.ColorScale.ScaleWithColor(color.White)
 
 	text.Draw(screen,
@@ -45,8 +66,20 @@ func (r *HUD) Draw(world *entities.World, gameSession *session.GameSession, scre
 		},
 		textOp,
 	)
+}
 
-	// Draw level number
+// LevelRenderer handles drawing the level number
+type LevelRenderer struct {
+	faceSource *text.GoTextFaceSource
+}
+
+func NewLevelRenderer(faceSource *text.GoTextFaceSource) *LevelRenderer {
+	return &LevelRenderer{
+		faceSource: faceSource,
+	}
+}
+
+func (r *LevelRenderer) Draw(gameSession *session.GameSession, screen *ebiten.Image) {
 	levelText := fmt.Sprintf("SECTOR %d", gameSession.CurrentLevel)
 	levelOp := &text.DrawOptions{}
 	levelOp.GeoM.Translate(float64(config.ScreenWidth-100), float64(config.HudHeight/2-4))
@@ -60,8 +93,20 @@ func (r *HUD) Draw(world *entities.World, gameSession *session.GameSession, scre
 		},
 		levelOp,
 	)
+}
 
-	// Draw hearts
+// HealthRenderer handles drawing the health hearts
+type HealthRenderer struct {
+	faceSource *text.GoTextFaceSource
+}
+
+func NewHealthRenderer(faceSource *text.GoTextFaceSource) *HealthRenderer {
+	return &HealthRenderer{
+		faceSource: faceSource,
+	}
+}
+
+func (r *HealthRenderer) Draw(gameSession *session.GameSession, screen *ebiten.Image) {
 	hearts := strings.Repeat("♥", gameSession.CurrentHearts) + strings.Repeat("♡", gameSession.MaxHearts-gameSession.CurrentHearts)
 	heartsOp := &text.DrawOptions{}
 	heartsOp.GeoM.Translate(float64(config.ScreenWidth/2-24), float64(config.HudHeight/2-4))
