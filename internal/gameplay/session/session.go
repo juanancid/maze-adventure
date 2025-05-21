@@ -1,19 +1,25 @@
 package session
 
+import (
+	"github.com/juanancid/maze-adventure/internal/gameplay/config"
+)
+
 type GameSession struct {
 	Score         int
 	CurrentLevel  int
 	MaxHearts     int
 	CurrentHearts int
+	Config        config.GameConfig
 }
 
-// NewGameSession creates a new game session with the specified health configuration
-func NewGameSession(maxHearts int) *GameSession {
+// NewGameSession creates a new game session with the specified configuration
+func NewGameSession(config config.GameConfig) *GameSession {
 	return &GameSession{
 		Score:         0,
 		CurrentLevel:  0,
-		MaxHearts:     maxHearts,
-		CurrentHearts: maxHearts,
+		MaxHearts:     config.StartingHearts,
+		CurrentHearts: config.StartingHearts,
+		Config:        config,
 	}
 }
 

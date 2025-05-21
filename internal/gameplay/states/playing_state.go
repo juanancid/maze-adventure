@@ -7,6 +7,7 @@ import (
 
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/engine/utils"
+	"github.com/juanancid/maze-adventure/internal/gameplay/config"
 	"github.com/juanancid/maze-adventure/internal/gameplay/events"
 	"github.com/juanancid/maze-adventure/internal/gameplay/levels"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
@@ -17,6 +18,7 @@ import (
 type PlayingState struct {
 	stateManager *Manager
 	levelManager *levels.Manager
+	config       config.GameConfig
 
 	gameSession *session.GameSession
 	eventBus    *events.Bus
@@ -34,11 +36,12 @@ type Renderer interface {
 	Draw(world *entities.World, gameSession *session.GameSession, screen *ebiten.Image)
 }
 
-func NewPlayingState(stateManager *Manager, levelManager *levels.Manager) *PlayingState {
+func NewPlayingState(stateManager *Manager, levelManager *levels.Manager, config config.GameConfig) *PlayingState {
 	ps := &PlayingState{
 		stateManager: stateManager,
 		levelManager: levelManager,
-		gameSession:  session.NewGameSession(3), // Start with 3 hearts
+		config:       config,
+		gameSession:  session.NewGameSession(config),
 		eventBus:     events.NewBus(),
 	}
 
