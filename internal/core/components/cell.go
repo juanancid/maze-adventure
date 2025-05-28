@@ -1,8 +1,12 @@
-package mazebuilder
+package components
 
 // Cell represents a cell in the maze.
 type Cell struct {
 	walls [4]bool
+}
+
+func NewCell(walls [4]bool) Cell {
+	return Cell{walls: walls}
 }
 
 // HasTopWall returns true if the cell has a top wall.

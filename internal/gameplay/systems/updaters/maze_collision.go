@@ -4,7 +4,6 @@ import (
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/core/queries"
-	"github.com/juanancid/maze-adventure/internal/engine/mazebuilder"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
@@ -54,7 +53,7 @@ func cellIndices(x, y, cellWidth, cellHeight float64) (col, row int) {
 }
 
 // isCellValid explicitly checks if cell coordinates are valid
-func isCellValid(layout mazebuilder.Layout, col, row int) bool {
+func isCellValid(layout components.Layout, col, row int) bool {
 	return col >= 0 && col < layout.Cols() && row >= 0 && row < layout.Rows()
 }
 
