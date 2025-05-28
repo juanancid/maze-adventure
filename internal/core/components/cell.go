@@ -1,12 +1,28 @@
 package components
 
+// CellType represents the type of a cell in the maze
+type CellType int
+
+const (
+	// CellTypeRegular is a standard wall cell that doesn't affect the player
+	CellTypeRegular CellType = iota
+	// CellTypeDeadly is a cell that kills the player on contact
+	CellTypeDeadly
+	// CellTypeFreezing is a cell that freezes the player temporarily
+	CellTypeFreezing
+)
+
 // Cell represents a cell in the maze.
 type Cell struct {
 	walls [4]bool
+	Type  CellType
 }
 
 func NewCell(walls [4]bool) Cell {
-	return Cell{walls: walls}
+	return Cell{
+		walls: walls,
+		Type:  CellTypeRegular, // Default to regular cell type
+	}
 }
 
 // HasTopWall returns true if the cell has a top wall.
@@ -29,6 +45,16 @@ func (c Cell) HasLeftWall() bool {
 	return c.walls[3]
 }
 
+// SetType sets the type of the cell
+func (c *Cell) SetType(cellType CellType) {
+	c.Type = cellType
+}
+
+// GetType returns the type of the cell
+func (c Cell) GetType() CellType {
+	return c.Type
+}
+
 // Cols returns the number of columns in the maze.
 func (m Layout) Cols() int {
 	return m.cols
@@ -42,6 +68,10 @@ func (m Layout) Rows() int {
 // GetCell returns the cell at the given coordinates.
 func (m Layout) GetCell(x, y int) Cell {
 	return m.grid[y][x]
+}
+
+func (m Layout) SetCell(x, y int, cell Cell) {
+	m.grid[y][x] = cell
 }
 
 // GetCellAbove returns the cell above the given coordinates.

@@ -6,8 +6,7 @@ import (
 	"github.com/juanancid/maze-adventure/internal/core/components"
 )
 
-// NewMazeLayout creates a new maze with the given width and height.
-func NewMazeLayout(cols, rows int) components.Layout {
+func newMazeLayout(cols, rows int) components.Layout {
 	bGrid := initializeBuilderGrid(cols, rows)
 
 	startCol, startRow := 0, 0
