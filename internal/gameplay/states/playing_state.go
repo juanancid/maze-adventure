@@ -95,7 +95,7 @@ func (s *PlayingState) setUpdaters() {
 	s.updaters = []Updater{
 		updaters.NewInputControl(),
 		updaters.NewMovement(),
-		updaters.NewMazeCollision(),
+		updaters.NewMazeCollision(s.eventBus),
 		updaters.NewExitCollision(s.eventBus),
 		updaters.NewCollectiblePickup(s.eventBus),
 	}
@@ -113,6 +113,7 @@ func (s *PlayingState) setupEventSubscriptions() {
 	s.eventBus.Subscribe(reflect.TypeOf(events.CollectiblePicked{}), s.OnCollectiblePicked)
 	s.eventBus.Subscribe(reflect.TypeOf(events.LevelCompletedEvent{}), s.onLevelCompleted)
 	s.eventBus.Subscribe(reflect.TypeOf(events.GameComplete{}), s.onGameCompleted)
+	s.eventBus.Subscribe(reflect.TypeOf(events.PlayerDamaged{}), s.onPlayerDamaged)
 }
 
 func (s *PlayingState) OnCollectiblePicked(e events.Event) {
@@ -128,4 +129,14 @@ func (s *PlayingState) onLevelCompleted(e events.Event) {
 func (s *PlayingState) onGameCompleted(e events.Event) {
 	endState := NewEndState(s.stateManager)
 	s.stateManager.ChangeState(endState)
+}
+
+func (s *PlayingState) onPlayerDamaged(e events.Event) {
+	s.gameSession.TakeDamage()
+
+	// If player has no hearts left, game over
+	if !s.gameSession.IsAlive() {
+		// TODO: Implement game over state
+		panic("player damaged")
+	}
 }
