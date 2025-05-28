@@ -132,6 +132,7 @@ func (s *PlayingState) onGameCompleted(e events.Event) {
 }
 
 func (s *PlayingState) onPlayerDamaged(e events.Event) {
+	utils.PlaySound(utils.SoundDamage)
 	s.gameSession.TakeDamage()
 
 	// If player has no hearts left, game over
