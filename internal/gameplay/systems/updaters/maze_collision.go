@@ -58,6 +58,8 @@ func resolveMazeCollisionForEntity(pos *components.Position, size *components.Si
 		// Only emit damage event if there's an actual wall collision
 		if resolveCollisionAgainstCellWalls(pos, size, vel, col, row, maze) {
 			eventBus.Publish(events.PlayerDamaged{Amount: 1})
+			// Move player to center of cell to prevent immediate re-collision
+			moveToCellCenter(pos, size, col, row, maze.CellWidth, maze.CellHeight)
 		}
 	case components.CellTypeRegular:
 		resolveCollisionAgainstCellWalls(pos, size, vel, col, row, maze)
@@ -243,4 +245,15 @@ func isBeyondBottomWall(pos *components.Position, size *components.Size, row, ce
 
 func isBeyondLeftWall(pos *components.Position, col, cellWidth int) bool {
 	return pos.X < float64(col*cellWidth)
+}
+
+// moveToCellCenter positions the entity at the center of the specified cell
+func moveToCellCenter(pos *components.Position, size *components.Size, col, row, cellWidth, cellHeight int) {
+	// Calculate the center position of the cell
+	centerX := float64(col*cellWidth) + float64(cellWidth)/2
+	centerY := float64(row*cellHeight) + float64(cellHeight)/2
+
+	// Adjust position to center the entity
+	pos.X = centerX - size.Width/2
+	pos.Y = centerY - size.Height/2
 }
