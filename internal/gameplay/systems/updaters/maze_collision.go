@@ -19,6 +19,7 @@ func NewMazeCollision(eventBus *events.Bus) MazeCollision {
 	}
 }
 
+// Update checks for player collisions with the maze and handles resulting effects.
 func (mc MazeCollision) Update(world *entities.World, gameSession *session.GameSession) {
 	maze, ok := queries.GetMazeComponent(world)
 	if !ok {
@@ -31,16 +32,16 @@ func (mc MazeCollision) Update(world *entities.World, gameSession *session.GameS
 		size := entityList.GetSize(world, entity)
 		vel := entityList.GetVelocity(world, entity)
 
-		handleEntityCollision(pos, size, vel, maze, mc.eventBus)
+		resolveMazeCollisionForEntity(pos, size, vel, maze, mc.eventBus)
 	}
 }
 
-func handleEntityCollision(pos *components.Position, size *components.Size, vel *components.Velocity, maze *components.Maze, eventBus *events.Bus) {
+func resolveMazeCollisionForEntity(pos *components.Position, size *components.Size, vel *components.Velocity, maze *components.Maze, eventBus *events.Bus) {
 	entityBounds := newBoundingBox(pos, size)
 
 	// Determine the cell the player is in
 	centerX, centerY := entityBounds.center()
-	col, row := cellIndices(centerX, centerY, float64(maze.CellWidth), float64(maze.CellHeight))
+	col, row := getCellCoordsFromWorldPos(centerX, centerY, float64(maze.CellWidth), float64(maze.CellHeight))
 
 	// Check if out of mazeLayout bounds
 	if !isCellValid(maze.Layout, col, row) {
@@ -55,18 +56,18 @@ func handleEntityCollision(pos *components.Position, size *components.Size, vel 
 	switch cell.GetType() {
 	case components.CellTypeDeadly:
 		// Only emit damage event if there's an actual wall collision
-		if checkAndResolveWallCollision(pos, size, vel, col, row, maze) {
+		if resolveCollisionAgainstCellWalls(pos, size, vel, col, row, maze) {
 			eventBus.Publish(events.PlayerDamaged{Amount: 1})
 		}
 	case components.CellTypeRegular:
-		checkAndResolveWallCollision(pos, size, vel, col, row, maze)
+		resolveCollisionAgainstCellWalls(pos, size, vel, col, row, maze)
 	case components.CellTypeFreezing:
 		// TODO: Implement freezing effect
-		checkAndResolveWallCollision(pos, size, vel, col, row, maze)
+		resolveCollisionAgainstCellWalls(pos, size, vel, col, row, maze)
 	}
 }
 
-func cellIndices(x, y, cellWidth, cellHeight float64) (col, row int) {
+func getCellCoordsFromWorldPos(x, y, cellWidth, cellHeight float64) (col, row int) {
 	col = int(x / cellWidth)
 	row = int(y / cellHeight)
 	return
@@ -77,169 +78,169 @@ func isCellValid(layout components.Layout, col, row int) bool {
 	return col >= 0 && col < layout.Cols() && row >= 0 && row < layout.Rows()
 }
 
-// checkAndResolveWallCollision returns true if there was a wall collision
-func checkAndResolveWallCollision(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) bool {
-	hadCollision := false
+// resolveCollisionAgainstCellWalls returns true if there was a wall collision
+func resolveCollisionAgainstCellWalls(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) (collided bool) {
+	collided = false
 
 	// Check current cell boundaries
-	if checkCurrentCellBoundaryCollision(pos, size, vel, col, row, maze) {
-		hadCollision = true
+	if resolveCollisionAtCurrentCell(pos, size, vel, col, row, maze) {
+		collided = true
 	}
 
 	// Check neighbor cell edges
-	if checkNeighborCellEdgeCollision(pos, size, vel, col, row, maze) {
-		hadCollision = true
+	if resolveCollisionAtDiagonalEdges(pos, size, vel, col, row, maze) {
+		collided = true
 	}
 
 	// Check neighbor cell boundaries
-	if checkNeighborCellBoundaryCollision(pos, size, vel, col, row, maze) {
-		hadCollision = true
+	if resolveCollisionAtAdjacentCells(pos, size, vel, col, row, maze) {
+		collided = true
 	}
 
-	return hadCollision
+	return collided
 }
 
-func checkCurrentCellBoundaryCollision(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) bool {
+func resolveCollisionAtCurrentCell(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) (collided bool) {
 	mazeLayout := maze.Layout
 	currentCell := mazeLayout.GetCell(col, row)
-	hadCollision := false
+	collided = false
 
 	// Check collisions with walls based on velocity direction
-	if vel.DY < 0 && crossedTopBoundary(pos, row, maze.CellHeight) { // Moving UP
+	if vel.DY < 0 && isBeyondTopWall(pos, row, maze.CellHeight) { // Moving UP
 		if currentCell.HasTopWall() {
 			vel.DY = 0
 			pos.Y = float64(row * maze.CellHeight)
-			hadCollision = true
+			collided = true
 		}
 	}
 
-	if vel.DX > 0 && crossedRightBoundary(pos, size, col, maze.CellWidth) { // Moving RIGHT
+	if vel.DX > 0 && isBeyondRightWall(pos, size, col, maze.CellWidth) { // Moving RIGHT
 		if currentCell.HasRightWall() {
 			vel.DX = 0
 			pos.X = float64((col+1)*maze.CellWidth) - size.Width
-			hadCollision = true
+			collided = true
 		}
 	}
 
-	if vel.DY > 0 && crossedBottomBoundary(pos, size, row, maze.CellHeight) { // Moving DOWN
+	if vel.DY > 0 && isBeyondBottomWall(pos, size, row, maze.CellHeight) { // Moving DOWN
 		if currentCell.HasBottomWall() {
 			vel.DY = 0
 			pos.Y = float64((row+1)*maze.CellHeight) - size.Height
-			hadCollision = true
+			collided = true
 		}
 	}
 
-	if vel.DX < 0 && crossedLeftBoundary(pos, col, maze.CellWidth) { // Moving LEFT
+	if vel.DX < 0 && isBeyondLeftWall(pos, col, maze.CellWidth) { // Moving LEFT
 		if currentCell.HasLeftWall() {
 			vel.DX = 0
 			pos.X = float64(col * maze.CellWidth)
-			hadCollision = true
+			collided = true
 		}
 	}
 
-	return hadCollision
+	return collided
 }
 
-func checkNeighborCellEdgeCollision(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) bool {
+func resolveCollisionAtDiagonalEdges(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) (collided bool) {
 	mazeLayout := maze.Layout
-	hadCollision := false
+	collided = false
 
 	// Check collisions with edges based on velocity direction
-	if vel.DY < 0 && crossedTopBoundary(pos, row, maze.CellHeight) && row > 0 { // Moving UP
-		if crossedLeftBoundary(pos, col, maze.CellWidth) && mazeLayout.GetCellAbove(col, row).HasLeftWall() ||
-			crossedRightBoundary(pos, size, col, maze.CellWidth) && mazeLayout.GetCellAbove(col, row).HasRightWall() {
+	if vel.DY < 0 && isBeyondTopWall(pos, row, maze.CellHeight) && row > 0 { // Moving UP
+		if isBeyondLeftWall(pos, col, maze.CellWidth) && mazeLayout.GetCellAbove(col, row).HasLeftWall() ||
+			isBeyondRightWall(pos, size, col, maze.CellWidth) && mazeLayout.GetCellAbove(col, row).HasRightWall() {
 			vel.DY = 0
 			pos.Y = float64(row * maze.CellHeight)
-			hadCollision = true
+			collided = true
 		}
 	}
 
-	if vel.DX > 0 && crossedRightBoundary(pos, size, col, maze.CellWidth) && col < mazeLayout.Cols()-1 { // Moving RIGHT
-		if crossedTopBoundary(pos, row, maze.CellHeight) && mazeLayout.GetCellRight(col, row).HasTopWall() ||
-			crossedBottomBoundary(pos, size, row, maze.CellHeight) && mazeLayout.GetCellRight(col, row).HasBottomWall() {
+	if vel.DX > 0 && isBeyondRightWall(pos, size, col, maze.CellWidth) && col < mazeLayout.Cols()-1 { // Moving RIGHT
+		if isBeyondTopWall(pos, row, maze.CellHeight) && mazeLayout.GetCellRight(col, row).HasTopWall() ||
+			isBeyondBottomWall(pos, size, row, maze.CellHeight) && mazeLayout.GetCellRight(col, row).HasBottomWall() {
 			vel.DX = 0
 			pos.X = float64((col+1)*maze.CellWidth) - size.Width
-			hadCollision = true
+			collided = true
 		}
 	}
 
-	if vel.DY > 0 && crossedBottomBoundary(pos, size, row, maze.CellHeight) && row < mazeLayout.Rows()-1 { // Moving DOWN
-		if crossedLeftBoundary(pos, col, maze.CellWidth) && mazeLayout.GetCellBelow(col, row).HasLeftWall() ||
-			crossedRightBoundary(pos, size, col, maze.CellWidth) && mazeLayout.GetCellBelow(col, row).HasRightWall() {
+	if vel.DY > 0 && isBeyondBottomWall(pos, size, row, maze.CellHeight) && row < mazeLayout.Rows()-1 { // Moving DOWN
+		if isBeyondLeftWall(pos, col, maze.CellWidth) && mazeLayout.GetCellBelow(col, row).HasLeftWall() ||
+			isBeyondRightWall(pos, size, col, maze.CellWidth) && mazeLayout.GetCellBelow(col, row).HasRightWall() {
 			vel.DY = 0
 			pos.Y = float64((row+1)*maze.CellHeight) - size.Height
-			hadCollision = true
+			collided = true
 		}
 	}
 
-	if vel.DX < 0 && crossedLeftBoundary(pos, col, maze.CellWidth) && col > 0 { // Moving LEFT
-		if crossedTopBoundary(pos, row, maze.CellHeight) && mazeLayout.GetCellLeft(col, row).HasTopWall() ||
-			crossedBottomBoundary(pos, size, row, maze.CellHeight) && mazeLayout.GetCellLeft(col, row).HasBottomWall() {
+	if vel.DX < 0 && isBeyondLeftWall(pos, col, maze.CellWidth) && col > 0 { // Moving LEFT
+		if isBeyondTopWall(pos, row, maze.CellHeight) && mazeLayout.GetCellLeft(col, row).HasTopWall() ||
+			isBeyondBottomWall(pos, size, row, maze.CellHeight) && mazeLayout.GetCellLeft(col, row).HasBottomWall() {
 			vel.DX = 0
 			pos.X = float64(col * maze.CellWidth)
-			hadCollision = true
+			collided = true
 		}
 	}
 
-	return hadCollision
+	return collided
 }
 
-func checkNeighborCellBoundaryCollision(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) bool {
+func resolveCollisionAtAdjacentCells(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) (collided bool) {
 	mazeLayout := maze.Layout
-	hadCollision := false
+	collided = false
 
 	// Check collisions with other cells walls based on velocity direction
-	if vel.DY < 0 && crossedTopBoundary(pos, row, maze.CellHeight) { // Moving UP
-		if col > 0 && crossedLeftBoundary(pos, col, maze.CellWidth) && mazeLayout.GetCellLeft(col, row).HasTopWall() ||
-			col < mazeLayout.Cols()-1 && crossedRightBoundary(pos, size, col, maze.CellWidth) && mazeLayout.GetCellRight(col, row).HasTopWall() {
+	if vel.DY < 0 && isBeyondTopWall(pos, row, maze.CellHeight) { // Moving UP
+		if col > 0 && isBeyondLeftWall(pos, col, maze.CellWidth) && mazeLayout.GetCellLeft(col, row).HasTopWall() ||
+			col < mazeLayout.Cols()-1 && isBeyondRightWall(pos, size, col, maze.CellWidth) && mazeLayout.GetCellRight(col, row).HasTopWall() {
 			vel.DY = 0
 			pos.Y = float64(row * maze.CellHeight)
-			hadCollision = true
+			collided = true
 		}
 	}
 
-	if vel.DX > 0 && crossedRightBoundary(pos, size, col, maze.CellWidth) { // Moving RIGHT
-		if row > 0 && crossedTopBoundary(pos, row, maze.CellHeight) && mazeLayout.GetCellAbove(col, row).HasRightWall() ||
-			row < mazeLayout.Rows()-1 && crossedBottomBoundary(pos, size, row, maze.CellHeight) && mazeLayout.GetCellBelow(col, row).HasRightWall() {
+	if vel.DX > 0 && isBeyondRightWall(pos, size, col, maze.CellWidth) { // Moving RIGHT
+		if row > 0 && isBeyondTopWall(pos, row, maze.CellHeight) && mazeLayout.GetCellAbove(col, row).HasRightWall() ||
+			row < mazeLayout.Rows()-1 && isBeyondBottomWall(pos, size, row, maze.CellHeight) && mazeLayout.GetCellBelow(col, row).HasRightWall() {
 			vel.DX = 0
 			pos.X = float64((col+1)*maze.CellWidth) - size.Width
-			hadCollision = true
+			collided = true
 		}
 	}
 
-	if vel.DY > 0 && crossedBottomBoundary(pos, size, row, maze.CellHeight) { // Moving DOWN
-		if col > 0 && crossedLeftBoundary(pos, col, maze.CellWidth) && mazeLayout.GetCellLeft(col, row).HasBottomWall() ||
-			col < mazeLayout.Cols()-1 && crossedRightBoundary(pos, size, col, maze.CellWidth) && mazeLayout.GetCellRight(col, row).HasBottomWall() {
+	if vel.DY > 0 && isBeyondBottomWall(pos, size, row, maze.CellHeight) { // Moving DOWN
+		if col > 0 && isBeyondLeftWall(pos, col, maze.CellWidth) && mazeLayout.GetCellLeft(col, row).HasBottomWall() ||
+			col < mazeLayout.Cols()-1 && isBeyondRightWall(pos, size, col, maze.CellWidth) && mazeLayout.GetCellRight(col, row).HasBottomWall() {
 			vel.DY = 0
 			pos.Y = float64((row+1)*maze.CellHeight) - size.Height
-			hadCollision = true
+			collided = true
 		}
 	}
 
-	if vel.DX < 0 && crossedLeftBoundary(pos, col, maze.CellWidth) { // Moving LEFT
-		if row > 0 && crossedTopBoundary(pos, row, maze.CellHeight) && mazeLayout.GetCellAbove(col, row).HasLeftWall() ||
-			row < mazeLayout.Rows()-1 && crossedBottomBoundary(pos, size, row, maze.CellHeight) && mazeLayout.GetCellBelow(col, row).HasLeftWall() {
+	if vel.DX < 0 && isBeyondLeftWall(pos, col, maze.CellWidth) { // Moving LEFT
+		if row > 0 && isBeyondTopWall(pos, row, maze.CellHeight) && mazeLayout.GetCellAbove(col, row).HasLeftWall() ||
+			row < mazeLayout.Rows()-1 && isBeyondBottomWall(pos, size, row, maze.CellHeight) && mazeLayout.GetCellBelow(col, row).HasLeftWall() {
 			vel.DX = 0
 			pos.X = float64(col * maze.CellWidth)
-			hadCollision = true
+			collided = true
 		}
 	}
 
-	return hadCollision
+	return collided
 }
 
-func crossedTopBoundary(pos *components.Position, row, cellHeight int) bool {
+func isBeyondTopWall(pos *components.Position, row, cellHeight int) bool {
 	return pos.Y < float64(row*cellHeight)
 }
 
-func crossedRightBoundary(pos *components.Position, size *components.Size, col, cellWidth int) bool {
+func isBeyondRightWall(pos *components.Position, size *components.Size, col, cellWidth int) bool {
 	return pos.X+size.Width > float64((col+1)*cellWidth)
 }
 
-func crossedBottomBoundary(pos *components.Position, size *components.Size, row, cellHeight int) bool {
+func isBeyondBottomWall(pos *components.Position, size *components.Size, row, cellHeight int) bool {
 	return pos.Y+size.Height > float64((row+1)*cellHeight)
 }
 
-func crossedLeftBoundary(pos *components.Position, col, cellWidth int) bool {
+func isBeyondLeftWall(pos *components.Position, col, cellWidth int) bool {
 	return pos.X < float64(col*cellWidth)
 }
