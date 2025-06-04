@@ -107,7 +107,7 @@ func NewHealthRenderer(faceSource *text.GoTextFaceSource) *HealthRenderer {
 }
 
 func (r *HealthRenderer) Draw(gameSession *session.GameSession, screen *ebiten.Image) {
-	hearts := strings.Repeat("♥", gameSession.CurrentHearts) + strings.Repeat("♡", gameSession.MaxHearts-gameSession.CurrentHearts)
+	hearts := strings.Repeat("♥", gameSession.CurrentHearts) + strings.Repeat("·", gameSession.MaxHearts-gameSession.CurrentHearts)
 	heartsOp := &text.DrawOptions{}
 	heartsOp.GeoM.Translate(float64(config.ScreenWidth/2-24), float64(config.HudHeight/2-4))
 	heartsOp.ColorScale.ScaleWithColor(color.White)
