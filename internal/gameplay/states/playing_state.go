@@ -137,7 +137,7 @@ func (s *PlayingState) onPlayerDamaged(e events.Event) {
 
 	// If player has no hearts left, game over
 	if !s.gameSession.IsAlive() {
-		// TODO: Implement game over state
-		panic("player damaged")
+		gameOverState := NewGameOverState(s.stateManager)
+		s.stateManager.ChangeState(gameOverState)
 	}
 }
