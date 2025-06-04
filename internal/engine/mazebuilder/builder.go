@@ -1,6 +1,7 @@
 package mazebuilder
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -21,20 +22,41 @@ func NewBuilderConfig(width, height int) *BuilderConfig {
 	return &BuilderConfig{
 		Width:         width,
 		Height:        height,
-		DeadlyCells:   2,
-		FreezingCells: 5,
+		DeadlyCells:   0, // Default to 0, should be set by caller
+		FreezingCells: 0, // Default to 0, should be set by caller
 		Seed:          time.Now().UnixNano(),
 	}
 }
 
-// Build creates a new maze with the specified configuration
-func Build(config *BuilderConfig) components.Layout {
-	layout := newMazeLayout(config.Width, config.Height)
+// Validate ensures the builder configuration is valid
+func (b *BuilderConfig) Validate() error {
+	if b.Width <= 0 || b.Height <= 0 {
+		return fmt.Errorf("invalid maze dimensions: width=%d, height=%d", b.Width, b.Height)
+	}
 
+	totalCells := b.Width * b.Height
+	if b.DeadlyCells < 0 || b.FreezingCells < 0 {
+		return fmt.Errorf("special cells count cannot be negative: deadly=%d, freezing=%d", b.DeadlyCells, b.FreezingCells)
+	}
+
+	if b.DeadlyCells+b.FreezingCells >= totalCells {
+		return fmt.Errorf("too many special cells: deadly=%d, freezing=%d, total cells=%d", b.DeadlyCells, b.FreezingCells, totalCells)
+	}
+
+	return nil
+}
+
+// Build creates a new maze with the specified configuration
+func Build(config *BuilderConfig) (components.Layout, error) {
+	if err := config.Validate(); err != nil {
+		return components.Layout{}, fmt.Errorf("invalid builder config: %w", err)
+	}
+
+	layout := newMazeLayout(config.Width, config.Height)
 	r := rand.New(rand.NewSource(config.Seed))
 	placeSpecialCells(layout, config, r)
 
-	return layout
+	return layout, nil
 }
 
 // placeSpecialCells randomly places special cells in the maze

@@ -88,7 +88,7 @@ func (s *PlayingState) loadNextLevel() {
 	}
 
 	s.gameSession.CurrentLevel = levelNumber
-	s.world = levels.CreateLevel(levelConfig)
+	s.world, _ = levels.CreateLevel(levelConfig)
 }
 
 func (s *PlayingState) setUpdaters() {

@@ -1,6 +1,7 @@
 package levels
 
 import (
+	"fmt"
 	"math/rand"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -13,7 +14,11 @@ import (
 	"github.com/juanancid/maze-adventure/internal/gameplay/levels/definitions"
 )
 
-func CreateLevel(levelConfig definitions.LevelConfig) *entities.World {
+func CreateLevel(levelConfig definitions.LevelConfig) (*entities.World, error) {
+	if err := levelConfig.Maze.Validate(); err != nil {
+		return nil, fmt.Errorf("invalid level configuration: %w", err)
+	}
+
 	world := entities.NewWorld()
 
 	mazeCols := levelConfig.Maze.Cols
@@ -25,11 +30,15 @@ func CreateLevel(levelConfig definitions.LevelConfig) *entities.World {
 	playerSize := levelConfig.Player.Size
 
 	createPlayer(world, playerSize, cellWidth, cellHeight)
-	createMaze(world, mazeCols, mazeRows, cellWidth, cellHeight)
+
+	if _, err := createMaze(world, levelConfig, cellWidth, cellHeight); err != nil {
+		return nil, err
+	}
+
 	createExit(world, levelConfig.Exit.Position.X, levelConfig.Exit.Position.Y, cellWidth, cellHeight, levelConfig.Exit.Size)
 	createCollectibles(world, levelConfig)
 
-	return world
+	return world, nil
 }
 
 func createPlayer(world *entities.World, playerSize, cellWidth, cellHeight int) entities.Entity {
@@ -55,17 +64,26 @@ func createPlayer(world *entities.World, playerSize, cellWidth, cellHeight int) 
 	return player
 }
 
-func createMaze(world *entities.World, mazeCols, mazeRows int, cellWidth, cellHeight int) entities.Entity {
+func createMaze(world *entities.World, levelConfig definitions.LevelConfig, cellWidth, cellHeight int) (entities.Entity, error) {
 	mazeEntity := world.NewEntity()
-	builderConfig := mazebuilder.NewBuilderConfig(mazeCols, mazeRows)
+	builderConfig := mazebuilder.NewBuilderConfig(levelConfig.Maze.Cols, levelConfig.Maze.Rows)
+
+	// Set special cells from level configuration
+	builderConfig.DeadlyCells = levelConfig.Maze.DeadlyCells
+	builderConfig.FreezingCells = levelConfig.Maze.FreezingCells
+
+	layout, err := mazebuilder.Build(builderConfig)
+	if err != nil {
+		return 0, fmt.Errorf("failed to build maze: %w", err)
+	}
 
 	world.AddComponent(mazeEntity, &components.Maze{
-		Layout:     mazebuilder.Build(builderConfig),
+		Layout:     layout,
 		CellWidth:  cellWidth,
 		CellHeight: cellHeight,
 	})
 
-	return mazeEntity
+	return mazeEntity, nil
 }
 
 func createExit(world *entities.World, mazeCol, mazeRow, cellWidth, cellHeight, exitSize int) entities.Entity {
