@@ -127,8 +127,8 @@ func (s *PlayingState) onLevelCompleted(e events.Event) {
 }
 
 func (s *PlayingState) onGameCompleted(e events.Event) {
-	endState := NewEndState(s.stateManager)
-	s.stateManager.ChangeState(endState)
+	victoryState := NewVictoryState(s.stateManager)
+	s.stateManager.ChangeState(victoryState)
 }
 
 func (s *PlayingState) onPlayerDamaged(e events.Event) {

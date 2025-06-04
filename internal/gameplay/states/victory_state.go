@@ -6,29 +6,29 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type EndState struct {
+type VictoryState struct {
 	manager *Manager
 
 	blinkTimer int
 	blinkOn    bool
 }
 
-func NewEndState(manager *Manager) *EndState {
-	return &EndState{
+func NewVictoryState(manager *Manager) *VictoryState {
+	return &VictoryState{
 		manager: manager,
 	}
 }
 
-func (s *EndState) OnEnter() {
+func (s *VictoryState) OnEnter() {
 	s.blinkTimer = 0
 	s.blinkOn = false
 }
 
-func (s *EndState) OnExit() {
+func (s *VictoryState) OnExit() {
 	// Cleanup explicitly, if needed
 }
 
-func (s *EndState) Update() error {
+func (s *VictoryState) Update() error {
 	s.blinkTimer++
 	if s.blinkTimer >= 60 {
 		s.blinkTimer = 0
@@ -41,7 +41,7 @@ func (s *EndState) Update() error {
 	return nil
 }
 
-func (s *EndState) Draw(screen *ebiten.Image) {
+func (s *VictoryState) Draw(screen *ebiten.Image) {
 	screen.Fill(bgColor)
 
 	drawCenteredText(screen, "MAZE ADVENTURE", 20, titleFontSize)
