@@ -1,6 +1,7 @@
 package levels
 
 import (
+	"fmt"
 	"math/rand"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -13,12 +14,11 @@ import (
 	"github.com/juanancid/maze-adventure/internal/gameplay/levels/definitions"
 )
 
-const (
-	playerSpriteFile = "internal/engine/assets/images/player.png"
-	exitSpriteFile   = "internal/engine/assets/images/exit.png"
-)
+func CreateLevel(levelConfig definitions.LevelConfig) (*entities.World, error) {
+	if err := levelConfig.Maze.Validate(); err != nil {
+		return nil, fmt.Errorf("invalid level configuration: %w", err)
+	}
 
-func CreateLevel(levelConfig definitions.LevelConfig) *entities.World {
 	world := entities.NewWorld()
 
 	mazeCols := levelConfig.Maze.Cols
@@ -30,11 +30,15 @@ func CreateLevel(levelConfig definitions.LevelConfig) *entities.World {
 	playerSize := levelConfig.Player.Size
 
 	createPlayer(world, playerSize, cellWidth, cellHeight)
-	createMaze(world, mazeCols, mazeRows, cellWidth, cellHeight)
+
+	if _, err := createMaze(world, levelConfig, cellWidth, cellHeight); err != nil {
+		return nil, err
+	}
+
 	createExit(world, levelConfig.Exit.Position.X, levelConfig.Exit.Position.Y, cellWidth, cellHeight, levelConfig.Exit.Size)
 	createCollectibles(world, levelConfig)
 
-	return world
+	return world, nil
 }
 
 func createPlayer(world *entities.World, playerSize, cellWidth, cellHeight int) entities.Entity {
@@ -54,21 +58,32 @@ func createPlayer(world *entities.World, playerSize, cellWidth, cellHeight int) 
 		MoveDownKey:  ebiten.KeyDown,
 	})
 
-	playerSprite := utils.MustLoadSprite(playerSpriteFile)
+	playerSprite := utils.GetImage(utils.ImagePlayer)
 	world.AddComponent(player, &components.Sprite{Image: playerSprite})
 
 	return player
 }
 
-func createMaze(world *entities.World, mazeCols, mazeRows int, cellWidth, cellHeight int) entities.Entity {
+func createMaze(world *entities.World, levelConfig definitions.LevelConfig, cellWidth, cellHeight int) (entities.Entity, error) {
 	mazeEntity := world.NewEntity()
+	builderConfig := mazebuilder.NewBuilderConfig(levelConfig.Maze.Cols, levelConfig.Maze.Rows)
+
+	// Set special cells from level configuration
+	builderConfig.DeadlyCells = levelConfig.Maze.DeadlyCells
+	builderConfig.FreezingCells = levelConfig.Maze.FreezingCells
+
+	layout, err := mazebuilder.Build(builderConfig)
+	if err != nil {
+		return 0, fmt.Errorf("failed to build maze: %w", err)
+	}
+
 	world.AddComponent(mazeEntity, &components.Maze{
-		Layout:     mazebuilder.NewMazeLayout(mazeCols, mazeRows),
+		Layout:     layout,
 		CellWidth:  cellWidth,
 		CellHeight: cellHeight,
 	})
 
-	return mazeEntity
+	return mazeEntity, nil
 }
 
 func createExit(world *entities.World, mazeCol, mazeRow, cellWidth, cellHeight, exitSize int) entities.Entity {
@@ -87,7 +102,7 @@ func createExit(world *entities.World, mazeCol, mazeRow, cellWidth, cellHeight, 
 
 	world.AddComponent(exit, &components.Exit{})
 
-	exitSprite := utils.MustLoadSprite(exitSpriteFile)
+	exitSprite := utils.GetImage(utils.ImageExit)
 	world.AddComponent(exit, &components.Sprite{Image: exitSprite})
 
 	return exit
@@ -128,6 +143,6 @@ func createCollectible(world *entities.World, row, col, cellWidth, cellHeight, v
 		Value: value,
 	})
 	world.AddComponent(collectible, &components.Sprite{
-		Image: utils.MustLoadSprite("internal/engine/assets/images/collectible-score.png"),
+		Image: utils.GetImage(utils.ImageCollectible),
 	})
 }

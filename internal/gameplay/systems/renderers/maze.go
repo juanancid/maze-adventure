@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 
+	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/core/queries"
 	"github.com/juanancid/maze-adventure/internal/engine/config"
@@ -16,6 +17,18 @@ type Maze struct{}
 
 func NewMaze() Maze {
 	return Maze{}
+}
+
+// getCellColor returns the color for a cell based on its type
+func getCellColor(cellType components.CellType) color.RGBA {
+	switch cellType {
+	case components.CellTypeDeadly:
+		return color.RGBA{R: 0xFF, G: 0x00, B: 0x00, A: 0xFF} // Red for deadly
+	case components.CellTypeFreezing:
+		return color.RGBA{R: 0x00, G: 0xFF, B: 0xFF, A: 0xFF} // Cyan for freezing
+	default:
+		return color.RGBA{R: 0x36, G: 0x9b, B: 0x48, A: 0xFF} // Green for regular
+	}
 }
 
 func (r Maze) Draw(world *entities.World, gameSession *session.GameSession, screen *ebiten.Image) {
@@ -32,12 +45,11 @@ func (r Maze) Draw(world *entities.World, gameSession *session.GameSession, scre
 	bgColor := color.RGBA{R: 0x12, G: 0x18, B: 0x21, A: 0xFF}
 	screen.Fill(bgColor)
 
-	wallColor := color.RGBA{R: 0x36, G: 0x9b, B: 0x48, A: 0xFF}
-
 	// Iterate over each cell and draw its walls.
 	for row := 0; row < mazeLayout.Rows(); row++ {
 		for col := 0; col < mazeLayout.Cols(); col++ {
 			cell := mazeLayout.GetCell(col, row)
+			wallColor := getCellColor(cell.GetType())
 
 			// Calculate pixel coordinates.
 			x1 := float64(col*cellWidth) + 1

@@ -4,16 +4,14 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"github.com/juanancid/maze-adventure/internal/engine/utils"
+	"github.com/juanancid/maze-adventure/internal/gameplay/config"
 	"github.com/juanancid/maze-adventure/internal/gameplay/levels"
-)
-
-const (
-	introIllustrationFile = "internal/engine/assets/images/intro-illustration.png"
 )
 
 type BootState struct {
 	stateManager *Manager
 	levelManager *levels.Manager
+	config       config.GameConfig
 
 	sprite *ebiten.Image
 
@@ -21,13 +19,16 @@ type BootState struct {
 	blinkOn    bool
 }
 
-func NewBootState(stateManager *Manager, levelManager *levels.Manager) *BootState {
-	sprite := utils.MustLoadSprite(introIllustrationFile)
+func NewBootState(stateManager *Manager, levelManager *levels.Manager, config config.GameConfig) *BootState {
+	// Preload all game assets
+	utils.PreloadImages()
+	utils.PreloadSounds()
 
 	return &BootState{
 		stateManager: stateManager,
 		levelManager: levelManager,
-		sprite:       sprite,
+		config:       config,
+		sprite:       utils.GetImage(utils.ImageIntroIllustration),
 	}
 }
 
@@ -46,7 +47,7 @@ func (s *BootState) Update() error {
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeySpace) {
-		playingState := NewPlayingState(s.stateManager, s.levelManager)
+		playingState := NewPlayingState(s.stateManager, s.levelManager, s.config)
 		s.stateManager.ChangeState(playingState)
 	}
 	return nil

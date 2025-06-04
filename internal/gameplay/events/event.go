@@ -24,3 +24,11 @@ type GameComplete struct{}
 
 // isEvent implements the Event interface explicitly.
 func (GameComplete) isEvent() {}
+
+// PlayerDamaged indicates that the player has taken damage
+type PlayerDamaged struct {
+	Amount int
+}
+
+// isEvent implements the Event interface explicitly.
+func (PlayerDamaged) isEvent() {}

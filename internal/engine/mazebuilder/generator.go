@@ -2,7 +2,18 @@ package mazebuilder
 
 import (
 	"math/rand"
+
+	"github.com/juanancid/maze-adventure/internal/core/components"
 )
+
+func newMazeLayout(cols, rows int) components.Layout {
+	bGrid := initializeBuilderGrid(cols, rows)
+
+	startCol, startRow := 0, 0
+	carveMazePaths(startCol, startRow, cols, rows, bGrid)
+
+	return convertBuilderGridToLayout(bGrid, cols, rows)
+}
 
 type builderCell struct {
 	x, y    int
@@ -85,13 +96,14 @@ func removeWall(current, neighbor *builderCell, dir int) {
 	neighbor.walls[(dir+2)%4] = false // Remove the opposite wall in neighbor.
 }
 
-func convertBuilderGridToLayout(grid builderGrid, cols, rows int) Layout {
-	finalGrid := make([][]Cell, rows)
+func convertBuilderGridToLayout(grid builderGrid, cols, rows int) components.Layout {
+	finalGrid := make([][]components.Cell, rows)
 	for y := range grid {
-		finalGrid[y] = make([]Cell, cols)
+		finalGrid[y] = make([]components.Cell, cols)
 		for x := range grid[y] {
-			finalGrid[y][x] = Cell{walls: grid[y][x].walls}
+			finalGrid[y][x] = components.NewCell(grid[y][x].walls)
 		}
 	}
-	return Layout{cols: cols, rows: rows, grid: finalGrid}
+
+	return components.NewLayout(cols, rows, finalGrid)
 }

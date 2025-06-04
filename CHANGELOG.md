@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2025-06-04
+
+### Added
+- Introduced a **hazard system** with deadly cells that damage the player on contact.
+- Added a **player health system** with visible units displayed in the HUD.
+- Added a new **Game Over screen** shown when the player loses all health.
+- Created a **damage feedback system** with repositioning to avoid repeated hits.
+- Embedded all **game images and sounds** for easier distribution and predictable boot behavior.
+- Added **sound effects** for collecting items, completing a level, and taking damage.
+- Added **debug system** with toggles for development diagnostics.
+
+### Changed
+- Refactored maze generation to support typed cells (`Regular`, `Deadly`, `Freezing`).
+- Improved maze and level configuration validation with better error reporting.
+- Split HUD renderer into focused modules (e.g. Health, Memory, Level).
+- Updated the damage logic to reposition the player to the center of the current cell after hit.
+- Enhanced visuals for the HUD and hazards, improving readability and style.
+- Renamed `EndState` to `VictoryState` for clarity.
+
+### Maintenance
+- Updated to the latest **Ebitengine** and **Golang** versions.
+- Added build and license badges to the README.
+- Cleaned up sound playback logic and image embedding system for consistency.
+
 ## [0.4.0] - 2025-04-24
 
 ### Added
@@ -61,7 +85,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Smooth player movement.
 - Basic collision handling between the player and maze walls.
 
-[Unreleased]: https://github.com/juanancid/maze-adventure/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/juanancid/maze-adventure/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/juanancid/maze-adventure/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/juanancid/maze-adventure/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/juanancid/maze-adventure/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/juanancid/maze-adventure/compare/v0.1.0...v0.2.0

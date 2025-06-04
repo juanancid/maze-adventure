@@ -4,8 +4,10 @@ package definitions
 func Level02() LevelConfig {
 	return LevelConfig{
 		Maze: MazeConfig{
-			Cols: 16,
-			Rows: 10,
+			Cols:          16,
+			Rows:          10,
+			DeadlyCells:   4,
+			FreezingCells: 6,
 		},
 		Player: PlayerConfig{
 			Size: 12,
