@@ -29,6 +29,11 @@ cd maze-adventure
 make run
 ```
 
+## Gameplay preview
+
+Check out a short gameplay video of Maze Adventure on YouTube:  
+[![Watch on YouTube](https://img.youtube.com/vi/E4QhAwb9c0Y/0.jpg)](https://www.youtube.com/watch?v=E4QhAwb9c0Y)
+
 ## Contributions
 
 This project is personal and primarily educational, but contributions, feedback, or suggestions are always welcome!
