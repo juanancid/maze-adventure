@@ -21,6 +21,7 @@ type HUD struct {
 	scoreRenderer  *ScoreRenderer
 	levelRenderer  *LevelRenderer
 	healthRenderer *HealthRenderer
+	timerRenderer  *TimerRenderer
 }
 
 func NewHUD() *HUD {
@@ -33,6 +34,7 @@ func NewHUD() *HUD {
 		scoreRenderer:  NewScoreRenderer(faceSource),
 		levelRenderer:  NewLevelRenderer(faceSource),
 		healthRenderer: NewHealthRenderer(faceSource),
+		timerRenderer:  NewTimerRenderer(faceSource),
 	}
 }
 
@@ -40,6 +42,7 @@ func (r *HUD) Draw(world *entities.World, gameSession *session.GameSession, scre
 	r.scoreRenderer.Draw(gameSession, screen)
 	r.levelRenderer.Draw(gameSession, screen)
 	r.healthRenderer.Draw(gameSession, screen)
+	r.timerRenderer.Draw(gameSession, screen)
 }
 
 // ScoreRenderer handles drawing the score
@@ -109,7 +112,7 @@ func NewHealthRenderer(faceSource *text.GoTextFaceSource) *HealthRenderer {
 func (r *HealthRenderer) Draw(gameSession *session.GameSession, screen *ebiten.Image) {
 	hearts := strings.Repeat("♥", gameSession.CurrentHearts) + strings.Repeat("·", gameSession.MaxHearts-gameSession.CurrentHearts)
 	heartsOp := &text.DrawOptions{}
-	heartsOp.GeoM.Translate(float64(config.ScreenWidth/2-24), float64(config.HudHeight/2-4))
+	heartsOp.GeoM.Translate(float64(config.ScreenWidth/2-54), float64(config.HudHeight/2-4))
 	heartsOp.ColorScale.ScaleWithColor(color.White)
 
 	text.Draw(screen,
@@ -119,5 +122,43 @@ func (r *HealthRenderer) Draw(gameSession *session.GameSession, screen *ebiten.I
 			Size:   8,
 		},
 		heartsOp,
+	)
+}
+
+// TimerRenderer handles drawing the level timer
+type TimerRenderer struct {
+	faceSource *text.GoTextFaceSource
+}
+
+func NewTimerRenderer(faceSource *text.GoTextFaceSource) *TimerRenderer {
+	return &TimerRenderer{
+		faceSource: faceSource,
+	}
+}
+
+func (r *TimerRenderer) Draw(gameSession *session.GameSession, screen *ebiten.Image) {
+	if !gameSession.TimerEnabled {
+		return
+	}
+
+	timerText := gameSession.GetTimerDisplayTime()
+	timerOp := &text.DrawOptions{}
+	// Position the timer in the center-top area of the HUD
+	timerOp.GeoM.Translate(float64(config.ScreenWidth/2+20), float64(config.HudHeight/2-4))
+
+	// Change color to red when timer is running low (less than 10 seconds)
+	if gameSession.TimerRemaining <= 10 {
+		timerOp.ColorScale.ScaleWithColor(color.RGBA{R: 255, G: 100, B: 100, A: 255})
+	} else {
+		timerOp.ColorScale.ScaleWithColor(color.White)
+	}
+
+	text.Draw(screen,
+		timerText,
+		&text.GoTextFace{
+			Source: r.faceSource,
+			Size:   8,
+		},
+		timerOp,
 	)
 }

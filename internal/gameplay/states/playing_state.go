@@ -89,6 +89,9 @@ func (s *PlayingState) loadNextLevel() {
 
 	s.gameSession.CurrentLevel = levelNumber
 	s.world, _ = levels.CreateLevel(levelConfig)
+
+	// Initialize the timer for this level
+	s.gameSession.SetTimer(levelConfig.Timer)
 }
 
 func (s *PlayingState) setUpdaters() {
@@ -98,6 +101,7 @@ func (s *PlayingState) setUpdaters() {
 		updaters.NewMazeCollision(s.eventBus),
 		updaters.NewExitCollision(s.eventBus),
 		updaters.NewCollectiblePickup(s.eventBus),
+		updaters.NewTimer(s.eventBus),
 	}
 }
 
@@ -114,6 +118,7 @@ func (s *PlayingState) setupEventSubscriptions() {
 	s.eventBus.Subscribe(reflect.TypeOf(events.LevelCompletedEvent{}), s.onLevelCompleted)
 	s.eventBus.Subscribe(reflect.TypeOf(events.GameComplete{}), s.onGameCompleted)
 	s.eventBus.Subscribe(reflect.TypeOf(events.PlayerDamaged{}), s.onPlayerDamaged)
+	s.eventBus.Subscribe(reflect.TypeOf(events.TimerExpired{}), s.onTimerExpired)
 }
 
 func (s *PlayingState) OnCollectiblePicked(e events.Event) {
@@ -132,6 +137,17 @@ func (s *PlayingState) onGameCompleted(e events.Event) {
 }
 
 func (s *PlayingState) onPlayerDamaged(e events.Event) {
+	utils.PlaySound(utils.SoundDamage)
+	s.gameSession.TakeDamage()
+
+	// If player has no hearts left, game over
+	if !s.gameSession.IsAlive() {
+		gameOverState := NewGameOverState(s.stateManager)
+		s.stateManager.ChangeState(gameOverState)
+	}
+}
+
+func (s *PlayingState) onTimerExpired(e events.Event) {
 	utils.PlaySound(utils.SoundDamage)
 	s.gameSession.TakeDamage()
 

@@ -24,5 +24,6 @@ func Level01() LevelConfig {
 			Size:   8,
 			Value:  1,
 		},
+		Timer: 30, // 30 seconds for level 1
 	}
 }

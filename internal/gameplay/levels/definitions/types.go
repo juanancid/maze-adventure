@@ -12,6 +12,7 @@ type LevelConfig struct {
 	Player       PlayerConfig
 	Exit         ExitConfig
 	Collectibles Collectibles
+	Timer        int // Timer in seconds, 0 means no timer for this level
 }
 
 // MazeConfig defines the maze dimensions and special cells

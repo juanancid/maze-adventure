@@ -4,4 +4,5 @@ package definitions
 var LevelRegistry = []func() LevelConfig{
 	Level01,
 	Level02,
+	Level03,
 }
