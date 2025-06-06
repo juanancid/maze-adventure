@@ -94,6 +94,21 @@ func (s *PlayingState) loadNextLevel() {
 	s.gameSession.SetTimer(levelConfig.Timer)
 }
 
+func (s *PlayingState) restartCurrentLevel() {
+	levelConfig, levelNumber, hasLevel := s.levelManager.GetCurrentLevel()
+
+	if !hasLevel {
+		// No current level to restart, shouldn't happen
+		return
+	}
+
+	s.gameSession.CurrentLevel = levelNumber
+	s.world, _ = levels.CreateLevel(levelConfig)
+
+	// Initialize the timer for this level
+	s.gameSession.SetTimer(levelConfig.Timer)
+}
+
 func (s *PlayingState) setUpdaters() {
 	s.updaters = []Updater{
 		updaters.NewInputControl(),
@@ -149,11 +164,5 @@ func (s *PlayingState) onPlayerDamaged(e events.Event) {
 
 func (s *PlayingState) onTimerExpired(e events.Event) {
 	utils.PlaySound(utils.SoundDamage)
-	s.gameSession.TakeDamage()
-
-	// If player has no hearts left, game over
-	if !s.gameSession.IsAlive() {
-		gameOverState := NewGameOverState(s.stateManager)
-		s.stateManager.ChangeState(gameOverState)
-	}
+	s.restartCurrentLevel()
 }
