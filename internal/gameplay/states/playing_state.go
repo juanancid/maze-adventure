@@ -1,6 +1,7 @@
 package states
 
 import (
+	"log"
 	"reflect"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -88,7 +89,23 @@ func (s *PlayingState) loadNextLevel() {
 	}
 
 	s.gameSession.CurrentLevel = levelNumber
-	s.world, _ = levels.CreateLevel(levelConfig)
+	world, err := levels.CreateLevel(levelConfig)
+	if err != nil {
+		// Critical error: level creation failed
+		log.Printf("CRITICAL: Failed to create level %d: %v", levelNumber, err)
+		log.Printf("This is a serious bug that needs investigation. Keeping current level to prevent crash.")
+
+		// Reset the timer for current level as a fallback
+		if s.world != nil {
+			s.gameSession.SetTimer(levelConfig.Timer)
+		} else {
+			// If we don't even have a world, this is catastrophic - trigger game complete to exit gracefully
+			log.Printf("CATASTROPHIC: No world available, ending game to prevent crash")
+			s.eventBus.Publish(events.GameComplete{})
+		}
+		return
+	}
+	s.world = world
 
 	// Initialize the timer for this level
 	s.gameSession.SetTimer(levelConfig.Timer)

@@ -1,6 +1,10 @@
 package states
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"fmt"
+
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 type Manager struct {
 	current State
@@ -27,9 +31,14 @@ func (m *Manager) ChangeState(next State) {
 }
 
 func (m *Manager) Update() error {
+	if m.current == nil {
+		return fmt.Errorf("no current state to update")
+	}
 	return m.current.Update()
 }
 
 func (m *Manager) Draw(screen *ebiten.Image) {
-	m.current.Draw(screen)
+	if m.current != nil {
+		m.current.Draw(screen)
+	}
 }

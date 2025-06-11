@@ -24,8 +24,15 @@ func (is InputControl) Update(world *entities.World, gameSession *session.GameSe
 }
 
 func handleInput(w *entities.World, entity entities.Entity) {
-	control := w.GetComponent(entity, reflect.TypeOf(&components.InputControlled{})).(*components.InputControlled)
-	velocity := w.GetComponent(entity, reflect.TypeOf(&components.Velocity{})).(*components.Velocity)
+	controlComp := w.GetComponent(entity, reflect.TypeOf(&components.InputControlled{}))
+	velocityComp := w.GetComponent(entity, reflect.TypeOf(&components.Velocity{}))
+
+	if controlComp == nil || velocityComp == nil {
+		return // Skip if components are missing
+	}
+
+	control := controlComp.(*components.InputControlled)
+	velocity := velocityComp.(*components.Velocity)
 
 	updateVelocityFromInput(control, velocity)
 }

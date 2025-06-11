@@ -34,6 +34,11 @@ func (r Sprite) Draw(world *entities.World, gameSession *session.GameSession, sc
 			continue
 		}
 
+		// Check if image is nil to prevent crashes
+		if spriteComp.Image == nil {
+			continue // Skip rendering if image is not loaded
+		}
+
 		options := &ebiten.DrawImageOptions{}
 		imageX := spriteComp.Image.Bounds().Dx()
 		imageY := spriteComp.Image.Bounds().Dy()

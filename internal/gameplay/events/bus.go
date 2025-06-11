@@ -1,6 +1,9 @@
 package events
 
-import "reflect"
+import (
+	"log"
+	"reflect"
+)
 
 type Handler func(Event)
 
@@ -34,7 +37,15 @@ func (b *Bus) Process() {
 		for _, event := range currentQueue {
 			if handlers, ok := b.handlers[reflect.TypeOf(event)]; ok {
 				for _, handler := range handlers {
-					handler(event)
+					// Protect against panics in event handlers
+					func() {
+						defer func() {
+							if r := recover(); r != nil {
+								log.Printf("PANIC in event handler for %T: %v", event, r)
+							}
+						}()
+						handler(event)
+					}()
 				}
 			}
 		}
