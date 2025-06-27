@@ -52,19 +52,18 @@ func resolveMazeCollisionForEntity(pos *components.Position, size *components.Si
 	// Get the cell at the player's position
 	cell := maze.Layout.GetCell(col, row)
 
-	// Check cell type and handle accordingly
-	switch cell.GetType() {
-	case components.CellTypeDeadly:
+	// Check the cell type and handle accordingly
+	if cell.IsDeadly() {
 		// Only emit damage event if there's an actual wall collision
 		if resolveCollisionAgainstCellWalls(pos, size, vel, col, row, maze) {
 			eventBus.Publish(events.PlayerDamaged{Amount: 1})
-			// Move player to center of cell to prevent immediate re-collision
+			// Move the player to the center of the cell to prevent immediate re-collision
 			moveToCellCenter(pos, size, col, row, maze.CellWidth, maze.CellHeight)
 		}
-	case components.CellTypeRegular:
+	} else if cell.IsRegular() {
 		resolveCollisionAgainstCellWalls(pos, size, vel, col, row, maze)
-	case components.CellTypeFreezing:
-		// TODO: Implement freezing effect
+	} else if cell.IsFreezing() {
+		// Freezing cells still have wall collision, but also apply speed reduction
 		resolveCollisionAgainstCellWalls(pos, size, vel, col, row, maze)
 	}
 }
@@ -107,7 +106,7 @@ func resolveCollisionAtCurrentCell(pos *components.Position, size *components.Si
 	currentCell := mazeLayout.GetCell(col, row)
 	collided = false
 
-	// Check collisions with walls based on velocity direction
+	// Check collisions with walls based on the velocity direction
 	if vel.DY < 0 && isBeyondTopWall(pos, row, maze.CellHeight) { // Moving UP
 		if currentCell.HasTopWall() {
 			vel.DY = 0
@@ -147,7 +146,7 @@ func resolveCollisionAtDiagonalEdges(pos *components.Position, size *components.
 	mazeLayout := maze.Layout
 	collided = false
 
-	// Check collisions with edges based on velocity direction
+	// Check collisions with edges based on the velocity direction
 	if vel.DY < 0 && isBeyondTopWall(pos, row, maze.CellHeight) && row > 0 { // Moving UP
 		if isBeyondLeftWall(pos, col, maze.CellWidth) && mazeLayout.GetCellAbove(col, row).HasLeftWall() ||
 			isBeyondRightWall(pos, size, col, maze.CellWidth) && mazeLayout.GetCellAbove(col, row).HasRightWall() {

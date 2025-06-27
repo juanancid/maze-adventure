@@ -1,27 +1,26 @@
 package components
 
-// CellType represents the type of a cell in the maze
-type CellType int
+type cellType int
 
 const (
-	// CellTypeRegular is a standard wall cell that doesn't affect the player
-	CellTypeRegular CellType = iota
-	// CellTypeDeadly is a cell that kills the player on contact
-	CellTypeDeadly
-	// CellTypeFreezing is a cell that freezes the player temporarily
-	CellTypeFreezing
+	// cellTypeRegular is a standard wall cell that doesn't affect the player
+	cellTypeRegular cellType = iota
+	// cellTypeDeadly is a cell that kills the player on contact
+	cellTypeDeadly
+	// cellTypeFreezing is a cell that freezes the player temporarily
+	cellTypeFreezing
 )
 
 // Cell represents a cell in the maze.
 type Cell struct {
 	walls [4]bool
-	Type  CellType
+	Type  cellType
 }
 
 func NewCell(walls [4]bool) Cell {
 	return Cell{
 		walls: walls,
-		Type:  CellTypeRegular, // Default to regular cell type
+		Type:  cellTypeRegular, // Default to regular cell type
 	}
 }
 
@@ -45,14 +44,29 @@ func (c Cell) HasLeftWall() bool {
 	return c.walls[3]
 }
 
-// SetType sets the type of the cell
-func (c *Cell) SetType(cellType CellType) {
-	c.Type = cellType
+// IsRegular returns true if the cell is a regular cell
+func (c Cell) IsRegular() bool {
+	return c.Type == cellTypeRegular
 }
 
-// GetType returns the type of the cell
-func (c Cell) GetType() CellType {
-	return c.Type
+// IsDeadly returns true if the cell is a deadly cell
+func (c Cell) IsDeadly() bool {
+	return c.Type == cellTypeDeadly
+}
+
+// IsFreezing returns true if the cell is a freezing cell
+func (c Cell) IsFreezing() bool {
+	return c.Type == cellTypeFreezing
+}
+
+// SetDeadly sets the cell type to deadly
+func (c *Cell) SetDeadly() {
+	c.Type = cellTypeDeadly
+}
+
+// SetFreezing sets the cell type to freezing
+func (c *Cell) SetFreezing() {
+	c.Type = cellTypeFreezing
 }
 
 // Cols returns the number of columns in the maze.
