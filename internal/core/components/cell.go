@@ -17,10 +17,22 @@ type Cell struct {
 	Type  cellType
 }
 
-func NewCell(walls [4]bool) Cell {
+func NewRegularCell(walls [4]bool) Cell {
+	return newCellWithWalls(walls, cellTypeRegular)
+}
+
+func NewDeadlyCell(walls [4]bool) Cell {
+	return newCellWithWalls(walls, cellTypeDeadly)
+}
+
+func NewFreezingCell(walls [4]bool) Cell {
+	return newCellWithWalls(walls, cellTypeFreezing)
+}
+
+func newCellWithWalls(walls [4]bool, cellType cellType) Cell {
 	return Cell{
 		walls: walls,
-		Type:  cellTypeRegular, // Default to regular cell type
+		Type:  cellType,
 	}
 }
 
@@ -59,17 +71,11 @@ func (c Cell) IsFreezing() bool {
 	return c.Type == cellTypeFreezing
 }
 
-// SetDeadly sets the cell type to deadly
-func (c *Cell) SetDeadly() {
-	c.Type = cellTypeDeadly
+func (c Cell) GetWalls() [4]bool {
+	return c.walls
 }
 
-// SetFreezing sets the cell type to freezing
-func (c *Cell) SetFreezing() {
-	c.Type = cellTypeFreezing
-}
-
-// Cols returns the number of columns in the maze.
+// Cols function returns the number of columns in the maze.
 func (m Layout) Cols() int {
 	return m.cols
 }
