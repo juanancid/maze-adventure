@@ -87,7 +87,7 @@ func placeSpecialCells(layout components.Layout, config *BuilderConfig, r *rand.
 	for i := 0; i < config.FreezingCells && startIdx+i < len(positions); i++ {
 		pos := positions[startIdx+i]
 		cell := layout.GetCell(pos.x, pos.y)
-		cell = components.NewFreezingCell(cell.GetWalls())
-		layout.SetCell(pos.x, pos.y, cell)
+		freezingCell := components.NewFreezingCell(cell.GetWalls())
+		layout.SetCell(pos.x, pos.y, freezingCell)
 	}
 }
