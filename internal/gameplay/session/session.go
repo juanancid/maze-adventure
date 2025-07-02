@@ -10,6 +10,8 @@ import (
 const (
 	// DefaultFreezeDuration is the default time a player is frozen when entering a freezing cell
 	DefaultFreezeDuration = 2500 * time.Millisecond // 2.5 seconds
+	// DefaultDamageCooldown is the default time before a player can take damage again
+	DefaultDamageCooldown = 1500 * time.Millisecond // 1.5 seconds
 )
 
 type GameSession struct {
@@ -30,6 +32,11 @@ type GameSession struct {
 	LastFreezeCellRow int           // Last cell where freeze was applied (to prevent re-triggering)
 	CurrentCellCol    int           // Current cell column position
 	CurrentCellRow    int           // Current cell row position
+	// Damage cooldown fields
+	LastDamageTime    time.Time     // When the player last took damage
+	DamageCooldown    time.Duration // How long to wait before taking damage again
+	LastDamageCellCol int           // Last cell where damage was applied (to prevent re-triggering)
+	LastDamageCellRow int           // Last cell where damage was applied (to prevent re-triggering)
 }
 
 // NewGameSession creates a new game session with the specified configuration
@@ -44,6 +51,9 @@ func NewGameSession(config config.GameConfig) *GameSession {
 		LastFreezeCellRow: -1,
 		CurrentCellCol:    -1, // -1 indicates uninitialized
 		CurrentCellRow:    -1,
+		DamageCooldown:    DefaultDamageCooldown,
+		LastDamageCellCol: -1, // -1 indicates no previous damage cell
+		LastDamageCellRow: -1,
 	}
 }
 
@@ -143,4 +153,23 @@ func (g *GameSession) CanApplyFreezeEffect() bool {
 // IsImmobilized returns true if the player cannot move due to freeze effect
 func (g *GameSession) IsImmobilized() bool {
 	return g.IsFrozen
+}
+
+// Damage cooldown methods
+
+// CanApplyDamageEffect checks if damage can be applied (not in cooldown and not in the same cell as last damage)
+func (g *GameSession) CanApplyDamageEffect() bool {
+	// Check if enough time has passed since last damage
+	timeSinceLastDamage := time.Since(g.LastDamageTime)
+	cooldownExpired := timeSinceLastDamage >= g.DamageCooldown
+
+	return cooldownExpired
+}
+
+// ApplyDamageWithCooldown applies damage and sets the cooldown
+func (g *GameSession) ApplyDamageWithCooldown() {
+	g.TakeDamage()
+	g.LastDamageTime = time.Now()
+	g.LastDamageCellCol = g.CurrentCellCol
+	g.LastDamageCellRow = g.CurrentCellRow
 }

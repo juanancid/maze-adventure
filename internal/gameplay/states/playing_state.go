@@ -156,8 +156,13 @@ func (s *PlayingState) onGameCompleted(e events.Event) {
 }
 
 func (s *PlayingState) onPlayerDamaged(e events.Event) {
+	// Check if damage can be applied (respects cooldown)
+	if !s.gameSession.CanApplyDamageEffect() {
+		return // Skip damage if in cooldown period
+	}
+
 	utils.PlaySound(utils.SoundDamage)
-	s.gameSession.TakeDamage()
+	s.gameSession.ApplyDamageWithCooldown()
 
 	// If player has no hearts left, game over
 	if !s.gameSession.IsAlive() {

@@ -1,13 +1,12 @@
 package updaters
 
 import (
-	"time"
-
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/core/queries"
 	"github.com/juanancid/maze-adventure/internal/gameplay/events"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
+	"time"
 )
 
 // MazeCollision ensures entities do not pass through maze walls.
@@ -55,22 +54,22 @@ func enforcePlayerMazeCollisions(pos *components.Position, size *components.Size
 	// Check if player has moved to a different cell
 	if gameSession.HasCellChanged(col, row) {
 		gameSession.SetCell(col, row)
+
 	}
 
 	// Handle wall collisions
 	wallCollisionOccurred := preventAllWallPenetrations(pos, size, vel, col, row, maze)
-	if !wallCollisionOccurred {
-		return
-	}
+	if wallCollisionOccurred {
+		cell := maze.Layout.GetCell(col, row)
 
-	// Handle collision effects for deadly cells
-	cell := maze.Layout.GetCell(col, row)
-	if cell.IsDeadly() {
-		eventBus.Publish(events.PlayerDamaged{Amount: 1})
-		centerEntityInCell(pos, size, col, row, maze.CellWidth, maze.CellHeight)
-	} else if cell.IsFreezing() && gameSession.CanApplyFreezeEffect() {
-		// Emit freeze event instead of direct manipulation
-		eventBus.Publish(events.PlayerFrozen{Duration: int(session.DefaultFreezeDuration / time.Millisecond)})
+		if cell.IsFreezing() && gameSession.CanApplyFreezeEffect() {
+			// Emit freeze event when entering freezing cell
+			eventBus.Publish(events.PlayerFrozen{Duration: int(session.DefaultFreezeDuration / time.Millisecond)})
+		}
+		if cell.IsDeadly() && gameSession.CanApplyDamageEffect() {
+			// Emit damage event when entering deadly cell (with cooldown check)
+			eventBus.Publish(events.PlayerDamaged{Amount: 1})
+		}
 	}
 }
 
@@ -254,15 +253,4 @@ func isCollidingWithBottomWall(pos *components.Position, size *components.Size, 
 // isCollidingWithLeftWall checks if entity collides with the left wall of a cell
 func isCollidingWithLeftWall(pos *components.Position, col, cellWidth int) bool {
 	return pos.X < float64(col*cellWidth)
-}
-
-// centerEntityInCell positions the entity at the center of the specified cell
-func centerEntityInCell(pos *components.Position, size *components.Size, col, row, cellWidth, cellHeight int) {
-	// Calculate the center position of the cell
-	centerX := float64(col*cellWidth) + float64(cellWidth)/2
-	centerY := float64(row*cellHeight) + float64(cellHeight)/2
-
-	// Adjust position to center the entity
-	pos.X = centerX - size.Width/2
-	pos.Y = centerY - size.Height/2
 }
