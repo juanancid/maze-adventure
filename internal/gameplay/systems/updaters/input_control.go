@@ -19,11 +19,11 @@ func NewInputControl() InputControl {
 func (is InputControl) Update(world *entities.World, gameSession *session.GameSession) {
 	entitiesToControl := world.QueryComponents(&components.InputControlled{}, &components.Velocity{})
 	for _, entity := range entitiesToControl {
-		handleInput(world, entity)
+		handlePlayerInput(world, entity, gameSession)
 	}
 }
 
-func handleInput(w *entities.World, entity entities.Entity) {
+func handlePlayerInput(w *entities.World, entity entities.Entity, gameSession *session.GameSession) {
 	controlComp := w.GetComponent(entity, reflect.TypeOf(&components.InputControlled{}))
 	velocityComp := w.GetComponent(entity, reflect.TypeOf(&components.Velocity{}))
 
@@ -34,11 +34,22 @@ func handleInput(w *entities.World, entity entities.Entity) {
 	control := controlComp.(*components.InputControlled)
 	velocity := velocityComp.(*components.Velocity)
 
-	updateVelocityFromInput(control, velocity)
+	updateVelocityFromInputWithGameSession(control, velocity, gameSession)
 }
 
-func updateVelocityFromInput(control *components.InputControlled, vel *components.Velocity) {
+func updateVelocityFromInputWithGameSession(control *components.InputControlled, vel *components.Velocity, gameSession *session.GameSession) {
+	// Update freeze state first (check if freeze duration has expired)
+	gameSession.UpdateFreezeState()
+
+	// Reset velocity
 	vel.DX, vel.DY = 0, 0
+
+	// If player is immobilized (frozen), block all movement input
+	if gameSession.IsImmobilized() {
+		return // Player cannot move while frozen
+	}
+
+	// Normal input processing
 	if ebiten.IsKeyPressed(control.MoveLeftKey) {
 		vel.DX = -1
 	}

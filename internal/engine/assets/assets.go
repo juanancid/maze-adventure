@@ -13,6 +13,9 @@ var LevelCompleted []byte
 //go:embed sounds/damage.wav
 var DamageSound []byte
 
+//go:embed sounds/freeze.wav
+var FreezeSound []byte
+
 //go:embed images/player.png
 var PlayerImage []byte
 

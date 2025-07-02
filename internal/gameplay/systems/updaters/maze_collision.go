@@ -1,6 +1,8 @@
 package updaters
 
 import (
+	"time"
+
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/core/queries"
@@ -32,11 +34,12 @@ func (mc MazeCollision) Update(world *entities.World, gameSession *session.GameS
 		size := entityList.GetSize(world, entity)
 		vel := entityList.GetVelocity(world, entity)
 
-		enforceEntityMazeCollisions(pos, size, vel, maze, mc.eventBus)
+		enforcePlayerMazeCollisions(pos, size, vel, gameSession, maze, mc.eventBus)
 	}
 }
 
-func enforceEntityMazeCollisions(pos *components.Position, size *components.Size, vel *components.Velocity, maze *components.Maze, eventBus *events.Bus) {
+// enforcePlayerMazeCollisions handles collision and cell effects for player entities
+func enforcePlayerMazeCollisions(pos *components.Position, size *components.Size, vel *components.Velocity, gameSession *session.GameSession, maze *components.Maze, eventBus *events.Bus) {
 	entityBounds := newBoundingBox(pos, size)
 
 	// Determine the cell the player is in
@@ -49,22 +52,25 @@ func enforceEntityMazeCollisions(pos *components.Position, size *components.Size
 		return
 	}
 
-	// Get the cell at the player's position
-	cell := maze.Layout.GetCell(col, row)
+	// Check if player has moved to a different cell
+	if gameSession.HasCellChanged(col, row) {
+		gameSession.SetCell(col, row)
+	}
 
-	// Check the cell type and handle accordingly
+	// Handle wall collisions
+	wallCollisionOccurred := preventAllWallPenetrations(pos, size, vel, col, row, maze)
+	if !wallCollisionOccurred {
+		return
+	}
+
+	// Handle collision effects for deadly cells
+	cell := maze.Layout.GetCell(col, row)
 	if cell.IsDeadly() {
-		// Only emit damage event if there's an actual wall collision
-		if preventAllWallPenetrations(pos, size, vel, col, row, maze) {
-			eventBus.Publish(events.PlayerDamaged{Amount: 1})
-			// Move the player to the center of the cell to prevent immediate re-collision
-			centerEntityInCell(pos, size, col, row, maze.CellWidth, maze.CellHeight)
-		}
-	} else if cell.IsRegular() {
-		preventAllWallPenetrations(pos, size, vel, col, row, maze)
-	} else if cell.IsFreezing() {
-		// Freezing cells still have wall collision, but also apply speed reduction
-		preventAllWallPenetrations(pos, size, vel, col, row, maze)
+		eventBus.Publish(events.PlayerDamaged{Amount: 1})
+		centerEntityInCell(pos, size, col, row, maze.CellWidth, maze.CellHeight)
+	} else if cell.IsFreezing() && gameSession.CanApplyFreezeEffect() {
+		// Emit freeze event instead of direct manipulation
+		eventBus.Publish(events.PlayerFrozen{Duration: int(session.DefaultFreezeDuration / time.Millisecond)})
 	}
 }
 

@@ -22,12 +22,14 @@ const (
 	SoundCollectibleBip SoundEffect = iota
 	SoundLevelCompleted
 	SoundDamage
+	SoundFreeze
 )
 
 var soundSources = map[SoundEffect][]byte{
 	SoundCollectibleBip: assets.CollectibleBip,
 	SoundLevelCompleted: assets.LevelCompleted,
 	SoundDamage:         assets.DamageSound,
+	SoundFreeze:         assets.FreezeSound,
 }
 
 // PreloadSounds loads all game sounds into the cache

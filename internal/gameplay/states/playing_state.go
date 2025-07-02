@@ -3,6 +3,7 @@ package states
 import (
 	"log"
 	"reflect"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 
@@ -136,6 +137,7 @@ func (s *PlayingState) setupEventSubscriptions() {
 	s.eventBus.Subscribe(reflect.TypeOf(events.GameComplete{}), s.onGameCompleted)
 	s.eventBus.Subscribe(reflect.TypeOf(events.PlayerDamaged{}), s.onPlayerDamaged)
 	s.eventBus.Subscribe(reflect.TypeOf(events.TimerExpired{}), s.onTimerExpired)
+	s.eventBus.Subscribe(reflect.TypeOf(events.PlayerFrozen{}), s.onPlayerFrozen)
 }
 
 func (s *PlayingState) OnCollectiblePicked(e events.Event) {
@@ -182,6 +184,13 @@ func (s *PlayingState) onTimerExpired(e events.Event) {
 		// Player is still alive, reset timer for current level
 		s.resetTimerForCurrentLevel()
 	}
+}
+
+func (s *PlayingState) onPlayerFrozen(e events.Event) {
+	utils.PlaySound(utils.SoundFreeze)
+	frozenEvent := e.(events.PlayerFrozen)
+	duration := time.Duration(frozenEvent.Duration) * time.Millisecond
+	s.gameSession.StartFreeze(duration)
 }
 
 func (s *PlayingState) resetTimerForCurrentLevel() {
