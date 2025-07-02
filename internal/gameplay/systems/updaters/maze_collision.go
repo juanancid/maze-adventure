@@ -80,38 +80,38 @@ func isCellWithinMazeBounds(layout components.Layout, col, row int) bool {
 }
 
 // preventAllWallPenetrations returns true if there was a wall collision
-func preventAllWallPenetrations(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) (collided bool) {
-	collided = false
+func preventAllWallPenetrations(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) (wallCollisionOccurred bool) {
+	wallCollisionOccurred = false
 
 	// Check current cell boundaries
 	if preventWallPenetrationInCurrentCell(pos, size, vel, col, row, maze) {
-		collided = true
+		wallCollisionOccurred = true
 	}
 
 	// Check neighbor cell edges
 	if preventWallPenetrationAtDiagonalEdges(pos, size, vel, col, row, maze) {
-		collided = true
+		wallCollisionOccurred = true
 	}
 
 	// Check neighbor cell boundaries
 	if preventWallPenetrationInAdjacentCells(pos, size, vel, col, row, maze) {
-		collided = true
+		wallCollisionOccurred = true
 	}
 
-	return collided
+	return wallCollisionOccurred
 }
 
-func preventWallPenetrationInCurrentCell(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) (collided bool) {
+func preventWallPenetrationInCurrentCell(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) (wallCollisionOccurred bool) {
 	mazeLayout := maze.Layout
 	currentCell := mazeLayout.GetCell(col, row)
-	collided = false
+	wallCollisionOccurred = false
 
 	// Check collisions with walls based on the velocity direction
 	if vel.DY < 0 && isCollidingWithTopWall(pos, row, maze.CellHeight) { // Moving UP
 		if currentCell.HasTopWall() {
 			vel.DY = 0
 			pos.Y = float64(row * maze.CellHeight)
-			collided = true
+			wallCollisionOccurred = true
 		}
 	}
 
@@ -119,7 +119,7 @@ func preventWallPenetrationInCurrentCell(pos *components.Position, size *compone
 		if currentCell.HasRightWall() {
 			vel.DX = 0
 			pos.X = float64((col+1)*maze.CellWidth) - size.Width
-			collided = true
+			wallCollisionOccurred = true
 		}
 	}
 
@@ -127,7 +127,7 @@ func preventWallPenetrationInCurrentCell(pos *components.Position, size *compone
 		if currentCell.HasBottomWall() {
 			vel.DY = 0
 			pos.Y = float64((row+1)*maze.CellHeight) - size.Height
-			collided = true
+			wallCollisionOccurred = true
 		}
 	}
 
@@ -135,16 +135,16 @@ func preventWallPenetrationInCurrentCell(pos *components.Position, size *compone
 		if currentCell.HasLeftWall() {
 			vel.DX = 0
 			pos.X = float64(col * maze.CellWidth)
-			collided = true
+			wallCollisionOccurred = true
 		}
 	}
 
-	return collided
+	return wallCollisionOccurred
 }
 
-func preventWallPenetrationAtDiagonalEdges(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) (collided bool) {
+func preventWallPenetrationAtDiagonalEdges(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) (wallCollisionOccurred bool) {
 	mazeLayout := maze.Layout
-	collided = false
+	wallCollisionOccurred = false
 
 	// Check collisions with edges based on the velocity direction
 	if vel.DY < 0 && isCollidingWithTopWall(pos, row, maze.CellHeight) && row > 0 { // Moving UP
@@ -152,7 +152,7 @@ func preventWallPenetrationAtDiagonalEdges(pos *components.Position, size *compo
 			isCollidingWithRightWall(pos, size, col, maze.CellWidth) && mazeLayout.GetCellAbove(col, row).HasRightWall() {
 			vel.DY = 0
 			pos.Y = float64(row * maze.CellHeight)
-			collided = true
+			wallCollisionOccurred = true
 		}
 	}
 
@@ -161,7 +161,7 @@ func preventWallPenetrationAtDiagonalEdges(pos *components.Position, size *compo
 			isCollidingWithBottomWall(pos, size, row, maze.CellHeight) && mazeLayout.GetCellRight(col, row).HasBottomWall() {
 			vel.DX = 0
 			pos.X = float64((col+1)*maze.CellWidth) - size.Width
-			collided = true
+			wallCollisionOccurred = true
 		}
 	}
 
@@ -170,7 +170,7 @@ func preventWallPenetrationAtDiagonalEdges(pos *components.Position, size *compo
 			isCollidingWithRightWall(pos, size, col, maze.CellWidth) && mazeLayout.GetCellBelow(col, row).HasRightWall() {
 			vel.DY = 0
 			pos.Y = float64((row+1)*maze.CellHeight) - size.Height
-			collided = true
+			wallCollisionOccurred = true
 		}
 	}
 
@@ -179,16 +179,16 @@ func preventWallPenetrationAtDiagonalEdges(pos *components.Position, size *compo
 			isCollidingWithBottomWall(pos, size, row, maze.CellHeight) && mazeLayout.GetCellLeft(col, row).HasBottomWall() {
 			vel.DX = 0
 			pos.X = float64(col * maze.CellWidth)
-			collided = true
+			wallCollisionOccurred = true
 		}
 	}
 
-	return collided
+	return wallCollisionOccurred
 }
 
-func preventWallPenetrationInAdjacentCells(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) (collided bool) {
+func preventWallPenetrationInAdjacentCells(pos *components.Position, size *components.Size, vel *components.Velocity, col, row int, maze *components.Maze) (wallCollisionOccurred bool) {
 	mazeLayout := maze.Layout
-	collided = false
+	wallCollisionOccurred = false
 
 	// Check collisions with other cells walls based on velocity direction
 	if vel.DY < 0 && isCollidingWithTopWall(pos, row, maze.CellHeight) { // Moving UP
@@ -196,7 +196,7 @@ func preventWallPenetrationInAdjacentCells(pos *components.Position, size *compo
 			col < mazeLayout.Cols()-1 && isCollidingWithRightWall(pos, size, col, maze.CellWidth) && mazeLayout.GetCellRight(col, row).HasTopWall() {
 			vel.DY = 0
 			pos.Y = float64(row * maze.CellHeight)
-			collided = true
+			wallCollisionOccurred = true
 		}
 	}
 
@@ -205,7 +205,7 @@ func preventWallPenetrationInAdjacentCells(pos *components.Position, size *compo
 			row < mazeLayout.Rows()-1 && isCollidingWithBottomWall(pos, size, row, maze.CellHeight) && mazeLayout.GetCellBelow(col, row).HasRightWall() {
 			vel.DX = 0
 			pos.X = float64((col+1)*maze.CellWidth) - size.Width
-			collided = true
+			wallCollisionOccurred = true
 		}
 	}
 
@@ -214,7 +214,7 @@ func preventWallPenetrationInAdjacentCells(pos *components.Position, size *compo
 			col < mazeLayout.Cols()-1 && isCollidingWithRightWall(pos, size, col, maze.CellWidth) && mazeLayout.GetCellRight(col, row).HasBottomWall() {
 			vel.DY = 0
 			pos.Y = float64((row+1)*maze.CellHeight) - size.Height
-			collided = true
+			wallCollisionOccurred = true
 		}
 	}
 
@@ -223,11 +223,11 @@ func preventWallPenetrationInAdjacentCells(pos *components.Position, size *compo
 			row < mazeLayout.Rows()-1 && isCollidingWithBottomWall(pos, size, row, maze.CellHeight) && mazeLayout.GetCellBelow(col, row).HasLeftWall() {
 			vel.DX = 0
 			pos.X = float64(col * maze.CellWidth)
-			collided = true
+			wallCollisionOccurred = true
 		}
 	}
 
-	return collided
+	return wallCollisionOccurred
 }
 
 // isCollidingWithTopWall checks if entity collides with the top wall of a cell
