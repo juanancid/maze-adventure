@@ -20,13 +20,12 @@ func NewMaze() Maze {
 }
 
 // getCellColor returns the color for a cell based on its type
-func getCellColor(cellType components.CellType) color.RGBA {
-	switch cellType {
-	case components.CellTypeDeadly:
+func getCellColor(cell components.Cell) color.RGBA {
+	if cell.IsDeadly() {
 		return color.RGBA{R: 0xFF, G: 0x00, B: 0x00, A: 0xFF} // Red for deadly
-	case components.CellTypeFreezing:
+	} else if cell.IsFreezing() {
 		return color.RGBA{R: 0x00, G: 0xFF, B: 0xFF, A: 0xFF} // Cyan for freezing
-	default:
+	} else {
 		return color.RGBA{R: 0x36, G: 0x9b, B: 0x48, A: 0xFF} // Green for regular
 	}
 }
@@ -49,7 +48,7 @@ func (r Maze) Draw(world *entities.World, gameSession *session.GameSession, scre
 	for row := 0; row < mazeLayout.Rows(); row++ {
 		for col := 0; col < mazeLayout.Cols(); col++ {
 			cell := mazeLayout.GetCell(col, row)
-			wallColor := getCellColor(cell.GetType())
+			wallColor := getCellColor(cell)
 
 			// Calculate pixel coordinates.
 			x1 := float64(col*cellWidth) + 1

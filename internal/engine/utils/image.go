@@ -53,5 +53,14 @@ func loadImage(image GameImage) error {
 
 // GetImage returns the cached image or nil if not loaded
 func GetImage(image GameImage) *ebiten.Image {
-	return gameImages[image]
+	img := gameImages[image]
+	if img == nil {
+		// Try to load the image if it's not cached
+		if err := loadImage(image); err != nil {
+			log.Printf("failed to load image %d: %v", image, err)
+			return nil
+		}
+		img = gameImages[image]
+	}
+	return img
 }

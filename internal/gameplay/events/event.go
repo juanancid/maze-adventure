@@ -32,3 +32,17 @@ type PlayerDamaged struct {
 
 // isEvent implements the Event interface explicitly.
 func (PlayerDamaged) isEvent() {}
+
+// TimerExpired indicates that the level timer has reached zero
+type TimerExpired struct{}
+
+// isEvent implements the Event interface explicitly.
+func (TimerExpired) isEvent() {}
+
+// PlayerFrozen indicates that the player has been frozen by a freezing cell
+type PlayerFrozen struct {
+	Duration int // Duration in milliseconds
+}
+
+// isEvent implements the Event interface explicitly.
+func (PlayerFrozen) isEvent() {}

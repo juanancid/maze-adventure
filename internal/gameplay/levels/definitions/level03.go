@@ -1,29 +1,29 @@
 package definitions
 
-// Level01 -> Movement and collecting (no hazards)
-func Level01() LevelConfig {
+// Level03 -> Introduce freezing cells
+func Level03() LevelConfig {
 	return LevelConfig{
 		Maze: MazeConfig{
-			Cols:          8,
-			Rows:          5,
-			DeadlyCells:   0,
-			FreezingCells: 0,
+			Cols:          12,
+			Rows:          8,
+			DeadlyCells:   2,
+			FreezingCells: 4,
 		},
 		Player: PlayerConfig{
 			Size: 12,
 		},
 		Exit: ExitConfig{
 			Position: Coordinate{
-				X: 7,
-				Y: 4,
+				X: 11,
+				Y: 7,
 			},
-			Size: 24,
+			Size: 16,
 		},
 		Collectibles: Collectibles{
-			Number: 2,
+			Number: 4,
 			Size:   8,
 			Value:  1,
 		},
-		Timer: 30,
+		Timer: 60,
 	}
 }

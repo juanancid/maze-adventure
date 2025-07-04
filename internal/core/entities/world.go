@@ -35,7 +35,19 @@ func (w *World) AddComponent(entity Entity, component Component) {
 }
 
 func (w *World) GetComponent(entity Entity, componentType reflect.Type) Component {
-	return w.components[componentType][entity]
+	if componentMap, exists := w.components[componentType]; exists {
+		return componentMap[entity]
+	}
+	return nil
+}
+
+// HasComponent checks if an entity has a specific component
+func (w *World) HasComponent(entity Entity, componentType reflect.Type) bool {
+	if componentMap, exists := w.components[componentType]; exists {
+		_, hasComponent := componentMap[entity]
+		return hasComponent
+	}
+	return false
 }
 
 func (w *World) GetComponents(componentType reflect.Type) map[Entity]Component {

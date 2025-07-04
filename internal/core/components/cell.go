@@ -1,27 +1,38 @@
 package components
 
-// CellType represents the type of a cell in the maze
-type CellType int
+type cellType int
 
 const (
-	// CellTypeRegular is a standard wall cell that doesn't affect the player
-	CellTypeRegular CellType = iota
-	// CellTypeDeadly is a cell that kills the player on contact
-	CellTypeDeadly
-	// CellTypeFreezing is a cell that freezes the player temporarily
-	CellTypeFreezing
+	// cellTypeRegular is a standard wall cell that doesn't affect the player
+	cellTypeRegular cellType = iota
+	// cellTypeDeadly is a cell that kills the player on contact
+	cellTypeDeadly
+	// cellTypeFreezing is a cell that freezes the player temporarily
+	cellTypeFreezing
 )
 
 // Cell represents a cell in the maze.
 type Cell struct {
 	walls [4]bool
-	Type  CellType
+	Type  cellType
 }
 
-func NewCell(walls [4]bool) Cell {
+func NewRegularCell(walls [4]bool) Cell {
+	return newCellWithWalls(walls, cellTypeRegular)
+}
+
+func NewDeadlyCell(walls [4]bool) Cell {
+	return newCellWithWalls(walls, cellTypeDeadly)
+}
+
+func NewFreezingCell(walls [4]bool) Cell {
+	return newCellWithWalls(walls, cellTypeFreezing)
+}
+
+func newCellWithWalls(walls [4]bool, cellType cellType) Cell {
 	return Cell{
 		walls: walls,
-		Type:  CellTypeRegular, // Default to regular cell type
+		Type:  cellType,
 	}
 }
 
@@ -45,17 +56,26 @@ func (c Cell) HasLeftWall() bool {
 	return c.walls[3]
 }
 
-// SetType sets the type of the cell
-func (c *Cell) SetType(cellType CellType) {
-	c.Type = cellType
+// IsRegular returns true if the cell is a regular cell
+func (c Cell) IsRegular() bool {
+	return c.Type == cellTypeRegular
 }
 
-// GetType returns the type of the cell
-func (c Cell) GetType() CellType {
-	return c.Type
+// IsDeadly returns true if the cell is a deadly cell
+func (c Cell) IsDeadly() bool {
+	return c.Type == cellTypeDeadly
 }
 
-// Cols returns the number of columns in the maze.
+// IsFreezing returns true if the cell is a freezing cell
+func (c Cell) IsFreezing() bool {
+	return c.Type == cellTypeFreezing
+}
+
+func (c Cell) GetWalls() [4]bool {
+	return c.walls
+}
+
+// Cols function returns the number of columns in the maze.
 func (m Layout) Cols() int {
 	return m.cols
 }

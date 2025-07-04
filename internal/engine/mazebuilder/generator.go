@@ -101,7 +101,7 @@ func convertBuilderGridToLayout(grid builderGrid, cols, rows int) components.Lay
 	for y := range grid {
 		finalGrid[y] = make([]components.Cell, cols)
 		for x := range grid[y] {
-			finalGrid[y][x] = components.NewCell(grid[y][x].walls)
+			finalGrid[y][x] = components.NewRegularCell(grid[y][x].walls)
 		}
 	}
 

@@ -1,29 +1,29 @@
 package definitions
 
-// Level01 -> Movement and collecting (no hazards)
-func Level01() LevelConfig {
+// Level04 -> Challenge with all mechanics
+func Level04() LevelConfig {
 	return LevelConfig{
 		Maze: MazeConfig{
-			Cols:          8,
-			Rows:          5,
-			DeadlyCells:   0,
-			FreezingCells: 0,
+			Cols:          14,
+			Rows:          9,
+			DeadlyCells:   4,
+			FreezingCells: 6,
 		},
 		Player: PlayerConfig{
 			Size: 12,
 		},
 		Exit: ExitConfig{
 			Position: Coordinate{
-				X: 7,
-				Y: 4,
+				X: 13,
+				Y: 8,
 			},
-			Size: 24,
+			Size: 16,
 		},
 		Collectibles: Collectibles{
-			Number: 2,
+			Number: 5,
 			Size:   8,
 			Value:  1,
 		},
-		Timer: 30,
+		Timer: 75,
 	}
 }

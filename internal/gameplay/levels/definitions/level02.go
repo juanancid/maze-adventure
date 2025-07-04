@@ -1,28 +1,29 @@
 package definitions
 
-// Level02 returns the configuration for level 2
+// Level02 -> Introduce deadly cells
 func Level02() LevelConfig {
 	return LevelConfig{
 		Maze: MazeConfig{
-			Cols:          16,
-			Rows:          10,
-			DeadlyCells:   4,
-			FreezingCells: 6,
+			Cols:          10,
+			Rows:          6,
+			DeadlyCells:   3,
+			FreezingCells: 0,
 		},
 		Player: PlayerConfig{
 			Size: 12,
 		},
 		Exit: ExitConfig{
 			Position: Coordinate{
-				X: 15,
-				Y: 9,
+				X: 9,
+				Y: 5,
 			},
-			Size: 12,
+			Size: 16,
 		},
 		Collectibles: Collectibles{
-			Number: 4,
+			Number: 3,
 			Size:   8,
 			Value:  1,
 		},
+		Timer: 45,
 	}
 }
