@@ -1,12 +1,12 @@
 package definitions
 
-// Level03 returns the configuration for level 3 (no timer)
+// Level03 -> Introduce freezing cells
 func Level03() LevelConfig {
 	return LevelConfig{
 		Maze: MazeConfig{
 			Cols:          12,
 			Rows:          8,
-			DeadlyCells:   3,
+			DeadlyCells:   2,
 			FreezingCells: 4,
 		},
 		Player: PlayerConfig{
@@ -20,10 +20,10 @@ func Level03() LevelConfig {
 			Size: 16,
 		},
 		Collectibles: Collectibles{
-			Number: 3,
+			Number: 4,
 			Size:   8,
 			Value:  1,
 		},
-		Timer: 0, // No timer for level 3
+		Timer: 60,
 	}
 }

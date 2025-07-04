@@ -5,4 +5,5 @@ var LevelRegistry = []func() LevelConfig{
 	Level01,
 	Level02,
 	Level03,
+	Level04,
 }
