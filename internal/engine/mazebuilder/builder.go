@@ -10,21 +10,23 @@ import (
 
 // BuilderConfig holds the configuration for maze generation
 type BuilderConfig struct {
-	Width         int
-	Height        int
-	DeadlyCells   int   // Number of deadly cells to place
-	FreezingCells int   // Number of freezing cells to place
-	Seed          int64 // Optional seed for random generation
+	Width                 int     // Width of the maze in cells
+	Height                int     // Height of the maze in cells
+	DeadlyCells           int     // Number of deadly cells to place
+	FreezingCells         int     // Number of freezing cells to place
+	ExtraConnectionChance float64 // Probability (0.0-1.0) of adding extra connections
+	Seed                  int64   // Optional seed for random generation
 }
 
 // NewBuilderConfig creates a new builder configuration with default values
 func NewBuilderConfig(width, height int) *BuilderConfig {
 	return &BuilderConfig{
-		Width:         width,
-		Height:        height,
-		DeadlyCells:   0, // Default to 0, should be set by caller
-		FreezingCells: 0, // Default to 0, should be set by caller
-		Seed:          time.Now().UnixNano(),
+		Width:                 width,
+		Height:                height,
+		DeadlyCells:           0,   // Default to 0 -> can be overridden
+		FreezingCells:         0,   // Default to 0 -> can be overridden
+		ExtraConnectionChance: 0.0, // Default to 0% chance -> can be overridden
+		Seed:                  time.Now().UnixNano(),
 	}
 }
 
@@ -43,6 +45,10 @@ func (b *BuilderConfig) Validate() error {
 		return fmt.Errorf("too many special cells: deadly=%d, freezing=%d, total cells=%d", b.DeadlyCells, b.FreezingCells, totalCells)
 	}
 
+	if b.ExtraConnectionChance < 0.0 || b.ExtraConnectionChance > 1.0 {
+		return fmt.Errorf("extra connection chance must be between 0.0 and 1.0, got: %f", b.ExtraConnectionChance)
+	}
+
 	return nil
 }
 
@@ -52,7 +58,7 @@ func Build(config *BuilderConfig) (components.Layout, error) {
 		return components.Layout{}, fmt.Errorf("invalid builder config: %w", err)
 	}
 
-	layout := newMazeLayout(config.Width, config.Height)
+	layout := newMazeLayout(config.Width, config.Height, config.ExtraConnectionChance)
 	r := rand.New(rand.NewSource(config.Seed))
 	placeSpecialCells(layout, config, r)
 

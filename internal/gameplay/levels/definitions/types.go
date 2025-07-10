@@ -17,10 +17,11 @@ type LevelConfig struct {
 
 // MazeConfig defines the maze dimensions and special cells
 type MazeConfig struct {
-	Cols          int
-	Rows          int
-	DeadlyCells   int
-	FreezingCells int
+	Cols                  int     // Number of columns in the maze
+	Rows                  int     // Number of rows in the maze
+	DeadlyCells           int     // Number of deadly cells to place
+	FreezingCells         int     // Number of freezing cells to place
+	ExtraConnectionChance float64 // Probability (0.0-1.0) of adding extra connections between cells
 }
 
 // Validate ensures the maze configuration is valid
@@ -36,6 +37,10 @@ func (m MazeConfig) Validate() error {
 
 	if m.DeadlyCells+m.FreezingCells >= totalCells {
 		return fmt.Errorf("too many special cells: deadly=%d, freezing=%d, total cells=%d", m.DeadlyCells, m.FreezingCells, totalCells)
+	}
+
+	if m.ExtraConnectionChance < 0.0 || m.ExtraConnectionChance > 1.0 {
+		return fmt.Errorf("extra connection chance must be between 0.0 and 1.0, got: %f", m.ExtraConnectionChance)
 	}
 
 	return nil
