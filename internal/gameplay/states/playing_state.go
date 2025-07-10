@@ -115,10 +115,12 @@ func (s *PlayingState) loadNextLevel() {
 func (s *PlayingState) setUpdaters() {
 	s.updaters = []Updater{
 		updaters.NewInputControl(),
+		updaters.NewPatrollerMovement(),
 		updaters.NewMovement(),
 		updaters.NewMazeCollision(s.eventBus),
 		updaters.NewExitCollision(s.eventBus),
 		updaters.NewCollectiblePickup(s.eventBus),
+		updaters.NewPatrollerCollision(s.eventBus),
 		updaters.NewTimer(s.eventBus),
 	}
 }
@@ -127,6 +129,7 @@ func (s *PlayingState) setRenderers() {
 	s.renderers = []Renderer{
 		renderers.NewMaze(),
 		renderers.NewSprite(),
+		renderers.NewPatrollerRenderer(),
 		renderers.NewHUD(),
 	}
 }

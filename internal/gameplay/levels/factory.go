@@ -37,6 +37,7 @@ func CreateLevel(levelConfig definitions.LevelConfig) (*entities.World, error) {
 
 	createExit(world, levelConfig.Exit.Position.X, levelConfig.Exit.Position.Y, cellWidth, cellHeight, levelConfig.Exit.Size)
 	createCollectibles(world, levelConfig)
+	createPatrollers(world, levelConfig, cellWidth, cellHeight)
 
 	return world, nil
 }
@@ -146,4 +147,39 @@ func createCollectible(world *entities.World, row, col, cellWidth, cellHeight, v
 	world.AddComponent(collectible, &components.Sprite{
 		Image: utils.GetImage(utils.ImageCollectible),
 	})
+}
+
+func createPatrollers(world *entities.World, levelConfig definitions.LevelConfig, cellWidth, cellHeight int) {
+	mazeCols := levelConfig.Maze.Cols
+	mazeRows := levelConfig.Maze.Rows
+
+	for i := 0; i < levelConfig.Maze.Patrollers; i++ {
+		// Generate random cell coordinates within maze bounds
+		row := rand.Intn(mazeRows)
+		col := rand.Intn(mazeCols)
+
+		// Avoid placing patrollers at the start position (0,0) or exit position
+		if (col == 0 && row == 0) || (col == levelConfig.Exit.Position.X && row == levelConfig.Exit.Position.Y) {
+			// Try next position (simple avoidance)
+			col = (col + 1) % mazeCols
+			row = (row + 1) % mazeRows
+		}
+
+		// Create a patroller at the random cell
+		createPatroller(world, row, col, cellWidth, cellHeight, i)
+	}
+}
+
+func createPatroller(world *entities.World, row, col, cellWidth, cellHeight, patrollerID int) {
+	patroller := world.NewEntity()
+
+	// Calculate position within the cell (centered)
+	patrollerSize := 10 // Slightly smaller than player
+	x := float64(col*cellWidth + (cellWidth-patrollerSize)/2)
+	y := float64(row*cellHeight + (cellHeight-patrollerSize)/2)
+
+	world.AddComponent(patroller, &components.Position{X: x, Y: y})
+	world.AddComponent(patroller, &components.Size{Width: float64(patrollerSize), Height: float64(patrollerSize)})
+	world.AddComponent(patroller, &components.Velocity{DX: 0, DY: 0}) // Start stationary
+	world.AddComponent(patroller, components.NewPatroller(patrollerID))
 }
