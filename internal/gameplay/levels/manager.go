@@ -1,6 +1,8 @@
 package levels
 
 import (
+	"fmt"
+
 	"github.com/juanancid/maze-adventure/internal/gameplay/levels/definitions"
 )
 
@@ -12,6 +14,17 @@ func NewManager() *Manager {
 	return &Manager{
 		currentLevel: 0,
 	}
+}
+
+// NewManagerWithStartingLevel creates a new level manager starting at a specific level
+func NewManagerWithStartingLevel(startingLevel int) (*Manager, error) {
+	if startingLevel < 1 || startingLevel > len(definitions.LevelRegistry) {
+		return nil, fmt.Errorf("invalid starting level %d: must be between 1 and %d", startingLevel, len(definitions.LevelRegistry))
+	}
+
+	return &Manager{
+		currentLevel: startingLevel - 1, // Set to one before the desired level so NextLevel() returns the correct level
+	}, nil
 }
 
 // NextLevel returns the next level configuration.
@@ -47,4 +60,19 @@ func (m *Manager) GetCurrentLevel() (levelConfig definitions.LevelConfig, levelN
 	levelNumber = m.currentLevel
 	found = true
 	return
+}
+
+// GetCurrentLevelNumber returns the current level number (1-based)
+func (m *Manager) GetCurrentLevelNumber() int {
+	return m.currentLevel
+}
+
+// GetTotalLevels returns the total number of available levels
+func (m *Manager) GetTotalLevels() int {
+	return len(definitions.LevelRegistry)
+}
+
+// IsValidLevel checks if a level number is valid
+func IsValidLevel(levelNumber int) bool {
+	return levelNumber >= 1 && levelNumber <= len(definitions.LevelRegistry)
 }

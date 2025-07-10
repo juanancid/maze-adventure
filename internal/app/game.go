@@ -19,7 +19,19 @@ type Game struct {
 }
 
 func NewGame(config gameplayconfig.GameConfig) *Game {
-	levelManager := levels.NewManager()
+	var levelManager *levels.Manager
+	var err error
+
+	// Create level manager with appropriate starting level
+	if config.StartingLevel > 1 {
+		levelManager, err = levels.NewManagerWithStartingLevel(config.StartingLevel)
+		if err != nil {
+			// Fallback to default manager if there's an error
+			levelManager = levels.NewManager()
+		}
+	} else {
+		levelManager = levels.NewManager()
+	}
 
 	stateManager := states.NewManager(nil)
 	bootState := states.NewBootState(stateManager, levelManager, config)
