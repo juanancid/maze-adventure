@@ -8,7 +8,7 @@ func Level02() LevelConfig {
 			Rows:                  6,
 			DeadlyCells:           3,
 			FreezingCells:         0,
-			Patrollers:            1,
+			Patrollers:            2,
 			ExtraConnectionChance: 0.04,
 		},
 		Player: PlayerConfig{

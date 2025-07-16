@@ -115,8 +115,9 @@ func (s *PlayingState) loadNextLevel() {
 func (s *PlayingState) setUpdaters() {
 	s.updaters = []Updater{
 		updaters.NewInputControl(),
-		updaters.NewPatrollerMovement(),
+		updaters.NewEnhancedPatrollerMovement(),
 		updaters.NewMovement(),
+		updaters.NewPatrollerMazeCollision(),
 		updaters.NewMazeCollision(s.eventBus),
 		updaters.NewExitCollision(s.eventBus),
 		updaters.NewCollectiblePickup(s.eventBus),

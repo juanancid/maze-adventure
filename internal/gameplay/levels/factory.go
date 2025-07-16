@@ -165,12 +165,25 @@ func createPatrollers(world *entities.World, levelConfig definitions.LevelConfig
 			row = (row + 1) % mazeRows
 		}
 
-		// Create a patroller at the random cell
-		createPatroller(world, row, col, cellWidth, cellHeight, i)
+		// Determine patrol pattern based on patroller ID for variety
+		var pattern components.PatrolPattern
+		switch i % 4 {
+		case 0:
+			pattern = components.PatrolPatternRandom
+		case 1:
+			pattern = components.PatrolPatternLinear
+		case 2:
+			pattern = components.PatrolPatternPerimeter
+		case 3:
+			pattern = components.PatrolPatternCross
+		}
+
+		// Create a patroller at the random cell with the determined pattern
+		createPatroller(world, row, col, cellWidth, cellHeight, i, pattern)
 	}
 }
 
-func createPatroller(world *entities.World, row, col, cellWidth, cellHeight, patrollerID int) {
+func createPatroller(world *entities.World, row, col, cellWidth, cellHeight, patrollerID int, pattern components.PatrolPattern) {
 	patroller := world.NewEntity()
 
 	// Calculate position within the cell (centered)
@@ -181,5 +194,8 @@ func createPatroller(world *entities.World, row, col, cellWidth, cellHeight, pat
 	world.AddComponent(patroller, &components.Position{X: x, Y: y})
 	world.AddComponent(patroller, &components.Size{Width: float64(patrollerSize), Height: float64(patrollerSize)})
 	world.AddComponent(patroller, &components.Velocity{DX: 0, DY: 0}) // Start stationary
-	world.AddComponent(patroller, components.NewPatroller(patrollerID))
+
+	// Create patroller with specific pattern and spawn position
+	patrollerComp := components.NewPatrollerWithPattern(patrollerID, pattern, col, row)
+	world.AddComponent(patroller, patrollerComp)
 }
