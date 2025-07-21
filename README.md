@@ -29,6 +29,10 @@ cd maze-adventure
 make run
 ```
 
+## Download
+
+Precompiled binaries for Windows, macOS, and Linux are available on the [Releases page](https://github.com/juanancid/maze-adventure/releases).
+
 ## Gameplay preview
 
 Check out a short gameplay video of Maze Adventure on YouTube:  
