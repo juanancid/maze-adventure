@@ -1,0 +1,76 @@
+name: Release Binaries
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Runs on version tags like v0.6.0
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+            ext: ""
+          - os: macos-latest
+            goos: darwin
+            goarch: amd64
+            ext: ""
+          - os: macos-latest
+            goos: darwin
+            goarch: arm64
+            ext: ""
+          - os: windows-latest
+            goos: windows
+            goarch: amd64
+            ext: ".exe"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.24.4
+
+      - name: Build binary
+        run: |
+          mkdir -p dist
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} \
+          go build -o dist/maze-adventure-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }} ./cmd/main
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: maze-adventure-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/maze-adventure-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }}
+
+  release:
+    name: Release Binaries
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Zip artifacts
+        run: |
+          cd dist
+          for dir in *; do
+            zip -j "${dir}.zip" "$dir"/*
+          done
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
