@@ -16,7 +16,7 @@ var DamageSound []byte
 //go:embed sounds/freeze.wav
 var FreezeSound []byte
 
-//go:embed sounds/gameplay-music.ogg
+//go:embed sounds/background-music.ogg
 var BackgroundMusic []byte
 
 //go:embed images/player.png
