@@ -57,10 +57,14 @@ func NewPlayingState(stateManager *Manager, levelManager *levels.Manager, config
 
 func (s *PlayingState) OnEnter() {
 	// Initialize or reset state explicitly
+	// Start background music when entering playing state
+	utils.StartBackgroundMusic()
 }
 
 func (s *PlayingState) OnExit() {
 	// Cleanup state explicitly
+	// Stop background music when exiting playing state
+	utils.StopBackgroundMusic()
 }
 
 func (s *PlayingState) Update() error {
@@ -115,10 +119,13 @@ func (s *PlayingState) loadNextLevel() {
 func (s *PlayingState) setUpdaters() {
 	s.updaters = []Updater{
 		updaters.NewInputControl(),
+		updaters.NewEnhancedPatrollerMovement(),
 		updaters.NewMovement(),
+		updaters.NewPatrollerMazeCollision(),
 		updaters.NewMazeCollision(s.eventBus),
 		updaters.NewExitCollision(s.eventBus),
 		updaters.NewCollectiblePickup(s.eventBus),
+		updaters.NewPatrollerCollision(s.eventBus),
 		updaters.NewTimer(s.eventBus),
 	}
 }
@@ -127,6 +134,7 @@ func (s *PlayingState) setRenderers() {
 	s.renderers = []Renderer{
 		renderers.NewMaze(),
 		renderers.NewSprite(),
+		renderers.NewPatrollerRenderer(),
 		renderers.NewHUD(),
 	}
 }

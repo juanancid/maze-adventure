@@ -2,15 +2,17 @@ package mazebuilder
 
 import (
 	"math/rand"
+	"time"
 
 	"github.com/juanancid/maze-adventure/internal/core/components"
 )
 
-func newMazeLayout(cols, rows int) components.Layout {
+func newMazeLayout(cols, rows int, extraConnectionChance float64) components.Layout {
 	bGrid := initializeBuilderGrid(cols, rows)
 
 	startCol, startRow := 0, 0
 	carveMazePaths(startCol, startRow, cols, rows, bGrid)
+	addExtraConnections(bGrid, extraConnectionChance)
 
 	return convertBuilderGridToLayout(bGrid, cols, rows)
 }
@@ -94,6 +96,53 @@ func inBounds(x, y, width, height int) bool {
 func removeWall(current, neighbor *builderCell, dir int) {
 	current.walls[dir] = false
 	neighbor.walls[(dir+2)%4] = false // Remove the opposite wall in neighbor.
+}
+
+func addExtraConnections(grid builderGrid, chance float64) {
+	dx := [4]int{0, 1, 0, -1}
+	dy := [4]int{-1, 0, 1, 0}
+
+	rows := len(grid)
+	cols := len(grid[0])
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	for y := 0; y < rows; y++ {
+		for x := 0; x < cols; x++ {
+			for dir := 0; dir < 4; dir++ {
+				nx := x + dx[dir]
+				ny := y + dy[dir]
+
+				if inBounds(nx, ny, cols, rows) && r.Float64() < chance {
+					c := grid[y][x]
+					n := grid[ny][nx]
+					if wallsBetween(c, n) { // Only break walls that still exist
+						removeWall(c, n, dir)
+					}
+				}
+			}
+		}
+	}
+}
+
+func wallsBetween(a, b *builderCell) bool {
+	// They must be adjacent
+	dx := a.x - b.x
+	dy := a.y - b.y
+
+	if dx == 1 {
+		return a.walls[3] && b.walls[1]
+	} // left
+	if dx == -1 {
+		return a.walls[1] && b.walls[3]
+	} // right
+	if dy == 1 {
+		return a.walls[0] && b.walls[2]
+	} // up
+	if dy == -1 {
+		return a.walls[2] && b.walls[0]
+	} // down
+
+	return false
 }
 
 func convertBuilderGridToLayout(grid builderGrid, cols, rows int) components.Layout {

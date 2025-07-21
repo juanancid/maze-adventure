@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2025-07-21
+
+### Added
+- 🎵 Introduced **background music** during gameplay using OGG Vorbis format.
+- 👻 Implemented **patroller NPCs**: enemies that move across maze cells and damage the player on collision.
+- 🧭 Added **level selection support** for easier debugging and testing.
+- 🧠 Introduced `ExtraConnectionChance` in maze generation to allow **multi-path layouts**, improving replayability and strategic movement.
+- 📦 Created a **GitHub Actions workflow** to automatically compile and release binaries for:
+  - Linux (amd64)
+  - macOS (amd64 + arm64)
+  - Windows (amd64)
+
+### Changed
+- 🎨 Refined internal enemy system to support **advanced patroller movement patterns**.
+
 ## [0.6.0] - 2025-07-04
 
 ### Added
@@ -105,7 +120,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Smooth player movement.
 - Basic collision handling between the player and maze walls.
 
-[Unreleased]: https://github.com/juanancid/maze-adventure/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/juanancid/maze-adventure/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/juanancid/maze-adventure/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/juanancid/maze-adventure/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/juanancid/maze-adventure/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/juanancid/maze-adventure/compare/v0.3.0...v0.4.0
