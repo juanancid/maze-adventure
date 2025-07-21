@@ -1,33 +1,14 @@
-name: Release Binaries
+name: Build for macOS ARM64
 
 on:
   push:
     tags:
-      - 'v*.*.*'  # Runs on version tags like v0.6.0
+      - 'v*'
 
 jobs:
-  build:
-    name: Build for ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            goos: linux
-            goarch: amd64
-            ext: ""
-          - os: macos-latest
-            goos: darwin
-            goarch: amd64
-            ext: ""
-          - os: macos-latest
-            goos: darwin
-            goarch: arm64
-            ext: ""
-          - os: windows-latest
-            goos: windows
-            goarch: amd64
-            ext: ".exe"
+  build-macos-arm64:
+    name: Build for macOS (ARM64)
+    runs-on: macos-latest
 
     steps:
       - name: Checkout code
@@ -36,41 +17,15 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.24.4
+          go-version: '1.24'
 
       - name: Build binary
         run: |
           mkdir -p dist
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} \
-          go build -o dist/maze-adventure-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }} ./cmd/main
+          GOOS=darwin GOARCH=arm64 go build -o dist/maze-adventure-macos-arm64 ./cmd/main
 
-      - name: Upload binary
+      - name: Upload release binary
         uses: actions/upload-artifact@v4
         with:
-          name: maze-adventure-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: dist/maze-adventure-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }}
-
-  release:
-    name: Release Binaries
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: dist
-
-      - name: Zip artifacts
-        run: |
-          cd dist
-          for dir in *; do
-            zip -j "${dir}.zip" "$dir"/*
-          done
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: dist/*.zip
+          name: maze-adventure-macos-arm64
+          path: dist/maze-adventure-macos-arm64
