@@ -57,10 +57,14 @@ func NewPlayingState(stateManager *Manager, levelManager *levels.Manager, config
 
 func (s *PlayingState) OnEnter() {
 	// Initialize or reset state explicitly
+	// Start background music when entering playing state
+	utils.StartBackgroundMusic()
 }
 
 func (s *PlayingState) OnExit() {
 	// Cleanup state explicitly
+	// Stop background music when exiting playing state
+	utils.StopBackgroundMusic()
 }
 
 func (s *PlayingState) Update() error {
