@@ -1,5 +1,8 @@
 name: Release Binaries
 
+permissions:
+  contents: write
+
 on:
   push:
     tags:
@@ -39,6 +42,8 @@ jobs:
           name: Release ${{ steps.get_tag.outputs.TAG }}
           draft: false
           prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload binary to release
         uses: softprops/action-gh-release@v1
