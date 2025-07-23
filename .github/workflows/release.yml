@@ -10,78 +10,46 @@ on:
 
 jobs:
   build-and-release:
-    runs-on: macos-latest
-    name: Build and release for macOS (ARM64)
+    name: Build and Release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            goos: darwin
+            goarch: arm64
+            binary_name: maze-adventure-macos-arm64
+
+          - os: windows-latest
+            goos: windows
+            goarch: amd64
+            binary_name: maze-adventure-windows-amd64.exe
+
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+            binary_name: maze-adventure-linux-amd64
+
     steps:
-      - name: Checkout source
+      - name: Checkout source code
         uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.24.4'
+          go-version: 1.24
 
-      - name: Create dist folder
-        run: mkdir -p dist
-
-      - name: Build macOS ARM64 binary
-        env:
-          GOOS: darwin
-          GOARCH: arm64
+      - name: Build binary
         run: |
-          go build -o dist/maze-adventure-macos-arm64 ./cmd/main
-
-      - name: Get tag version
-        id: get_tag
-        run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.get_tag.outputs.TAG }}
-          name: Release ${{ steps.get_tag.outputs.TAG }}
-          draft: false
-          prerelease: false
+          mkdir -p dist
+          go build -v -o dist/${{ matrix.binary_name }} ./cmd/main
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
 
-      - name: Upload binary to release
+      - name: Upload artifact to release
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/maze-adventure-macos-arm64
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-and-release-windows:
-    name: Build and release for Windows (AMD64)
-    runs-on: windows-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.22'
-
-      - name: Create dist folder
-        run: mkdir dist
-
-      - name: Get tag version
-        id: get_tag
-        run: echo "TAG=${GITHUB_REF##*/}" >> "$GITHUB_ENV"
-
-      - name: Build Windows AMD64 binary
-        run: |
-          $env:GOOS = "windows"
-          $env:GOARCH = "amd64"
-          go build -o dist/maze-adventure-windows-amd64.exe ./cmd/main
-
-      - name: Upload binary to release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/maze-adventure-windows-amd64.exe
+          files: dist/${{ matrix.binary_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
