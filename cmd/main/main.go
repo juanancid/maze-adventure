@@ -25,8 +25,8 @@ import (
 
 func main() {
 	// Parse command-line arguments
-	startLevel := flag.Int("start-level", 1, "Starting level (1-4)")
-	startLevelShort := flag.Int("l", 1, "Starting level (1-4) - short form")
+	startLevel := flag.Int("start-level", 1, "Starting level (1-7)")
+	startLevelShort := flag.Int("l", 1, "Starting level (1-7) - short form")
 	flag.Parse()
 
 	// Use the short form if provided, otherwise use the long form
@@ -36,8 +36,8 @@ func main() {
 	}
 
 	// Validate level number
-	if selectedLevel < 1 || selectedLevel > 4 {
-		fmt.Fprintf(os.Stderr, "Error: Invalid level number %d. Must be between 1 and 4.\n", selectedLevel)
+	if selectedLevel < 1 || selectedLevel > 7 {
+		fmt.Fprintf(os.Stderr, "Error: Invalid level number %d. Must be between 1 and 7.\n", selectedLevel)
 		fmt.Fprintf(os.Stderr, "Usage: %s [--start-level N] or [--l N]\n", os.Args[0])
 		os.Exit(1)
 	}
