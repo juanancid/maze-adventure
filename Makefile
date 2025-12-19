@@ -19,5 +19,13 @@ validate: lint test
 run: validate $(TARGET)
 	./$(TARGET)
 
+.PHONY: fresh-run
+fresh-run: clean $(TARGET)
+	./$(TARGET)
+
+.PHONY: clean
+clean:
+	rm -f $(TARGET)
+
 $(TARGET): $(SOURCES)
 	go build -o $@ ./cmd/main
