@@ -1,6 +1,6 @@
 module github.com/juanancid/maze-adventure
 
-go 1.24.4
+go 1.25.5
 
 require github.com/hajimehoshi/ebiten/v2 v2.8.8
 

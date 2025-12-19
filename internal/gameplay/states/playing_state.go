@@ -159,7 +159,7 @@ func (s *PlayingState) onLevelCompleted(e events.Event) {
 }
 
 func (s *PlayingState) onGameCompleted(e events.Event) {
-	victoryState := NewVictoryState(s.stateManager)
+	victoryState := NewVictoryState(s.stateManager, s.levelManager, s.config)
 	s.stateManager.ChangeState(victoryState)
 }
 

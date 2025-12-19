@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - XXXX-XX-XX
+
+### Added
+
+- Allow player to restart the game from the victory screen.
+
 ## [0.7.0] - 2025-07-21
 
 ### Added
@@ -120,7 +126,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Smooth player movement.
 - Basic collision handling between the player and maze walls.
 
-[Unreleased]: https://github.com/juanancid/maze-adventure/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/juanancid/maze-adventure/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/juanancid/maze-adventure/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/juanancid/maze-adventure/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/juanancid/maze-adventure/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/juanancid/maze-adventure/compare/v0.4.0...v0.5.0

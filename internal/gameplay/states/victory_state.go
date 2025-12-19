@@ -4,18 +4,25 @@ import (
 	"os"
 
 	"github.com/hajimehoshi/ebiten/v2"
+
+	"github.com/juanancid/maze-adventure/internal/gameplay/config"
+	"github.com/juanancid/maze-adventure/internal/gameplay/levels"
 )
 
 type VictoryState struct {
-	manager *Manager
+	manager      *Manager
+	levelManager *levels.Manager
+	config       config.GameConfig
 
 	blinkTimer int
 	blinkOn    bool
 }
 
-func NewVictoryState(manager *Manager) *VictoryState {
+func NewVictoryState(manager *Manager, levelManager *levels.Manager, config config.GameConfig) *VictoryState {
 	return &VictoryState{
-		manager: manager,
+		manager:      manager,
+		levelManager: levelManager,
+		config:       config,
 	}
 }
 
@@ -33,6 +40,13 @@ func (s *VictoryState) Update() error {
 	if s.blinkTimer >= 60 {
 		s.blinkTimer = 0
 		s.blinkOn = !s.blinkOn
+	}
+
+	if ebiten.IsKeyPressed(ebiten.KeySpace) {
+		// Restart the game by creating a fresh level manager and transitioning to BootState
+		newLevelManager := levels.NewManager()
+		bootState := NewBootState(s.manager, newLevelManager, s.config)
+		s.manager.ChangeState(bootState)
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
@@ -56,6 +70,7 @@ func (s *VictoryState) Draw(screen *ebiten.Image) {
 	drawCenteredText(screen, "Thank you for playing.", 215, regularFontSize)
 
 	if s.blinkOn {
-		drawCenteredText(screen, "Press ESC to disconnect…", 250, regularFontSize)
+		drawCenteredText(screen, "Press SPACE to restart…", 240, regularFontSize)
+		drawCenteredText(screen, "Press ESC to disconnect…", 255, regularFontSize)
 	}
 }
