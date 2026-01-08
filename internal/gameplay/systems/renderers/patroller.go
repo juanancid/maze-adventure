@@ -1,7 +1,6 @@
 package renderers
 
 import (
-	"image/color"
 	"reflect"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -10,6 +9,7 @@ import (
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/engine/config"
+	"github.com/juanancid/maze-adventure/internal/engine/utils/palette"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
@@ -61,13 +61,13 @@ func renderPatroller(screen *ebiten.Image, position *components.Position, size *
 	screenY := float32(position.Y + float64(config.HudHeight))
 
 	// Patroller color - distinctive orange/red color to differentiate from player
-	patrollerColor := color.RGBA{R: 255, G: 100, B: 0, A: 255} // Orange
+	patrollerColor := palette.DefaultTheme.EnemyBody
 
 	// Draw the patroller as a filled circle
 	radius := float32(size.Width / 2)
 	vector.DrawFilledCircle(screen, screenX+radius, screenY+radius, radius, patrollerColor, false)
 
 	// Add a darker border for better visibility
-	borderColor := color.RGBA{R: 200, G: 80, B: 0, A: 255} // Darker orange
+	borderColor := palette.DefaultTheme.EnemyCore
 	vector.StrokeCircle(screen, screenX+radius, screenY+radius, radius, 2, borderColor, false)
 }

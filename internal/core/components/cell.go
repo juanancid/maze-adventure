@@ -61,8 +61,8 @@ func (c Cell) IsRegular() bool {
 	return c.Type == cellTypeRegular
 }
 
-// IsDeadly returns true if the cell is a deadly cell
-func (c Cell) IsDeadly() bool {
+// IsLethal returns true if the cell is a deadly cell
+func (c Cell) IsLethal() bool {
 	return c.Type == cellTypeDeadly
 }
 

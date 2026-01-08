@@ -10,6 +10,7 @@ import (
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/core/queries"
 	"github.com/juanancid/maze-adventure/internal/engine/config"
+	"github.com/juanancid/maze-adventure/internal/engine/utils/palette"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
@@ -21,12 +22,12 @@ func NewMaze() Maze {
 
 // getCellColor returns the color for a cell based on its type
 func getCellColor(cell components.Cell) color.RGBA {
-	if cell.IsDeadly() {
-		return color.RGBA{R: 0xFF, G: 0x00, B: 0x00, A: 0xFF} // Red for deadly
+	if cell.IsLethal() {
+		return palette.DefaultTheme.WallLethal
 	} else if cell.IsFreezing() {
-		return color.RGBA{R: 0x00, G: 0xFF, B: 0xFF, A: 0xFF} // Cyan for freezing
+		return palette.DefaultTheme.WallFreezing
 	} else {
-		return color.RGBA{R: 0x36, G: 0x9b, B: 0x48, A: 0xFF} // Green for regular
+		return palette.DefaultTheme.WallNormal
 	}
 }
 
@@ -41,8 +42,7 @@ func (r Maze) Draw(world *entities.World, gameSession *session.GameSession, scre
 	cellHeight := maze.CellHeight
 
 	// Fill the entire maze area with background color
-	bgColor := color.RGBA{R: 0x12, G: 0x18, B: 0x21, A: 0xFF}
-	screen.Fill(bgColor)
+	screen.Fill(palette.DefaultTheme.Background)
 
 	// Iterate over each cell and draw its walls.
 	for row := 0; row < mazeLayout.Rows(); row++ {

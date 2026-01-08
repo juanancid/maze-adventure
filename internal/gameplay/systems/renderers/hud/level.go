@@ -2,12 +2,12 @@ package hud
 
 import (
 	"fmt"
-	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 
 	"github.com/juanancid/maze-adventure/internal/engine/config"
+	"github.com/juanancid/maze-adventure/internal/engine/utils/palette"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
@@ -26,7 +26,7 @@ func (r *LevelRenderer) Draw(gameSession *session.GameSession, screen *ebiten.Im
 	levelText := fmt.Sprintf("SECTOR %d", gameSession.CurrentLevel)
 	levelOp := &text.DrawOptions{}
 	levelOp.GeoM.Translate(float64(config.ScreenWidth-100), float64(config.HudHeight/2-4))
-	levelOp.ColorScale.ScaleWithColor(color.White)
+	levelOp.ColorScale.ScaleWithColor(palette.DefaultTheme.UIText)
 
 	text.Draw(screen,
 		levelText,

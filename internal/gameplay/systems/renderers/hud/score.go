@@ -2,12 +2,12 @@ package hud
 
 import (
 	"fmt"
-	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 
 	"github.com/juanancid/maze-adventure/internal/engine/config"
+	"github.com/juanancid/maze-adventure/internal/engine/utils/palette"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
@@ -25,7 +25,7 @@ func NewScoreRenderer(faceSource *text.GoTextFaceSource) *ScoreRenderer {
 func (r *ScoreRenderer) Draw(gameSession *session.GameSession, screen *ebiten.Image) {
 	textOp := &text.DrawOptions{}
 	textOp.GeoM.Translate(8, float64(config.HudHeight/2-4))
-	textOp.ColorScale.ScaleWithColor(color.White)
+	textOp.ColorScale.ScaleWithColor(palette.DefaultTheme.UIText)
 
 	text.Draw(screen,
 		fmt.Sprintf("SCORE: %d", gameSession.Score),

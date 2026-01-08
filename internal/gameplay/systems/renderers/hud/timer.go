@@ -1,12 +1,11 @@
 package hud
 
 import (
-	"image/color"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 
 	"github.com/juanancid/maze-adventure/internal/engine/config"
+	"github.com/juanancid/maze-adventure/internal/engine/utils/palette"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 )
 
@@ -33,9 +32,9 @@ func (r *TimerRenderer) Draw(gameSession *session.GameSession, screen *ebiten.Im
 
 	// Change color to red when timer is running low (less than 10 seconds)
 	if gameSession.TimerRemaining <= 10 {
-		timerOp.ColorScale.ScaleWithColor(color.RGBA{R: 255, G: 100, B: 100, A: 255})
+		timerOp.ColorScale.ScaleWithColor(palette.ENDESGA16.Red)
 	} else {
-		timerOp.ColorScale.ScaleWithColor(color.White)
+		timerOp.ColorScale.ScaleWithColor(palette.DefaultTheme.UIText)
 	}
 
 	text.Draw(screen,
