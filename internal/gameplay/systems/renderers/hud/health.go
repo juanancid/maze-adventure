@@ -7,8 +7,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 
 	"github.com/juanancid/maze-adventure/internal/engine/config"
-	"github.com/juanancid/maze-adventure/internal/engine/utils/palette"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
+	"github.com/juanancid/maze-adventure/internal/gameplay/theme"
 )
 
 // HealthRenderer handles drawing the health hearts
@@ -26,7 +26,7 @@ func (r *HealthRenderer) Draw(gameSession *session.GameSession, screen *ebiten.I
 	hearts := strings.Repeat("♥", gameSession.CurrentHearts) + strings.Repeat("·", gameSession.MaxHearts-gameSession.CurrentHearts)
 	heartsOp := &text.DrawOptions{}
 	heartsOp.GeoM.Translate(float64(config.ScreenWidth/2-54), float64(config.HudHeight/2-4))
-	heartsOp.ColorScale.ScaleWithColor(palette.DefaultTheme.UIText)
+	heartsOp.ColorScale.ScaleWithColor(theme.DefaultTheme.UIText)
 
 	text.Draw(screen,
 		hearts,

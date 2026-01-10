@@ -9,8 +9,8 @@ import (
 	"github.com/juanancid/maze-adventure/internal/core/components"
 	"github.com/juanancid/maze-adventure/internal/core/entities"
 	"github.com/juanancid/maze-adventure/internal/engine/config"
-	"github.com/juanancid/maze-adventure/internal/engine/utils/palette"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
+	"github.com/juanancid/maze-adventure/internal/gameplay/theme"
 )
 
 // getComponentType is a helper function to get the reflect.Type of a component
@@ -61,13 +61,13 @@ func renderPatroller(screen *ebiten.Image, position *components.Position, size *
 	screenY := float32(position.Y + float64(config.HudHeight))
 
 	// Patroller color - distinctive orange/red color to differentiate from player
-	patrollerColor := palette.DefaultTheme.EnemyBody
+	patrollerColor := theme.DefaultTheme.EnemyBody
 
 	// Draw the patroller as a filled circle
 	radius := float32(size.Width / 2)
 	vector.DrawFilledCircle(screen, screenX+radius, screenY+radius, radius, patrollerColor, false)
 
 	// Add a darker border for better visibility
-	borderColor := palette.DefaultTheme.EnemyCore
+	borderColor := theme.DefaultTheme.EnemyCore
 	vector.StrokeCircle(screen, screenX+radius, screenY+radius, radius, 2, borderColor, false)
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/juanancid/maze-adventure/internal/engine/config"
 	"github.com/juanancid/maze-adventure/internal/engine/utils/palette"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
+	"github.com/juanancid/maze-adventure/internal/gameplay/theme"
 )
 
 // TimerRenderer handles drawing the level timer
@@ -34,7 +35,7 @@ func (r *TimerRenderer) Draw(gameSession *session.GameSession, screen *ebiten.Im
 	if gameSession.TimerRemaining <= 10 {
 		timerOp.ColorScale.ScaleWithColor(palette.ENDESGA16.Red)
 	} else {
-		timerOp.ColorScale.ScaleWithColor(palette.DefaultTheme.UIText)
+		timerOp.ColorScale.ScaleWithColor(theme.DefaultTheme.UIText)
 	}
 
 	text.Draw(screen,
