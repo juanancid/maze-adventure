@@ -12,16 +12,16 @@ func Level05() LevelConfig {
 			ExtraConnectionChance: 0.10, // a few more loops for a freer feel
 		},
 		Player: PlayerConfig{
-			Size: 12,
+			Size: DefaultPlayerSize,
 		},
 		Exit: ExitConfig{
 			Position: Coordinate{X: 17, Y: 11}, // bottom-right
-			Size:     16,
+			Size:     DefaultExitSize,
 		},
 		Collectibles: Collectibles{
 			Number: 6,
-			Size:   8,
-			Value:  1,
+			Size:   DefaultCollectibleSize,
+			Value:  DefaultCollectibleValue,
 		},
 		Timer: 90,
 	}

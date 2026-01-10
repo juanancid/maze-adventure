@@ -1,5 +1,13 @@
 package definitions
 
+const (
+	DefaultPlayerSize       = 12
+	DefaultExitSize         = 16
+	LargeExitSize           = 24
+	DefaultCollectibleSize  = 8
+	DefaultCollectibleValue = 1
+)
+
 // LevelRegistry holds all level definitions
 var LevelRegistry = []func() LevelConfig{
 	Level01,
