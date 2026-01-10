@@ -19,7 +19,7 @@ type LevelConfig struct {
 type MazeConfig struct {
 	Cols                  int     // Number of columns in the maze
 	Rows                  int     // Number of rows in the maze
-	DeadlyCells           int     // Number of deadly cells to place
+	LethalCells           int     // Number of deadly cells to place
 	FreezingCells         int     // Number of freezing cells to place
 	Patrollers            int     // Number of patroller NPCs to place
 	ExtraConnectionChance float64 // Probability (0.0-1.0) of adding extra connections between cells
@@ -32,14 +32,14 @@ func (m MazeConfig) Validate() error {
 	}
 
 	totalCells := m.Cols * m.Rows
-	if m.DeadlyCells < 0 || m.FreezingCells < 0 || m.Patrollers < 0 {
-		return fmt.Errorf("special cells/entities count cannot be negative: deadly=%d, freezing=%d, patrollers=%d", m.DeadlyCells, m.FreezingCells, m.Patrollers)
+	if m.LethalCells < 0 || m.FreezingCells < 0 || m.Patrollers < 0 {
+		return fmt.Errorf("special cells/entities count cannot be negative: deadly=%d, freezing=%d, patrollers=%d", m.LethalCells, m.FreezingCells, m.Patrollers)
 	}
 
 	// Reserve some cells for player, exit, and collectibles (estimate ~3-5 cells)
 	reservedCells := 5
-	if m.DeadlyCells+m.FreezingCells+m.Patrollers >= totalCells-reservedCells {
-		return fmt.Errorf("too many special cells/entities: deadly=%d, freezing=%d, patrollers=%d, available cells=%d", m.DeadlyCells, m.FreezingCells, m.Patrollers, totalCells-reservedCells)
+	if m.LethalCells+m.FreezingCells+m.Patrollers >= totalCells-reservedCells {
+		return fmt.Errorf("too many special cells/entities: deadly=%d, freezing=%d, patrollers=%d, available cells=%d", m.LethalCells, m.FreezingCells, m.Patrollers, totalCells-reservedCells)
 	}
 
 	if m.ExtraConnectionChance < 0.0 || m.ExtraConnectionChance > 1.0 {

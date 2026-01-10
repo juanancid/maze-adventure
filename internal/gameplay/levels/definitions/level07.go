@@ -6,7 +6,7 @@ func Level07() LevelConfig {
 		Maze: MazeConfig{
 			Cols:                  16,
 			Rows:                  10,
-			DeadlyCells:           0,
+			LethalCells:           0,
 			FreezingCells:         0,
 			Patrollers:            0,
 			ExtraConnectionChance: 0.15, // generous loops for roaming

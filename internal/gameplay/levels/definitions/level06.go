@@ -6,7 +6,7 @@ func Level06() LevelConfig {
 		Maze: MazeConfig{
 			Cols:                  10,
 			Rows:                  6,
-			DeadlyCells:           3,
+			LethalCells:           3,
 			FreezingCells:         2,
 			Patrollers:            5,
 			ExtraConnectionChance: 0.02, // more corridors, fewer shortcuts

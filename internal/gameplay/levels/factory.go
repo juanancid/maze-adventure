@@ -70,7 +70,7 @@ func createMaze(world *entities.World, levelConfig definitions.LevelConfig, cell
 	builderConfig := mazebuilder.NewBuilderConfig(levelConfig.Maze.Cols, levelConfig.Maze.Rows)
 
 	// Set special cells and maze complexity from level configuration
-	builderConfig.DeadlyCells = levelConfig.Maze.DeadlyCells
+	builderConfig.DeadlyCells = levelConfig.Maze.LethalCells
 	builderConfig.FreezingCells = levelConfig.Maze.FreezingCells
 	builderConfig.ExtraConnectionChance = levelConfig.Maze.ExtraConnectionChance
 
