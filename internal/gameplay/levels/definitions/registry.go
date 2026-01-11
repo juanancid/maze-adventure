@@ -4,7 +4,7 @@ const (
 	DefaultPlayerSize       = 12
 	DefaultExitSize         = 16
 	LargeExitSize           = 24
-	DefaultCollectibleSize  = 8
+	DefaultCollectibleSize  = 12
 	DefaultCollectibleValue = 1
 )
 
