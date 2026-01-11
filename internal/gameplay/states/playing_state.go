@@ -134,7 +134,6 @@ func (s *PlayingState) setRenderers() {
 	s.renderers = []Renderer{
 		renderers.NewMaze(),
 		renderers.NewSprite(),
-		renderers.NewPatrollerRenderer(),
 		renderers.NewHUD(),
 	}
 }

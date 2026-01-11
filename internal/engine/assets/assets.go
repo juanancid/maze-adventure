@@ -30,3 +30,6 @@ var CollectibleImage []byte
 
 //go:embed images/intro-illustration.png
 var IntroIllustration []byte
+
+//go:embed images/patroller.png
+var PatrollerImage []byte
