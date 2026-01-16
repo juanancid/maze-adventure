@@ -19,7 +19,7 @@ func Level01() LevelConfig {
 				X: 7,
 				Y: 4,
 			},
-			Size: LargeExitSize,
+			Size: DefaultExitSize,
 		},
 		Collectibles: Collectibles{
 			Number: 2,

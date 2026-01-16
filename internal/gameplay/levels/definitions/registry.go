@@ -2,8 +2,8 @@ package definitions
 
 const (
 	DefaultPlayerSize       = 12
-	DefaultExitSize         = 16
-	LargeExitSize           = 24
+	DefaultExitSize         = 24
+	LittleExitSize          = 16
 	DefaultCollectibleSize  = 12
 	DefaultCollectibleValue = 1
 )

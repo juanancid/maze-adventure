@@ -16,7 +16,7 @@ func Level06() LevelConfig {
 		},
 		Exit: ExitConfig{
 			Position: Coordinate{X: 9, Y: 5},
-			Size:     DefaultExitSize,
+			Size:     LittleExitSize,
 		},
 		Collectibles: Collectibles{
 			Number: 4,
