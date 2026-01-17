@@ -1,6 +1,7 @@
 package renderers
 
 import (
+	"image"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -32,6 +33,15 @@ func getCellColor(cell components.Cell) color.RGBA {
 }
 
 func (r Maze) Draw(world *entities.World, gameSession *session.GameSession, screen *ebiten.Image) {
+	// Fill only the maze area (below HUD) with maze background color
+	mazeArea := screen.SubImage(image.Rect(
+		0,
+		config.HudHeight,
+		config.ScreenWidth,
+		config.ScreenHeight,
+	)).(*ebiten.Image)
+	mazeArea.Fill(theme.DefaultTheme.MazeBackground)
+
 	maze, ok := queries.GetMazeComponent(world)
 	if !ok {
 		return
@@ -40,9 +50,6 @@ func (r Maze) Draw(world *entities.World, gameSession *session.GameSession, scre
 	mazeLayout := maze.Layout
 	cellWidth := maze.CellWidth
 	cellHeight := maze.CellHeight
-
-	// Fill the entire maze area with background color
-	screen.Fill(theme.DefaultTheme.Background)
 
 	// Iterate over each cell and draw its walls.
 	for row := 0; row < mazeLayout.Rows(); row++ {

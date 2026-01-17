@@ -28,7 +28,7 @@ func (r *ScoreRenderer) Draw(gameSession *session.GameSession, screen *ebiten.Im
 	textOp.ColorScale.ScaleWithColor(theme.DefaultTheme.UIText)
 
 	text.Draw(screen,
-		fmt.Sprintf("SCORE: %d", gameSession.Score),
+		fmt.Sprintf("SCORE %d", gameSession.Score),
 		&text.GoTextFace{
 			Source: r.faceSource,
 			Size:   8,

@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Update game visuals and themes with new palette integration.
 - Allow player to restart the game from the victory screen.
 - Add fresh-run target to Makefile for easier execution after cleaning.
+- Enhance HUD and maze rendering with background colors for improved visual separation.
 
 ## [0.7.0] - 2025-07-21
 
