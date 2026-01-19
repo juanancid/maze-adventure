@@ -5,10 +5,9 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
-	"github.com/juanancid/maze-adventure/internal/gameplay/theme"
 
-	"github.com/juanancid/maze-adventure/internal/engine/config"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
+	"github.com/juanancid/maze-adventure/internal/gameplay/theme"
 )
 
 // ScoreRenderer handles drawing the score
@@ -24,7 +23,8 @@ func NewScoreRenderer(faceSource *text.GoTextFaceSource) *ScoreRenderer {
 
 func (r *ScoreRenderer) Draw(gameSession *session.GameSession, screen *ebiten.Image) {
 	textOp := &text.DrawOptions{}
-	textOp.GeoM.Translate(8, float64(config.HudHeight/2-4))
+	// Position at top-left of HUD
+	textOp.GeoM.Translate(8, 8)
 	textOp.ColorScale.ScaleWithColor(theme.DefaultTheme.UIText)
 
 	text.Draw(screen,

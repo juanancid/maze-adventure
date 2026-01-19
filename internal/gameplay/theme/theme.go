@@ -12,7 +12,7 @@ type Theme struct {
 	HudBackground  color.RGBA
 	MazeBackground color.RGBA
 	UIText         color.RGBA
-	UISecondary    color.RGBA
+	UITimer        color.RGBA
 
 	// World
 	WallNormal   color.RGBA
@@ -36,10 +36,10 @@ type Theme struct {
 // Game code should depend on Theme, not on ENDESGA16 directly.
 var DefaultTheme = Theme{
 	// Global
-	HudBackground:  palette.ENDESGA16.Ink1,  // Slightly lighter than maze for visual separation
-	MazeBackground: palette.ENDESGA16.Ink0,  // Darkest background for game area
-	UIText:         palette.ENDESGA16.Lime,
-	UISecondary:    palette.ENDESGA16.Paper1,
+	HudBackground:  palette.ENDESGA16.Ink1, // Slightly lighter than maze for visual separation
+	MazeBackground: palette.ENDESGA16.Ink0, // Darkest background for game area
+	UIText:         palette.ENDESGA16.Ink5,
+	UITimer:        palette.ENDESGA16.Lime,
 
 	// World
 	WallNormal:   palette.ENDESGA16.Green,

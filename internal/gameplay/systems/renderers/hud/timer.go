@@ -27,23 +27,26 @@ func (r *TimerRenderer) Draw(gameSession *session.GameSession, screen *ebiten.Im
 	}
 
 	timerText := gameSession.GetTimerDisplayTime()
+
+	// Create face to measure text width
+	face := &text.GoTextFace{
+		Source: r.faceSource,
+		Size:   8,
+	}
+
+	// Measure timer text width to center it horizontally
+	timerWidth, _ := text.Measure(timerText, face, 0)
+
 	timerOp := &text.DrawOptions{}
-	// Position the timer in the center-top area of the HUD
-	timerOp.GeoM.Translate(float64(config.ScreenWidth/2+20), float64(config.HudHeight/2-4))
+	// Position the timer in horizontal center, vertically centered
+	timerOp.GeoM.Translate(float64(config.ScreenWidth)/2-timerWidth/2, float64(config.HudHeight/2-4))
 
 	// Change color to red when timer is running low (less than 10 seconds)
 	if gameSession.TimerRemaining <= 10 {
 		timerOp.ColorScale.ScaleWithColor(palette.ENDESGA16.Red)
 	} else {
-		timerOp.ColorScale.ScaleWithColor(theme.DefaultTheme.UIText)
+		timerOp.ColorScale.ScaleWithColor(theme.DefaultTheme.UITimer)
 	}
 
-	text.Draw(screen,
-		timerText,
-		&text.GoTextFace{
-			Source: r.faceSource,
-			Size:   8,
-		},
-		timerOp,
-	)
+	text.Draw(screen, timerText, face, timerOp)
 }
