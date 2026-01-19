@@ -9,10 +9,12 @@ import (
 // Theme defines "what colors mean" in Maze Adventure.
 type Theme struct {
 	// Global
-	HudBackground  color.RGBA
-	MazeBackground color.RGBA
-	UIText         color.RGBA
-	UITimer        color.RGBA
+	HudBackground   color.RGBA
+	MazeBackground  color.RGBA
+	IntroBackground color.RGBA
+	UIText          color.RGBA
+	UITimer         color.RGBA
+	UIIntroText     color.RGBA
 
 	// World
 	WallNormal   color.RGBA
@@ -36,10 +38,12 @@ type Theme struct {
 // Game code should depend on Theme, not on ENDESGA16 directly.
 var DefaultTheme = Theme{
 	// Global
-	HudBackground:  palette.ENDESGA16.Ink1, // Slightly lighter than maze for visual separation
-	MazeBackground: palette.ENDESGA16.Ink0, // Darkest background for game area
-	UIText:         palette.ENDESGA16.Ink5,
-	UITimer:        palette.ENDESGA16.Lime,
+	HudBackground:   palette.ENDESGA16.Ink1, // Slightly lighter than maze for visual separation
+	MazeBackground:  palette.ENDESGA16.Ink0, // Darkest background for game area
+	IntroBackground: palette.ENDESGA16.Ink0,
+	UIText:          palette.ENDESGA16.Ink5,
+	UITimer:         palette.ENDESGA16.Lime,
+	UIIntroText:     palette.ENDESGA16.Green,
 
 	// World
 	WallNormal:   palette.ENDESGA16.Green,

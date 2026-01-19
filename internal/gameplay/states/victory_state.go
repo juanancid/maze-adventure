@@ -7,6 +7,7 @@ import (
 
 	"github.com/juanancid/maze-adventure/internal/gameplay/config"
 	"github.com/juanancid/maze-adventure/internal/gameplay/levels"
+	"github.com/juanancid/maze-adventure/internal/gameplay/theme"
 )
 
 type VictoryState struct {
@@ -56,7 +57,7 @@ func (s *VictoryState) Update() error {
 }
 
 func (s *VictoryState) Draw(screen *ebiten.Image) {
-	screen.Fill(bgColor)
+	screen.Fill(theme.DefaultTheme.MazeBackground)
 
 	drawCenteredText(screen, "MAZE ADVENTURE", 20, titleFontSize)
 	drawCenteredText(screen, "Final Protocol Completed", 50, titleFontSize)
