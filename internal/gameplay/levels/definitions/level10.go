@@ -1,31 +1,28 @@
 package definitions
 
-// Level02 -> Introduce deadly cells
-func Level02() LevelConfig {
+// Level10 -> Final level
+func Level10() LevelConfig {
 	return LevelConfig{
 		Maze: MazeConfig{
 			Cols:                  10,
-			Rows:                  6,
-			LethalCells:           3,
+			Rows:                  10,
+			LethalCells:           0,
 			FreezingCells:         0,
-			Patrollers:            2,
-			ExtraConnectionChance: 0.04,
+			Patrollers:            0,
+			ExtraConnectionChance: 0.25,
 		},
 		Player: PlayerConfig{
 			Size: DefaultPlayerSize,
 		},
 		Exit: ExitConfig{
-			Position: Coordinate{
-				X: 9,
-				Y: 5,
-			},
-			Size: DefaultExitSize,
+			Position: Coordinate{X: 5, Y: 5},
+			Size:     DefaultExitSize,
 		},
 		Collectibles: Collectibles{
-			Number: 4,
+			Number: 15,
 			Size:   DefaultCollectibleSize,
 			Value:  DefaultCollectibleValue,
 		},
-		Timer: 45,
+		Timer: 20,
 	}
 }

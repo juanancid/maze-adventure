@@ -17,4 +17,7 @@ var LevelRegistry = []func() LevelConfig{
 	Level05,
 	Level06,
 	Level07,
+	Level08,
+	Level09,
+	Level10,
 }

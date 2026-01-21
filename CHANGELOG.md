@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Enhance HUD and maze rendering with background colors for improved visual separation.
 - Enhance HUD elements with improved health, level, score, and timer rendering.
 - Improve text spacing and visual separation in boot, game over, and victory states.
+- Define 10 levels with increasing difficulty.
 
 ## [0.7.0] - 2025-07-21
 
