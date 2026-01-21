@@ -6,6 +6,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/juanancid/maze-adventure/internal/engine/config"
 	"github.com/juanancid/maze-adventure/internal/engine/utils"
+	"github.com/juanancid/maze-adventure/internal/gameplay/theme"
+
 	"image/color"
 )
 
@@ -15,16 +17,15 @@ const (
 )
 
 var (
-	textColor = color.RGBA{R: 0x0A, G: 0x90, B: 0x6B, A: 0xFF}
-	bgColor   = color.RGBA{R: 0x00, G: 0x13, B: 0x1F, A: 0xFF}
-	font      *text.GoTextFaceSource
-	centerX   = float64(config.ScreenWidth / 2)
+	bgColor = color.RGBA{R: 0x00, G: 0x13, B: 0x1F, A: 0xFF}
+	font    *text.GoTextFaceSource
+	centerX = float64(config.ScreenWidth / 2)
 )
 
 func drawCenteredText(screen *ebiten.Image, txt string, y float64, size float64) {
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(centerX, y)
-	op.ColorScale.ScaleWithColor(textColor)
+	op.ColorScale.ScaleWithColor(theme.DefaultTheme.UIIntroText)
 	op.PrimaryAlign = text.AlignCenter
 	op.SecondaryAlign = text.AlignCenter
 

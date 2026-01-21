@@ -2,6 +2,7 @@ package renderers
 
 import (
 	"bytes"
+	"image"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -9,8 +10,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 
 	"github.com/juanancid/maze-adventure/internal/core/entities"
+	"github.com/juanancid/maze-adventure/internal/engine/config"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
 	"github.com/juanancid/maze-adventure/internal/gameplay/systems/renderers/hud"
+	"github.com/juanancid/maze-adventure/internal/gameplay/theme"
 )
 
 // HUD is a composite renderer that combines all HUD elements
@@ -36,6 +39,16 @@ func NewHUD() *HUD {
 }
 
 func (r *HUD) Draw(world *entities.World, gameSession *session.GameSession, screen *ebiten.Image) {
+	// Fill the HUD area with HUD background color
+	hudArea := screen.SubImage(image.Rect(
+		0,
+		0,
+		config.ScreenWidth,
+		config.HudHeight,
+	)).(*ebiten.Image)
+	hudArea.Fill(theme.DefaultTheme.HudBackground)
+
+	// Draw HUD elements
 	r.scoreRenderer.Draw(gameSession, screen)
 	r.levelRenderer.Draw(gameSession, screen)
 	r.healthRenderer.Draw(gameSession, screen)

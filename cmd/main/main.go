@@ -21,12 +21,13 @@ import (
 	"github.com/juanancid/maze-adventure/internal/app"
 	engineconfig "github.com/juanancid/maze-adventure/internal/engine/config"
 	gameplayconfig "github.com/juanancid/maze-adventure/internal/gameplay/config"
+	"github.com/juanancid/maze-adventure/internal/gameplay/levels/definitions"
 )
 
 func main() {
 	// Parse command-line arguments
-	startLevel := flag.Int("start-level", 1, "Starting level (1-4)")
-	startLevelShort := flag.Int("l", 1, "Starting level (1-4) - short form")
+	startLevel := flag.Int("start-level", 1, "Starting level")
+	startLevelShort := flag.Int("l", 1, "Starting level - short form")
 	flag.Parse()
 
 	// Use the short form if provided, otherwise use the long form
@@ -36,8 +37,8 @@ func main() {
 	}
 
 	// Validate level number
-	if selectedLevel < 1 || selectedLevel > 4 {
-		fmt.Fprintf(os.Stderr, "Error: Invalid level number %d. Must be between 1 and 4.\n", selectedLevel)
+	if selectedLevel < 1 || selectedLevel > len(definitions.LevelRegistry) {
+		fmt.Fprintf(os.Stderr, "Error: Invalid level number %d. Must be between 1 and %d.\n", selectedLevel, len(definitions.LevelRegistry))
 		fmt.Fprintf(os.Stderr, "Usage: %s [--start-level N] or [--l N]\n", os.Args[0])
 		os.Exit(1)
 	}

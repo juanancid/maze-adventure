@@ -6,25 +6,25 @@ func Level04() LevelConfig {
 		Maze: MazeConfig{
 			Cols:                  14,
 			Rows:                  9,
-			DeadlyCells:           4,
+			LethalCells:           4,
 			FreezingCells:         6,
 			Patrollers:            4,
 			ExtraConnectionChance: 0.12,
 		},
 		Player: PlayerConfig{
-			Size: 12,
+			Size: DefaultPlayerSize,
 		},
 		Exit: ExitConfig{
 			Position: Coordinate{
 				X: 13,
 				Y: 8,
 			},
-			Size: 16,
+			Size: DefaultExitSize,
 		},
 		Collectibles: Collectibles{
 			Number: 5,
-			Size:   8,
-			Value:  1,
+			Size:   DefaultCollectibleSize,
+			Value:  DefaultCollectibleValue,
 		},
 		Timer: 75,
 	}

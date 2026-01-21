@@ -134,7 +134,6 @@ func (s *PlayingState) setRenderers() {
 	s.renderers = []Renderer{
 		renderers.NewMaze(),
 		renderers.NewSprite(),
-		renderers.NewPatrollerRenderer(),
 		renderers.NewHUD(),
 	}
 }
@@ -159,7 +158,7 @@ func (s *PlayingState) onLevelCompleted(e events.Event) {
 }
 
 func (s *PlayingState) onGameCompleted(e events.Event) {
-	victoryState := NewVictoryState(s.stateManager)
+	victoryState := NewVictoryState(s.stateManager, s.levelManager, s.config)
 	s.stateManager.ChangeState(victoryState)
 }
 
@@ -179,7 +178,7 @@ func (s *PlayingState) onPlayerDamaged(e events.Event) {
 }
 
 func (s *PlayingState) triggerGameOver() {
-	gameOverState := NewGameOverState(s.stateManager)
+	gameOverState := NewGameOverState(s.stateManager, s.levelManager, s.config)
 	s.stateManager.ChangeState(gameOverState)
 }
 

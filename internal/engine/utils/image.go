@@ -16,6 +16,7 @@ const (
 	ImageExit
 	ImageCollectible
 	ImageIntroIllustration
+	ImagePatroller
 )
 
 var (
@@ -25,6 +26,7 @@ var (
 		ImageExit:              assets.ExitImage,
 		ImageCollectible:       assets.CollectibleImage,
 		ImageIntroIllustration: assets.IntroIllustration,
+		ImagePatroller:         assets.PatrollerImage,
 	}
 )
 

@@ -1,6 +1,7 @@
 package renderers
 
 import (
+	"image"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -11,6 +12,7 @@ import (
 	"github.com/juanancid/maze-adventure/internal/core/queries"
 	"github.com/juanancid/maze-adventure/internal/engine/config"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
+	"github.com/juanancid/maze-adventure/internal/gameplay/theme"
 )
 
 type Maze struct{}
@@ -21,16 +23,25 @@ func NewMaze() Maze {
 
 // getCellColor returns the color for a cell based on its type
 func getCellColor(cell components.Cell) color.RGBA {
-	if cell.IsDeadly() {
-		return color.RGBA{R: 0xFF, G: 0x00, B: 0x00, A: 0xFF} // Red for deadly
+	if cell.IsLethal() {
+		return theme.DefaultTheme.WallLethal
 	} else if cell.IsFreezing() {
-		return color.RGBA{R: 0x00, G: 0xFF, B: 0xFF, A: 0xFF} // Cyan for freezing
+		return theme.DefaultTheme.WallFreezing
 	} else {
-		return color.RGBA{R: 0x36, G: 0x9b, B: 0x48, A: 0xFF} // Green for regular
+		return theme.DefaultTheme.WallNormal
 	}
 }
 
 func (r Maze) Draw(world *entities.World, gameSession *session.GameSession, screen *ebiten.Image) {
+	// Fill only the maze area (below HUD) with maze background color
+	mazeArea := screen.SubImage(image.Rect(
+		0,
+		config.HudHeight,
+		config.ScreenWidth,
+		config.ScreenHeight,
+	)).(*ebiten.Image)
+	mazeArea.Fill(theme.DefaultTheme.MazeBackground)
+
 	maze, ok := queries.GetMazeComponent(world)
 	if !ok {
 		return
@@ -39,10 +50,6 @@ func (r Maze) Draw(world *entities.World, gameSession *session.GameSession, scre
 	mazeLayout := maze.Layout
 	cellWidth := maze.CellWidth
 	cellHeight := maze.CellHeight
-
-	// Fill the entire maze area with background color
-	bgColor := color.RGBA{R: 0x12, G: 0x18, B: 0x21, A: 0xFF}
-	screen.Fill(bgColor)
 
 	// Iterate over each cell and draw its walls.
 	for row := 0; row < mazeLayout.Rows(); row++ {

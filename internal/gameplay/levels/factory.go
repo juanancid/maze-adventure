@@ -70,7 +70,7 @@ func createMaze(world *entities.World, levelConfig definitions.LevelConfig, cell
 	builderConfig := mazebuilder.NewBuilderConfig(levelConfig.Maze.Cols, levelConfig.Maze.Rows)
 
 	// Set special cells and maze complexity from level configuration
-	builderConfig.DeadlyCells = levelConfig.Maze.DeadlyCells
+	builderConfig.DeadlyCells = levelConfig.Maze.LethalCells
 	builderConfig.FreezingCells = levelConfig.Maze.FreezingCells
 	builderConfig.ExtraConnectionChance = levelConfig.Maze.ExtraConnectionChance
 
@@ -187,7 +187,7 @@ func createPatroller(world *entities.World, row, col, cellWidth, cellHeight, pat
 	patroller := world.NewEntity()
 
 	// Calculate position within the cell (centered)
-	patrollerSize := 10 // Slightly smaller than player
+	patrollerSize := 12
 	x := float64(col*cellWidth + (cellWidth-patrollerSize)/2)
 	y := float64(row*cellHeight + (cellHeight-patrollerSize)/2)
 
@@ -198,4 +198,8 @@ func createPatroller(world *entities.World, row, col, cellWidth, cellHeight, pat
 	// Create patroller with specific pattern and spawn position
 	patrollerComp := components.NewPatrollerWithPattern(patrollerID, pattern, col, row)
 	world.AddComponent(patroller, patrollerComp)
+
+	// Add sprite component for rendering
+	patrollerSprite := utils.GetImage(utils.ImagePatroller)
+	world.AddComponent(patroller, &components.Sprite{Image: patrollerSprite})
 }

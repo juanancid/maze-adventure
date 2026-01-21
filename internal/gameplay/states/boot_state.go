@@ -2,10 +2,12 @@ package states
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 
 	"github.com/juanancid/maze-adventure/internal/engine/utils"
 	"github.com/juanancid/maze-adventure/internal/gameplay/config"
 	"github.com/juanancid/maze-adventure/internal/gameplay/levels"
+	"github.com/juanancid/maze-adventure/internal/gameplay/theme"
 )
 
 type BootState struct {
@@ -54,24 +56,38 @@ func (s *BootState) Update() error {
 }
 
 func (s *BootState) Draw(screen *ebiten.Image) {
-	screen.Fill(bgColor)
+	screen.Fill(theme.DefaultTheme.IntroBackground)
 
-	s.drawIntroIllustration(screen)
-
+	// Title
 	drawCenteredText(screen, "MAZE ADVENTURE", 20, titleFontSize)
-	drawCenteredText(screen, "Reactivation Protocol: AVA-002", 50, regularFontSize)
-	drawCenteredText(screen, "Codename: Picatoste", 65, regularFontSize)
-	drawCenteredText(screen, "MEMORY CORE INTEGRITY: 12%", 200, regularFontSize)
-	drawCenteredText(screen, "SECTOR MAP: UNAVAILABLE", 215, regularFontSize)
-	drawCenteredText(screen, "LAST BOOT: UNKNOWN", 230, regularFontSize)
 
+	// Horizontal line below title for visual separation
+	s.drawHorizontalSeparator(screen, 40)
+
+	// Body text with improved spacing
+	drawCenteredText(screen, "Maintenance unit πk2t active", 108, regularFontSize)
+	drawCenteredText(screen, "Manual traversal required", 123, regularFontSize)
+
+	// Blinking prompt
 	if s.blinkOn {
-		drawCenteredText(screen, "Press SPACE to wake up…", 250, regularFontSize)
+		drawCenteredText(screen, "Press SPACE to begin", 158, regularFontSize)
 	}
+
+	// Horizontal line above author credit for visual separation
+	s.drawHorizontalSeparator(screen, 240)
+
+	// Author credit
+	drawCenteredText(screen, "by Juanan Cid", 255, regularFontSize)
 }
 
-func (s *BootState) drawIntroIllustration(screen *ebiten.Image) {
-	options := &ebiten.DrawImageOptions{}
-	options.GeoM.Translate(140, 90)
-	screen.DrawImage(s.sprite, options)
+// drawHorizontalSeparator draws a subtle horizontal line for visual separation
+func (s *BootState) drawHorizontalSeparator(screen *ebiten.Image, y float32) {
+	// Calculate line width (centered, with margins)
+	lineWidth := float32(200) // Moderate width for subtle separation
+	centerX := float32(240)   // Screen center (480/2)
+	startX := centerX - lineWidth/2
+	endX := centerX + lineWidth/2
+
+	// Draw line using theme color with slight transparency for subtlety
+	vector.StrokeLine(screen, startX, y, endX, y, 1, theme.DefaultTheme.UIIntroText, false)
 }

@@ -1,31 +1,28 @@
 package definitions
 
-// Level01 -> Movement and collecting (no hazards)
-func Level01() LevelConfig {
+// Level07 -> Calm "Zen" finale (no hazards, exploration vibes)
+func Level07() LevelConfig {
 	return LevelConfig{
 		Maze: MazeConfig{
-			Cols:                  8,
-			Rows:                  5,
+			Cols:                  16,
+			Rows:                  10,
 			LethalCells:           0,
 			FreezingCells:         0,
 			Patrollers:            0,
-			ExtraConnectionChance: 0.0,
+			ExtraConnectionChance: 0.15, // generous loops for roaming
 		},
 		Player: PlayerConfig{
 			Size: DefaultPlayerSize,
 		},
 		Exit: ExitConfig{
-			Position: Coordinate{
-				X: 7,
-				Y: 4,
-			},
-			Size: DefaultExitSize,
+			Position: Coordinate{X: 15, Y: 9},
+			Size:     DefaultExitSize,
 		},
 		Collectibles: Collectibles{
-			Number: 2,
+			Number: 5,
 			Size:   DefaultCollectibleSize,
 			Value:  DefaultCollectibleValue,
 		},
-		Timer: 30,
+		Timer: 120,
 	}
 }

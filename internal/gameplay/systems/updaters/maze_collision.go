@@ -66,7 +66,7 @@ func enforcePlayerMazeCollisions(pos *components.Position, size *components.Size
 			// Emit freeze event when entering freezing cell
 			eventBus.Publish(events.PlayerFrozen{Duration: int(session.DefaultFreezeDuration / time.Millisecond)})
 		}
-		if cell.IsDeadly() && gameSession.CanApplyDamageEffect() {
+		if cell.IsLethal() && gameSession.CanApplyDamageEffect() {
 			// Emit damage event when entering deadly cell (with cooldown check)
 			eventBus.Publish(events.PlayerDamaged{Amount: 1})
 		}

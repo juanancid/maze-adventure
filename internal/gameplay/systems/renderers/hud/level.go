@@ -2,13 +2,12 @@ package hud
 
 import (
 	"fmt"
-	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 
-	"github.com/juanancid/maze-adventure/internal/engine/config"
 	"github.com/juanancid/maze-adventure/internal/gameplay/session"
+	"github.com/juanancid/maze-adventure/internal/gameplay/theme"
 )
 
 // LevelRenderer handles drawing the level number
@@ -23,10 +22,11 @@ func NewLevelRenderer(faceSource *text.GoTextFaceSource) *LevelRenderer {
 }
 
 func (r *LevelRenderer) Draw(gameSession *session.GameSession, screen *ebiten.Image) {
-	levelText := fmt.Sprintf("SECTOR %d", gameSession.CurrentLevel)
+	levelText := fmt.Sprintf("LEVEL %d", gameSession.CurrentLevel)
 	levelOp := &text.DrawOptions{}
-	levelOp.GeoM.Translate(float64(config.ScreenWidth-100), float64(config.HudHeight/2-4))
-	levelOp.ColorScale.ScaleWithColor(color.White)
+	// Position at bottom-left of HUD, below score
+	levelOp.GeoM.Translate(8, 26)
+	levelOp.ColorScale.ScaleWithColor(theme.DefaultTheme.UIText)
 
 	text.Draw(screen,
 		levelText,

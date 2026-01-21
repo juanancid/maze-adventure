@@ -1,31 +1,28 @@
 package definitions
 
-// Level01 -> Movement and collecting (no hazards)
-func Level01() LevelConfig {
+// Level09 ->
+func Level09() LevelConfig {
 	return LevelConfig{
 		Maze: MazeConfig{
-			Cols:                  8,
-			Rows:                  5,
-			LethalCells:           0,
+			Cols:                  14,
+			Rows:                  8,
+			LethalCells:           40,
 			FreezingCells:         0,
 			Patrollers:            0,
-			ExtraConnectionChance: 0.0,
+			ExtraConnectionChance: 0,
 		},
 		Player: PlayerConfig{
 			Size: DefaultPlayerSize,
 		},
 		Exit: ExitConfig{
-			Position: Coordinate{
-				X: 7,
-				Y: 4,
-			},
-			Size: DefaultExitSize,
+			Position: Coordinate{X: 13, Y: 6},
+			Size:     LittleExitSize,
 		},
 		Collectibles: Collectibles{
-			Number: 2,
+			Number: 0,
 			Size:   DefaultCollectibleSize,
 			Value:  DefaultCollectibleValue,
 		},
-		Timer: 30,
+		Timer: 40,
 	}
 }
