@@ -65,12 +65,12 @@ func (s *BootState) Draw(screen *ebiten.Image) {
 	s.drawHorizontalSeparator(screen, 40)
 
 	// Body text with improved spacing
-	drawCenteredText(screen, "Maintenance unit πk2t active.", 108, regularFontSize)
-	drawCenteredText(screen, "Manual traversal required.\n", 123, regularFontSize)
+	drawCenteredText(screen, "Maintenance unit πk2t active", 108, regularFontSize)
+	drawCenteredText(screen, "Manual traversal required", 123, regularFontSize)
 
 	// Blinking prompt
 	if s.blinkOn {
-		drawCenteredText(screen, "Press SPACE begin", 158, regularFontSize)
+		drawCenteredText(screen, "Press SPACE to begin", 158, regularFontSize)
 	}
 
 	// Horizontal line above author credit for visual separation

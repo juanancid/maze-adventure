@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 
 	"github.com/juanancid/maze-adventure/internal/gameplay/config"
 	"github.com/juanancid/maze-adventure/internal/gameplay/levels"
@@ -59,19 +60,38 @@ func (s *GameOverState) Update() error {
 func (s *GameOverState) Draw(screen *ebiten.Image) {
 	screen.Fill(theme.DefaultTheme.MazeBackground)
 
+	// Header section: Title
 	drawCenteredText(screen, "MAZE ADVENTURE", 20, titleFontSize)
-	drawCenteredText(screen, "Critical System Failure", 50, titleFontSize)
-	drawCenteredText(screen, "AVA-002: Codename Picatoste", 80, titleFontSize)
 
-	drawCenteredText(screen, "Memory core integrity compromised.", 120, regularFontSize)
-	drawCenteredText(screen, "Life support systems offline.", 135, regularFontSize)
-	drawCenteredText(screen, "Emergency shutdown initiated.", 150, regularFontSize)
+	// Horizontal line below title for visual separation
+	s.drawHorizontalSeparator(screen, 40)
 
-	drawCenteredText(screen, "SYSTEM SHUTDOWN", 200, regularFontSize)
-	drawCenteredText(screen, "Thank you for playing.", 215, regularFontSize)
+	// Main content section: Game over message with improved spacing
+	drawCenteredText(screen, "UNIT STATUS: OFFLINE", 58, titleFontSize)
+	drawCenteredText(screen, "Traversal interrupted", 88, titleFontSize)
 
+	drawCenteredText(screen, "Sector maintenance incomplete", 128, regularFontSize)
+
+	drawCenteredText(screen, "SYSTEM STANDBY", 208, regularFontSize)
+
+	// Horizontal line above instructions for visual separation
+	s.drawHorizontalSeparator(screen, 228)
+
+	// Footer section: Interactive instructions
 	if s.blinkOn {
-		drawCenteredText(screen, "Press SPACE to restart…", 240, regularFontSize)
-		drawCenteredText(screen, "Press ESC to disconnect…", 255, regularFontSize)
+		drawCenteredText(screen, "Press SPACE to retry", 243, regularFontSize)
+		drawCenteredText(screen, "Press ESC to disconnect", 258, regularFontSize)
 	}
+}
+
+// drawHorizontalSeparator draws a subtle horizontal line for visual separation
+func (s *GameOverState) drawHorizontalSeparator(screen *ebiten.Image, y float32) {
+	// Calculate line width (centered, with margins)
+	lineWidth := float32(200) // Moderate width for subtle separation
+	centerX := float32(240)   // Screen center (480/2)
+	startX := centerX - lineWidth/2
+	endX := centerX + lineWidth/2
+
+	// Draw line using theme color with slight transparency for subtlety
+	vector.StrokeLine(screen, startX, y, endX, y, 1, theme.DefaultTheme.UIIntroText, false)
 }
